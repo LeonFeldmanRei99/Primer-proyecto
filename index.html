@@ -1,0 +1,1651 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>León Feldman Reinoso | Fotografía & Dirección Visual (Cuarto Oscuro)</title>
+    <meta name="description" content="Portfolio experimental y laboratorio visual de León Feldman Reinoso. Fotografía analógica, 35mm, formato medio y dirección editorial. Buenos Aires.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400;1,600&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-base: #0A0907;
+            --bg-surface: #12100C;
+            --bg-card: #181510;
+            --border-subtle: #242018;
+            --border-medium: #3A3326;
+            --border-accent: #C49A5A;
+            --text-main: #F5F0E6;
+            --text-secondary: #A8A092;
+            --text-muted: #6B6354;
+            --accent: #C49A5A;
+            --accent-light: #E2B978;
+            --accent-glow: rgba(196, 154, 90, 0.25);
+            --danger: #E05252;
+            
+            --font-editorial: 'Cormorant Garamond', Georgia, serif;
+            --font-mono: 'Space Mono', monospace;
+            --font-ui: 'Inter', sans-serif;
+            --transition-smooth: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* Darkroom Safe-Light Mode Variables */
+        body.darkroom-mode {
+            --bg-base: #090102;
+            --bg-surface: #120304;
+            --bg-card: #1B0507;
+            --border-subtle: #2A080B;
+            --border-medium: #4D0E13;
+            --border-accent: #FF2E2E;
+            --text-main: #FFD6D6;
+            --text-secondary: #E08585;
+            --text-muted: #8F3A3A;
+            --accent: #FF2E2E;
+            --accent-light: #FF6666;
+            --accent-glow: rgba(255, 46, 46, 0.35);
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            font-family: var(--font-ui);
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            min-height: 100vh;
+            transition: background-color 0.5s ease, color 0.5s ease;
+            cursor: auto;
+        }
+
+        img { max-width: 100%; height: auto; display: block; }
+        a { color: inherit; text-decoration: none; }
+        button { background: none; border: none; font-family: inherit; color: inherit; cursor: pointer; }
+        input, select, textarea { font-family: inherit; }
+
+        /* Typography & Utility */
+        h1, h2, h3, h4, .font-serif {
+            font-family: var(--font-editorial);
+            font-weight: 300;
+            line-height: 1.1;
+        }
+
+        .font-mono { font-family: var(--font-mono); }
+        .accent-text { color: var(--accent); }
+
+        .container {
+            max-width: 1500px;
+            margin: 0 auto;
+            padding: 0 2.5rem;
+        }
+        @media (max-width: 768px) { .container { padding: 0 1.2rem; } }
+
+        /* Buttons */
+        .btn-exp {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.75rem 1.8rem;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            border: 1px solid var(--border-accent);
+            color: var(--text-main);
+            background: rgba(196, 154, 90, 0.05);
+            transition: var(--transition-smooth);
+        }
+
+        .darkroom-mode .btn-exp {
+            background: rgba(255, 46, 46, 0.08);
+        }
+
+        .btn-exp:hover {
+            background: var(--accent);
+            color: #0A0907;
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        .btn-toggle {
+            padding: 0.4rem 0.85rem;
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+            border: 1px solid var(--border-medium);
+            border-radius: 20px;
+            color: var(--text-secondary);
+            transition: var(--transition-smooth);
+        }
+        .btn-toggle.active {
+            border-color: var(--accent);
+            color: var(--accent-light);
+            background: rgba(196, 154, 90, 0.12);
+        }
+
+        /* Preloader */
+        #preloader {
+            position: fixed;
+            inset: 0;
+            background-color: var(--bg-base);
+            z-index: 10001;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
+        }
+
+        #preloader.loaded { opacity: 0; visibility: hidden; pointer-events: none; }
+
+        /* Header Navigation */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 1.5rem 0;
+            background: rgba(10, 9, 7, 0.88);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--border-subtle);
+            transition: var(--transition-smooth);
+        }
+
+        .nav-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand-logo { display: flex; flex-direction: column; }
+        .brand-name { font-family: var(--font-editorial); font-size: 1.45rem; letter-spacing: 0.15em; text-transform: uppercase; line-height: 1; }
+        .brand-sub { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.25em; color: var(--accent); margin-top: 0.2rem; }
+
+        .nav-actions { display: flex; align-items: center; gap: 1rem; }
+
+        .darkroom-toggle-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.45rem 0.9rem;
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            letter-spacing: 0.1em;
+            border: 1px solid var(--border-accent);
+            border-radius: 4px;
+            color: var(--accent);
+            transition: var(--transition-smooth);
+        }
+
+        .darkroom-toggle-btn:hover {
+            background: var(--accent);
+            color: #0A0907;
+        }
+
+        /* Hero Section Experimental */
+        #hero {
+            position: relative;
+            min-height: 90vh;
+            display: flex;
+            align-items: center;
+            padding: 8rem 0 4rem;
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+        }
+
+        .hero-bg img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.38) contrast(1.1);
+        }
+
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(10, 9, 7, 0.4) 0%, rgba(10, 9, 7, 0.95) 100%);
+            z-index: 2;
+        }
+
+        .hero-grid {
+            position: relative;
+            z-index: 3;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 2rem;
+            align-items: end;
+        }
+
+        .hero-title {
+            font-size: clamp(3rem, 7.5vw, 6.5rem);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        .hero-tagline {
+            font-family: var(--font-editorial);
+            font-size: clamp(1.2rem, 2.4vw, 1.8rem);
+            font-style: italic;
+            color: var(--accent-light);
+            max-width: 750px;
+            margin-bottom: 2rem;
+        }
+
+        .hero-meta-badge {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            color: var(--accent);
+            border: 1px solid var(--border-accent);
+            padding: 0.4rem 0.8rem;
+            display: inline-block;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Portfolio & Contact Sheet View Toggle */
+        #portfolio { padding: 6rem 0 8rem; }
+
+        .view-controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+            border-bottom: 1px solid var(--border-subtle);
+            padding-bottom: 1.5rem;
+        }
+
+        .filter-group { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+
+        .view-mode-group { display: flex; align-items: center; gap: 0.5rem; }
+
+        /* Contact Sheet Mode Styles (35mm Film Strip) */
+        .gallery-grid.mode-contact-sheet {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .contact-sheet-card {
+            background: #000;
+            border: 2px solid #222;
+            padding: 1rem 1rem 1.4rem;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            transition: var(--transition-smooth);
+            cursor: pointer;
+        }
+
+        .contact-sheet-card::before, .contact-sheet-card::after {
+            content: '••••••••••••••••••••••••••••••';
+            display: block;
+            font-family: var(--font-mono);
+            font-size: 0.6rem;
+            letter-spacing: 0.4em;
+            color: #444;
+            text-align: center;
+            margin-bottom: 0.6rem;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .contact-sheet-card::after { margin-top: 0.6rem; margin-bottom: 0; }
+
+        .contact-sheet-card:hover {
+            transform: scale(1.02);
+            border-color: var(--accent);
+            box-shadow: 0 15px 40px var(--accent-glow);
+        }
+
+        .contact-frame-num {
+            position: absolute;
+            top: 0.4rem;
+            left: 1rem;
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            color: var(--accent);
+        }
+
+        .contact-film-stock {
+            position: absolute;
+            top: 0.4rem;
+            right: 1rem;
+            font-family: var(--font-mono);
+            font-size: 0.6rem;
+            color: #888;
+        }
+
+        .contact-img-wrap {
+            aspect-ratio: 4 / 3;
+            overflow: hidden;
+            background: #111;
+        }
+
+        .contact-img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: contrast(1.08) saturate(0.95);
+            transition: transform 0.5s ease;
+        }
+
+        .contact-sheet-card:hover .contact-img-wrap img {
+            transform: scale(1.05);
+        }
+
+        .contact-meta {
+            margin-top: 0.8rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+        }
+
+        .contact-title { font-family: var(--font-editorial); font-size: 1.2rem; color: #fff; }
+
+        /* Editorial Layout Mode Styles */
+        .gallery-grid.mode-editorial {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .editorial-card {
+            position: relative;
+            aspect-ratio: 4 / 5;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            overflow: hidden;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+
+        .editorial-card.horizontal { aspect-ratio: 16 / 10; }
+
+        .editorial-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--border-accent);
+            box-shadow: 0 20px 45px rgba(0,0,0,0.6);
+        }
+
+        .editorial-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.7s ease;
+        }
+
+        .editorial-card:hover .editorial-img { transform: scale(1.05); }
+
+        .editorial-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, transparent 40%, rgba(10, 9, 7, 0.92) 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 1.8rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .editorial-card:hover .editorial-overlay { opacity: 1; }
+
+        .editorial-tag {
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            letter-spacing: 0.2em;
+            color: var(--accent);
+            text-transform: uppercase;
+            margin-bottom: 0.4rem;
+        }
+
+        .editorial-title { font-family: var(--font-editorial); font-size: 1.5rem; color: var(--text-main); }
+
+        /* About Section */
+        #sobre-mi {
+            padding: 7rem 0;
+            background: var(--bg-surface);
+            border-top: 1px solid var(--border-subtle);
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.3fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        @media (max-width: 900px) { .about-grid { grid-template-columns: 1fr; gap: 2.5rem; } }
+
+        .about-portrait {
+            aspect-ratio: 4 / 5;
+            border: 1px solid var(--border-medium);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .about-portrait img { width: 100%; height: 100%; object-fit: cover; }
+
+        .about-quote {
+            font-family: var(--font-editorial);
+            font-size: clamp(1.4rem, 2.2vw, 2rem);
+            font-style: italic;
+            margin-bottom: 1.8rem;
+            color: var(--text-main);
+        }
+
+        .about-text {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.8;
+            margin-bottom: 2rem;
+        }
+
+        /* Contact Section */
+        #contacto { padding: 7rem 0; }
+        .contact-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 4rem; }
+        @media (max-width: 900px) { .contact-grid { grid-template-columns: 1fr; gap: 3rem; } }
+
+        .contact-item { margin-bottom: 1.8rem; }
+        .contact-item-label { font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.2em; color: var(--accent); text-transform: uppercase; margin-bottom: 0.4rem; }
+        .contact-item-val { font-size: 1.15rem; color: var(--text-main); }
+
+        .form-group { margin-bottom: 1.5rem; }
+        .form-label { display: block; font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.15em; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 0.5rem; }
+        .form-input, .form-textarea {
+            width: 100%;
+            background: var(--bg-card);
+            border: 1px solid var(--border-medium);
+            padding: 0.9rem 1.1rem;
+            color: var(--text-main);
+            font-size: 0.9rem;
+            border-radius: 2px;
+        }
+        .form-input:focus, .form-textarea:focus { outline: none; border-color: var(--accent); }
+        .form-textarea { resize: vertical; min-height: 120px; }
+
+        /* Footer */
+        footer { padding: 4rem 0; background: var(--bg-base); border-top: 1px solid var(--border-subtle); }
+        .footer-flex { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1.5rem; }
+
+        /* Fullscreen Lightbox Modal (Proyector Analógico) */
+        #lightbox {
+            position: fixed;
+            inset: 0;
+            background: rgba(5, 4, 3, 0.96);
+            backdrop-filter: blur(20px);
+            z-index: 10002;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition-smooth);
+        }
+        #lightbox.open { opacity: 1; visibility: visible; }
+        
+        .lightbox-box {
+            text-align: center;
+            max-width: 92vw;
+            max-height: 85vh;
+        }
+
+        .lightbox-img {
+            max-width: 90vw;
+            max-height: 75vh;
+            object-fit: contain;
+            border: 1px solid var(--border-medium);
+            box-shadow: 0 30px 70px rgba(0,0,0,0.9);
+        }
+
+        .lightbox-caption {
+            margin-top: 1.2rem;
+            font-family: var(--font-mono);
+        }
+
+        .lightbox-title { font-family: var(--font-editorial); font-size: 1.5rem; color: var(--text-main); }
+        .lightbox-film { font-size: 0.72rem; color: var(--accent); letter-spacing: 0.15em; margin-top: 0.3rem; }
+
+        .lightbox-close { position: absolute; top: 2rem; right: 2.5rem; font-size: 2.2rem; color: var(--text-secondary); cursor: pointer; }
+        .lightbox-close:hover { color: var(--accent); }
+
+        .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: rgba(18, 16, 12, 0.85);
+            border: 1px solid var(--border-medium);
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            cursor: pointer;
+        }
+        .lightbox-nav:hover { background: var(--accent); color: #0A0907; }
+        .lightbox-prev { left: 2rem; }
+        .lightbox-next { right: 2rem; }
+
+        /* Password Modal */
+        #password-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(5, 4, 3, 0.92);
+            backdrop-filter: blur(15px);
+            z-index: 10005;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition-smooth);
+        }
+        #password-modal.open { opacity: 1; visibility: visible; }
+        .pwd-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-accent);
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            border-radius: 4px;
+        }
+        .pwd-input {
+            width: 100%;
+            padding: 0.85rem;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-medium);
+            color: var(--text-main);
+            font-family: var(--font-mono);
+            text-align: center;
+            margin-bottom: 1.2rem;
+        }
+
+        /* Editor Drawer */
+        #editor-drawer {
+            position: fixed;
+            top: 0;
+            right: -620px;
+            width: 600px;
+            max-width: 100vw;
+            height: 100vh;
+            background: var(--bg-surface);
+            border-left: 1px solid var(--border-accent);
+            box-shadow: -15px 0 50px rgba(0,0,0,0.9);
+            z-index: 10010;
+            display: flex;
+            flex-direction: column;
+            transition: right 0.4s ease;
+        }
+        #editor-drawer.open { right: 0; }
+        .editor-header {
+            padding: 1.4rem 1.8rem;
+            border-bottom: 1px solid var(--border-medium);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--bg-card);
+        }
+        .editor-tabs { display: flex; border-bottom: 1px solid var(--border-subtle); background: var(--bg-base); }
+        .editor-tab {
+            flex: 1;
+            padding: 0.85rem 0.5rem;
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            text-align: center;
+            color: var(--text-muted);
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+        }
+        .editor-tab.active { color: var(--accent); border-bottom-color: var(--accent); background: var(--bg-card); }
+        .editor-body { flex: 1; overflow-y: auto; padding: 1.8rem; }
+        .editor-section { display: none; }
+        .editor-section.active { display: block; }
+
+        .upload-dropzone {
+            border: 2px dashed var(--border-accent);
+            padding: 2.2rem 1.5rem;
+            text-align: center;
+            background: rgba(196, 154, 90, 0.03);
+            margin-bottom: 1.5rem;
+            cursor: pointer;
+        }
+
+        .editor-photo-item {
+            display: grid;
+            grid-template-columns: 70px 1fr auto;
+            gap: 1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-medium);
+            padding: 0.8rem;
+            margin-bottom: 0.8rem;
+            align-items: center;
+        }
+        .editor-photo-thumb { width: 70px; height: 70px; object-fit: cover; }
+
+        #toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--bg-card);
+            border: 1px solid var(--accent);
+            color: var(--text-main);
+            padding: 0.75rem 1.6rem;
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
+            border-radius: 30px;
+            z-index: 10020;
+            opacity: 0;
+            pointer-events: none;
+            transition: var(--transition-smooth);
+        }
+        #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+    </style>
+</head>
+<body>
+
+    <div id="toast">
+        <span class="accent-text">✦</span> <span id="toast-msg">Notificación</span>
+    </div>
+
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="font-serif" style="font-size: 2.2rem; letter-spacing: 0.2em; text-transform: uppercase;">LEÓN FELDMAN REINOSO</div>
+        <div class="font-mono" style="font-size: 0.68rem; letter-spacing: 0.3em; color: var(--accent); margin-top: 0.5rem;">FOTOGRAFÍA & DIRECCIÓN VISUAL</div>
+    </div>
+
+    <!-- Header Navigation -->
+    <header id="main-header">
+        <div class="container nav-wrapper">
+            <a href="#hero" class="brand-logo">
+                <span class="brand-name" id="nav-brand-name">LEÓN FELDMAN REINOSO</span>
+                <span class="brand-sub">LABORATORIO & DIRECCIÓN VISUAL</span>
+            </a>
+
+            <div class="nav-actions">
+                <button type="button" class="darkroom-toggle-btn" onclick="toggleDarkroomMode()" title="Cambiar a modo Cuarto Oscuro">
+                    <span>🔴</span> <span id="darkroom-btn-text">Cuarto Oscuro</span>
+                </button>
+
+                <div style="display: flex; gap: 3px; background: var(--bg-card); padding: 2px; border: 1px solid var(--border-medium); border-radius: 20px;">
+                    <button type="button" class="btn-toggle active" id="btn-lang-es" onclick="setLanguage('es')">ES</button>
+                    <button type="button" class="btn-toggle" id="btn-lang-en" onclick="setLanguage('en')">EN</button>
+                </div>
+
+                <button type="button" class="btn-exp" style="padding: 0.45rem 0.9rem; font-size: 0.7rem;" onclick="openPasswordModal()">
+                    <span>✦</span> Editor
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section Experimental -->
+    <section id="hero">
+        <div class="hero-bg">
+            <img src="DSC08306.jpg" alt="León Feldman Reinoso" id="hero-bg-img" onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1920&q=80'">
+        </div>
+        <div class="hero-overlay"></div>
+
+        <div class="container hero-grid">
+            <div>
+                <div class="hero-meta-badge">AUTOR • BUENOS AIRES • 35mm / 120 / DIGITAL</div>
+                <h1 class="hero-title" id="hero-title-display">LEÓN FELDMAN REINOSO</h1>
+                <p class="hero-tagline" id="hero-tagline-display">"La luz no solo revela la forma, construye la memoria y el misterio."</p>
+                <div style="display: flex; gap: 1.2rem;">
+                    <a href="#portfolio" class="btn-exp">Explorar Obras ✦</a>
+                    <a href="#contacto" class="btn-exp" style="border-color: var(--border-medium);">Contacto Directo</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio & Contact Sheet Gallery -->
+    <section id="portfolio">
+        <div class="container">
+            <div class="view-controls">
+                <div class="filter-group" id="filter-container">
+                    <button type="button" class="btn-toggle active" data-filter="all" onclick="filterGallery('all')">Todas (<span id="count-all">19</span>)</button>
+                    <button type="button" class="btn-toggle" data-filter="Retratos" onclick="filterGallery('Retratos')">Retratos</button>
+                    <button type="button" class="btn-toggle" data-filter="Moda" onclick="filterGallery('Moda')">Moda & Editorial</button>
+                    <button type="button" class="btn-toggle" data-filter="Paisaje" onclick="filterGallery('Paisaje')">Paisajes</button>
+                    <button type="button" class="btn-toggle" data-filter="Urbana" onclick="filterGallery('Urbana')">Urbana</button>
+                    <button type="button" class="btn-toggle" data-filter="Producto" onclick="filterGallery('Producto')">Producto</button>
+                </div>
+
+                <div class="view-mode-group">
+                    <span class="font-mono" style="font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase;">Vista:</span>
+                    <button type="button" class="btn-toggle active" id="btn-view-contact" onclick="setLayoutMode('contact-sheet')">🎞️ Hoja de Contactos 35mm</button>
+                    <button type="button" class="btn-toggle" id="btn-view-editorial" onclick="setLayoutMode('editorial')">🖼️ Editorial</button>
+                </div>
+            </div>
+
+            <div class="gallery-grid mode-contact-sheet" id="portfolio-grid">
+                <!-- Dynamically rendered photos -->
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section Experimental -->
+    <section id="sobre-mi">
+        <div class="container">
+            <div class="about-grid">
+                <div class="about-portrait">
+                    <img src="DSC08251.jpg" alt="León Feldman Reinoso" id="about-img" onerror="this.src='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80'">
+                </div>
+                <div>
+                    <div class="font-mono" style="font-size: 0.68rem; letter-spacing: 0.25em; color: var(--accent); margin-bottom: 0.8rem;">TRAYECTORIA & DECLARACIÓN</div>
+                    <h2 class="font-serif" style="font-size: 2.8rem; margin-bottom: 1.5rem;" id="about-title-display">León Feldman Reinoso</h2>
+                    <p class="about-quote" id="about-statement-display">"Capturar la atmósfera exacta donde la autenticidad humana se encuentra con la estética cinematográfica."</p>
+                    <p class="about-text" id="about-bio-display">Fotógrafo y director visual radicado en Buenos Aires, especializado en retrato editorial, moda contemporánea y documentación de atmósferas poéticas. Con un profundo dominio tanto del medio analógico tradicional (35mm y Formato Medio) como de la tecnología digital de alta gama, su trabajo explora el claroscuro y la textura.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contacto">
+        <div class="container">
+            <div class="contact-grid">
+                <div>
+                    <div class="font-mono" style="font-size: 0.68rem; letter-spacing: 0.25em; color: var(--accent); margin-bottom: 0.8rem;">CONTACTO DIRECTO</div>
+                    <h2 class="font-serif" style="font-size: 2.8rem; margin-bottom: 2rem;">Conversemos sobre tu visión</h2>
+                    
+                    <div class="contact-item">
+                        <div class="contact-item-label">Email de Consulta</div>
+                        <div class="contact-item-val" id="contact-email-display">contacto@leonfeldman.com</div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-item-label">Instagram Oficial</div>
+                        <div class="contact-item-val" id="contact-insta-display">@leonfeldman.ph</div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-item-label">Estudio / Base</div>
+                        <div class="contact-item-val" id="contact-loc-display">Buenos Aires, Argentina</div>
+                    </div>
+                </div>
+
+                <div>
+                    <form id="contact-form" onsubmit="handleContactSubmit(event)">
+                        <div class="form-group">
+                            <label class="form-label">Nombre Completo *</label>
+                            <input type="text" class="form-input" id="form-name" required placeholder="Tu nombre">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Correo Electrónico *</label>
+                            <input type="email" class="form-input" id="form-email" required placeholder="ejemplo@correo.com">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Detalles de la Consulta *</label>
+                            <textarea class="form-textarea" id="form-msg" required placeholder="Cuéntame sobre tu proyecto o visión..."></textarea>
+                        </div>
+                        <button type="submit" class="btn-exp" style="width: 100%;">Enviar Mensaje ✦</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container footer-flex">
+            <div>
+                <span class="font-serif" style="font-size: 1.2rem; letter-spacing: 0.15em;">LEÓN FELDMAN REINOSO</span>
+                <span class="font-mono" style="display: block; font-size: 0.65rem; color: var(--text-muted); margin-top: 0.3rem;">&copy; <span id="current-year">2026</span> Todos los derechos reservados.</span>
+            </div>
+            <div>
+                <button type="button" class="btn-exp" style="padding: 0.4rem 0.8rem; font-size: 0.68rem;" onclick="openPasswordModal()">
+                    <span>✦</span> Estudio Visual
+                </button>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Fullscreen Lightbox Modal (Proyector Analógico) -->
+    <div id="lightbox" role="dialog" aria-modal="true">
+        <button type="button" class="lightbox-close" onclick="closeLightbox()">&times;</button>
+        <button type="button" class="lightbox-nav lightbox-prev" onclick="prevLightbox()">&#8592;</button>
+        <button type="button" class="lightbox-nav lightbox-next" onclick="nextLightbox()">&#8594;</button>
+
+        <div class="lightbox-box">
+            <img class="lightbox-img" id="lightbox-img" src="" alt="">
+            <div class="lightbox-caption">
+                <div class="lightbox-title" id="lightbox-title">Título</div>
+                <div class="lightbox-film" id="lightbox-film">KODAK PORTRA 400 • 35mm • 01 / 19</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Password Modal -->
+    <div id="password-modal" role="dialog" aria-modal="true">
+        <div class="pwd-card">
+            <h3 class="font-serif" style="font-size: 1.6rem; margin-bottom: 0.5rem;">Estudio Visual</h3>
+            <p class="font-mono" style="font-size: 0.72rem; color: var(--text-secondary); margin-bottom: 1.4rem;">Clave de acceso (luzysombra)</p>
+            <form onsubmit="handlePasswordSubmit(event)">
+                <input type="password" id="pwd-input" class="pwd-input" placeholder="Clave de administración" required>
+                <div style="display: flex; gap: 0.8rem; justify-content: center;">
+                    <button type="submit" class="btn-exp" style="padding: 0.6rem 1.4rem; font-size: 0.72rem;">Ingresar ✦</button>
+                    <button type="button" class="btn-exp" style="padding: 0.6rem 1.2rem; font-size: 0.72rem; border-color: var(--border-medium);" onclick="closePasswordModal()">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Visual Studio Editor Drawer -->
+    <aside id="editor-drawer" aria-label="Editor de Portfolio">
+        <div class="editor-header">
+            <div class="font-serif" style="font-size: 1.4rem;">
+                <span>✦</span> Visual Studio Editor
+            </div>
+            <button type="button" onclick="closeEditor()" style="font-size: 1.8rem; color: var(--text-secondary);">&times;</button>
+        </div>
+
+        <div class="editor-tabs">
+            <button type="button" class="editor-tab active" id="tab-btn-photos" onclick="switchEditorTab('photos')">Fotografías</button>
+            <button type="button" class="editor-tab" id="tab-btn-texts" onclick="switchEditorTab('texts')">Textos & Datos</button>
+            <button type="button" class="editor-tab" id="tab-btn-export" onclick="switchEditorTab('export')">Exportar & Backup</button>
+        </div>
+
+        <div class="editor-body">
+            <div class="editor-section active" id="sec-photos">
+                <div class="upload-dropzone" onclick="document.getElementById('file-upload-input').click()">
+                    <input type="file" id="file-upload-input" multiple accept="image/*" style="display:none;" onchange="handleFileUpload(event)">
+                    <div style="font-size: 2rem; color: var(--accent); margin-bottom: 0.4rem;">✦</div>
+                    <div style="font-size: 0.85rem;" class="font-mono">Haz clic o arrastra fotos aquí</div>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <span class="font-mono" style="font-size: 0.75rem; color: var(--accent);">Galería (<span id="editor-photo-count">19</span>)</span>
+                    <button type="button" class="btn-exp" style="padding: 0.3rem 0.6rem; font-size: 0.65rem;" onclick="addNewEmptyPhoto()">+ Añadir Foto</button>
+                </div>
+
+                <div id="editor-photos-container"></div>
+            </div>
+
+            <div class="editor-section" id="sec-texts">
+                <form onsubmit="handleTextsSave(event)">
+                    <div class="form-group">
+                        <label class="form-label">Foto de Portada (Hero)</label>
+                        <select id="edit-text-cover-select" class="form-input" onchange="updateCoverFromSelect(this.value)"></select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Nombre del Artista</label>
+                        <input type="text" id="edit-text-name" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Frase Hero (Español)</label>
+                        <input type="text" id="edit-text-tagline-es" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Frase Hero (English)</label>
+                        <input type="text" id="edit-text-tagline-en" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Declaración Artística (Español)</label>
+                        <input type="text" id="edit-text-statement-es" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Biografía Completa (Español)</label>
+                        <textarea id="edit-text-bio-es" class="form-textarea" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email de Contacto</label>
+                        <input type="text" id="edit-text-email" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Instagram (@usuario)</label>
+                        <input type="text" id="edit-text-insta" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Ubicación</label>
+                        <input type="text" id="edit-text-loc" class="form-input" required>
+                    </div>
+
+                    <button type="submit" class="btn-exp" style="width: 100%; margin-top: 1rem;">Guardar Cambios de Texto ✦</button>
+                </form>
+            </div>
+
+            <div class="editor-section" id="sec-export">
+                <div style="margin-bottom: 1.5rem;">
+                    <h4 class="font-serif" style="font-size: 1.2rem; color: var(--accent-light); margin-bottom: 0.5rem;">Exportar HTML Autónomo</h4>
+                    <button type="button" class="btn-exp" style="width: 100%;" onclick="exportStandaloneHTML()">Descargar index.html Autónomo ✦</button>
+                </div>
+                <div style="margin-bottom: 1.5rem;">
+                    <h4 class="font-serif" style="font-size: 1.2rem; color: var(--accent-light); margin-bottom: 0.5rem;">Copia de Seguridad JSON</h4>
+                    <div style="display: flex; gap: 0.8rem;">
+                        <button type="button" class="btn-exp" style="flex: 1;" onclick="exportJSONBackup()">Guardar JSON</button>
+                        <button type="button" class="btn-exp" style="flex: 1;" onclick="document.getElementById('backup-file-input').click()">Restaurar JSON</button>
+                        <input type="file" id="backup-file-input" accept=".json" style="display:none;" onchange="importJSONBackup(event)">
+                    </div>
+                </div>
+                <div>
+                    <button type="button" class="btn-exp" style="border-color: var(--danger); color: var(--danger); width: 100%;" onclick="resetToDefaults()">Restablecer Valores Iniciales</button>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- JavaScript Engine & Web Audio API Synthesizer -->
+    <script>
+        /* --- DEFAULT EXPERIMENTAL DATA --- */
+        const DEFAULT_PHOTOS = [
+            { id: "p1", src: "DSC08306.jpg", fallback: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1200&q=80", title: "Claroscuro & Presencia", category: "Retratos", film: "KODAK PORTRA 400 • 35mm • f/1.4", orientation: "vertical" },
+            { id: "p2", src: "000005570003.jpg", fallback: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1200&q=80", title: "Silueta Editorial I", category: "Moda", film: "TRI-X 400 • 35mm • 1/250s", orientation: "vertical" },
+            { id: "p3", src: "000026680004.jpg", fallback: "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=1200&q=80", title: "Textura & Estilismo", category: "Moda", film: "FUJIFILM PRO 400H • 120", orientation: "vertical" },
+            { id: "p4", src: "DSC08251.jpg", fallback: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=1200&q=80", title: "Retrato en Penumbra", category: "Retratos", film: "ILFORD HP5 PLUS • 35mm", orientation: "vertical" },
+            { id: "p5", src: "000026680025.jpg", fallback: "https://images.unsplash.com/photo-1492633423870-43d1cd2775eb?auto=format&fit=crop&w=1200&q=80", title: "Mirada Introspectiva", category: "Retratos", film: "KODAK PORTRA 800 • 120", orientation: "vertical" },
+            { id: "p6", src: "000041600005.jpg", fallback: "https://images.unsplash.com/photo-1469334031218-e382a71b716b?auto=format&fit=crop&w=1200&q=80", title: "Vanguardia & Forma", category: "Moda", film: "LEICA M10 • 50mm Summilux", orientation: "vertical" },
+            { id: "p7", src: "000008800019.jpg", fallback: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=1200&q=80", title: "Carácter 35mm", category: "Retratos", film: "KODAK GOLD 200 • 35mm", orientation: "vertical" },
+            { id: "p8", src: "000026680024.jpg", fallback: "https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=1200&q=80", title: "Atmósfera Urbana Nocturna", category: "Urbana", film: "CINESTILL 800T • 35mm", orientation: "vertical" },
+            { id: "p9", src: "000026680034.jpg", fallback: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=1200&q=80", title: "Expresión & Gesto", category: "Retratos", film: "ILFORD DELTA 3200 • 35mm", orientation: "vertical" },
+            { id: "p10", src: "000026680035.jpg", fallback: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1200&q=80", title: "Composición Editorial II", category: "Moda", film: "HASSELBLAD 500C • 80mm", orientation: "vertical" },
+            { id: "p11", src: "DSC01567.jpg", fallback: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=1200&q=80", title: "Luz Natural & Retrato", category: "Retratos", film: "KODAK EKTACHROME • 35mm", orientation: "vertical" },
+            { id: "p12", src: "DSC01657.jpg", fallback: "https://images.unsplash.com/photo-1477959858617-67f30bc75b82?auto=format&fit=crop&w=1200&q=80", title: "Geometría & Sombras", category: "Urbana", film: "LEICA Q2 • 28mm Summilux", orientation: "horizontal" },
+            { id: "p13", src: "DSC02663.jpg", fallback: "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=1200&q=80", title: "Detalle & Objeto", category: "Producto", film: "ROLLEIFLEX 2.8F • 120", orientation: "vertical" },
+            { id: "p14", src: "DSC03167.jpg", fallback: "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1200&q=80", title: "Horizonte & Niebla", category: "Paisaje", film: "CONTAX T2 • 38mm Sonnar", orientation: "horizontal" },
+            { id: "p15", src: "DSC03913.jpeg", fallback: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=1200&q=80", title: "Retrato Analógico Tonal", category: "Retratos", film: "KODAK TRI-X 400 • 35mm", orientation: "vertical" },
+            { id: "p16", src: "DSC06285.jpeg", fallback: "https://images.unsplash.com/photo-1488161628813-04466f872be2?auto=format&fit=crop&w=1200&q=80", title: "Editorial Primavera", category: "Moda", film: "KODAK PORTRA 400 • 120", orientation: "vertical" },
+            { id: "p17", src: "DSC06941.jpeg", fallback: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=1200&q=80", title: "Mirada & Luz Cenital", category: "Retratos", film: "FUJIFILM VELVIA 50 • 35mm", orientation: "vertical" },
+            { id: "p18", src: "DSC09583.jpg", fallback: "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=1200&q=80", title: "Retrato de Estudio", category: "Retratos", film: "PENTAX 67 • 105mm f/2.4", orientation: "vertical" },
+            { id: "p19", src: "paisaje bolson.jpg", fallback: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80", title: "El Bolsón — Cordillera", category: "Paisaje", film: "MAMIYA 7II • 43mm f/4.5", orientation: "horizontal" }
+        ];
+
+        const DEFAULT_TEXTS = {
+            name: "LEÓN FELDMAN REINOSO",
+            coverSrc: "DSC08306.jpg",
+            tagline_es: "La luz no solo revela la forma, construye la memoria y el misterio.",
+            tagline_en: "Light does not merely reveal form, it constructs memory and mystery.",
+            statement_es: "Capturar la atmósfera exacta donde la autenticidad humana se encuentra con la estética cinematográfica.",
+            statement_en: "Capturing the exact atmosphere where human authenticity meets cinematic aesthetics.",
+            bio_es: "Fotógrafo y director visual radicado en Buenos Aires, especializado en retrato editorial, moda contemporánea y documentación de atmósferas poéticas. Con un profundo dominio tanto del medio analógico tradicional (35mm y Formato Medio) como de la tecnología digital de alta gama, su trabajo explora el claroscuro y la textura.",
+            bio_en: "Photographer and visual director based in Buenos Aires, specializing in editorial portraiture, contemporary fashion, and evocative atmospheres. Mastering both traditional analog film (35mm & 120 Medium Format) and high-end digital systems, his work explores chiaroscuro and texture.",
+            email: "contacto@leonfeldman.com",
+            insta: "@leonfeldman.ph",
+            loc: "Buenos Aires, Argentina"
+        };
+
+        const TRANSLATIONS = {
+            es: {
+                "nav.role": "LABORATORIO & DIRECCIÓN VISUAL",
+                "nav.portfolio": "Obras",
+                "nav.about": "Sobre Mí",
+                "nav.contact": "Contacto",
+                "nav.home": "Inicio",
+                "hero.eyebrow": "AUTOR • BUENOS AIRES • 35mm / 120 / DIGITAL",
+                "portfolio.eyebrow": "GALERÍA & ENSAYOS",
+                "about.eyebrow": "TRAYECTORIA & DECLARACIÓN",
+                "contact.eyebrow": "CONTACTO DIRECTO",
+                "contact.title": "Conversemos sobre tu visión",
+                "form.submit": "Enviar Mensaje ✦"
+            },
+            en: {
+                "nav.role": "LABORATORY & VISUAL DIRECTION",
+                "nav.portfolio": "Works",
+                "nav.about": "About",
+                "nav.contact": "Contact",
+                "nav.home": "Home",
+                "hero.eyebrow": "AUTHOR • BUENOS AIRES • 35mm / 120 / DIGITAL",
+                "portfolio.eyebrow": "GALLERY & ESSAYS",
+                "about.eyebrow": "CAREER & STATEMENT",
+                "contact.eyebrow": "DIRECT CONTACT",
+                "contact.title": "Let's Discuss Your Vision",
+                "form.submit": "Send Message ✦"
+            }
+        };
+
+        const STATE = {
+            lang: localStorage.getItem('leon_portfolio_lang') || 'es',
+            filter: 'all',
+            layoutMode: localStorage.getItem('leon_portfolio_layout') || 'contact-sheet',
+            darkroom: localStorage.getItem('leon_portfolio_darkroom') === 'true',
+            photos: [],
+            texts: {},
+            activeLightboxIndex: 0,
+            filteredPhotos: [],
+            audioCtx: null
+        };
+
+        /* --- WEB AUDIO API SHUTTER SYNTHESIZER --- */
+        function playShutterSound() {
+            try {
+                if (!STATE.audioCtx) {
+                    STATE.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (STATE.audioCtx.state === 'suspended') {
+                    STATE.audioCtx.resume();
+                }
+                const ctx = STATE.audioCtx;
+                
+                // Shutter click noise burst
+                const bufferSize = ctx.sampleRate * 0.04;
+                const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+                const data = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) {
+                    data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.25));
+                }
+
+                const noise = ctx.createBufferSource();
+                noise.buffer = buffer;
+
+                const filter = ctx.createBiquadFilter();
+                filter.type = 'highpass';
+                filter.frequency.value = 1200;
+
+                const gain = ctx.createGain();
+                gain.gain.setValueAtTime(0.3, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.04);
+
+                noise.connect(filter);
+                filter.connect(gain);
+                gain.connect(ctx.destination);
+
+                noise.start();
+            } catch (e) {
+                // Audio synthesis optional
+            }
+        }
+
+        /* --- INDEXEDDB STORAGE --- */
+        const DB_NAME = 'LeonPortfolioDB';
+        const DB_VERSION = 1;
+
+        function initDB() {
+            return new Promise((resolve) => {
+                const request = indexedDB.open(DB_NAME, DB_VERSION);
+                request.onupgradeneeded = (e) => {
+                    const db = e.target.result;
+                    if (!db.objectStoreNames.contains('photos')) db.createObjectStore('photos', { keyPath: 'id' });
+                    if (!db.objectStoreNames.contains('settings')) db.createObjectStore('settings', { keyPath: 'key' });
+                };
+                request.onsuccess = (e) => {
+                    STATE.db = e.target.result;
+                    resolve(STATE.db);
+                };
+                request.onerror = () => resolve(null);
+            });
+        }
+
+        async function loadData() {
+            await initDB();
+            if (STATE.db) {
+                const photos = await getAllFromStore('photos');
+                STATE.photos = (photos && photos.length > 0) ? photos : [...DEFAULT_PHOTOS];
+                if (!photos || photos.length === 0) await saveAllPhotos(STATE.photos);
+
+                const texts = await getFromStore('settings', 'texts');
+                STATE.texts = (texts && texts.data) ? texts.data : { ...DEFAULT_TEXTS };
+                if (!texts) await saveToStore('settings', { key: 'texts', data: STATE.texts });
+            } else {
+                const localP = localStorage.getItem('leon_portfolio_photos');
+                const localT = localStorage.getItem('leon_portfolio_texts');
+                STATE.photos = localP ? JSON.parse(localP) : [...DEFAULT_PHOTOS];
+                STATE.texts = localT ? JSON.parse(localT) : { ...DEFAULT_TEXTS };
+            }
+        }
+
+        function getAllFromStore(storeName) {
+            return new Promise((resolve) => {
+                if (!STATE.db) return resolve([]);
+                const tx = STATE.db.transaction(storeName, 'readonly');
+                const store = tx.objectStore(storeName);
+                const req = store.getAll();
+                req.onsuccess = () => resolve(req.result || []);
+                req.onerror = () => resolve([]);
+            });
+        }
+
+        function saveAllPhotos(photos) {
+            return new Promise((resolve) => {
+                if (!STATE.db) {
+                    localStorage.setItem('leon_portfolio_photos', JSON.stringify(photos));
+                    return resolve();
+                }
+                const tx = STATE.db.transaction('photos', 'readwrite');
+                const store = tx.objectStore('photos');
+                store.clear().onsuccess = () => {
+                    photos.forEach(p => store.put(p));
+                    tx.oncomplete = () => resolve();
+                };
+            });
+        }
+
+        function saveToStore(storeName, obj) {
+            return new Promise((resolve) => {
+                if (!STATE.db) return resolve();
+                const tx = STATE.db.transaction(storeName, 'readwrite');
+                const store = tx.objectStore(storeName);
+                store.put(obj);
+                tx.oncomplete = () => resolve();
+            });
+        }
+
+        function getFromStore(storeName, key) {
+            return new Promise((resolve) => {
+                if (!STATE.db) return resolve(null);
+                const tx = STATE.db.transaction(storeName, 'readonly');
+                const store = tx.objectStore(storeName);
+                const req = store.get(key);
+                req.onsuccess = () => resolve(req.result);
+                req.onerror = () => resolve(null);
+            });
+        }
+
+        /* --- DARKROOM MODE & LAYOUT TOGGLE --- */
+        function toggleDarkroomMode() {
+            STATE.darkroom = !STATE.darkroom;
+            localStorage.setItem('leon_portfolio_darkroom', STATE.darkroom);
+            applyDarkroomState();
+            playShutterSound();
+            showToast(STATE.darkroom ? "Modo Cuarto Oscuro Activado (Luz Roja)" : "Modo Luz Normal Activado");
+        }
+
+        function applyDarkroomState() {
+            document.body.classList.toggle('darkroom-mode', STATE.darkroom);
+            const btnText = document.getElementById('darkroom-btn-text');
+            if (btnText) btnText.textContent = STATE.darkroom ? 'Luz Normal' : 'Cuarto Oscuro';
+        }
+
+        function setLayoutMode(mode) {
+            STATE.layoutMode = mode;
+            localStorage.setItem('leon_portfolio_layout', mode);
+            
+            document.getElementById('btn-view-contact').classList.toggle('active', mode === 'contact-sheet');
+            document.getElementById('btn-view-editorial').classList.toggle('active', mode === 'editorial');
+
+            const grid = document.getElementById('portfolio-grid');
+            if (grid) {
+                grid.className = 'gallery-grid ' + (mode === 'contact-sheet' ? 'mode-contact-sheet' : 'mode-editorial');
+            }
+            playShutterSound();
+            renderGallery();
+        }
+
+        /* --- UI & BILINGUAL ENGINE --- */
+        function setLanguage(lang) {
+            STATE.lang = lang;
+            localStorage.setItem('leon_portfolio_lang', lang);
+            
+            document.getElementById('btn-lang-es').classList.toggle('active', lang === 'es');
+            document.getElementById('btn-lang-en').classList.toggle('active', lang === 'en');
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (TRANSLATIONS[lang] && TRANSLATIONS[lang][key]) el.textContent = TRANSLATIONS[lang][key];
+            });
+
+            renderTexts();
+            renderGallery();
+        }
+
+        function renderTexts() {
+            const t = STATE.texts;
+            const isEs = STATE.lang === 'es';
+
+            document.getElementById('nav-brand-name').textContent = t.name || DEFAULT_TEXTS.name;
+            document.getElementById('hero-title-display').textContent = t.name || DEFAULT_TEXTS.name;
+            document.getElementById('about-title-display').textContent = t.name || DEFAULT_TEXTS.name;
+
+            document.getElementById('hero-tagline-display').textContent = isEs ? 
+                `"${t.tagline_es || DEFAULT_TEXTS.tagline_es}"` : 
+                `"${t.tagline_en || DEFAULT_TEXTS.tagline_en}"`;
+
+            document.getElementById('about-statement-display').textContent = isEs ? 
+                `"${t.statement_es || DEFAULT_TEXTS.statement_es}"` : 
+                `"${t.statement_en || DEFAULT_TEXTS.statement_en}"`;
+
+            document.getElementById('about-bio-display').textContent = isEs ? 
+                (t.bio_es || DEFAULT_TEXTS.bio_es) : 
+                (t.bio_en || DEFAULT_TEXTS.bio_en);
+
+            document.getElementById('contact-email-display').textContent = t.email || DEFAULT_TEXTS.email;
+            document.getElementById('contact-insta-display').textContent = t.insta || DEFAULT_TEXTS.insta;
+            document.getElementById('contact-loc-display').textContent = t.loc || DEFAULT_TEXTS.loc;
+
+            const heroImg = document.getElementById('hero-bg-img');
+            if (heroImg && t.coverSrc) heroImg.src = t.coverSrc;
+        }
+
+        /* --- GALLERY RENDERER --- */
+        function renderGallery() {
+            const grid = document.getElementById('portfolio-grid');
+            if (!grid) return;
+
+            const filter = STATE.filter;
+            STATE.filteredPhotos = (filter === 'all') 
+                ? STATE.photos 
+                : STATE.photos.filter(p => p.category.toLowerCase() === filter.toLowerCase());
+
+            const countAll = document.getElementById('count-all');
+            if (countAll) countAll.textContent = STATE.photos.length;
+
+            grid.innerHTML = '';
+
+            if (STATE.filteredPhotos.length === 0) {
+                grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 4rem 1rem; color: var(--text-muted);" class="font-mono">No hay obras registradas en esta categoría.</div>`;
+                return;
+            }
+
+            const isContactSheet = STATE.layoutMode === 'contact-sheet';
+
+            STATE.filteredPhotos.forEach((photo, idx) => {
+                const card = document.createElement('div');
+                const fallbackAttr = photo.fallback ? `onerror="this.src='${photo.fallback}'"` : '';
+                const frameNum = String(idx + 1).padStart(2, '0') + 'A';
+                const filmInfo = photo.film || 'KODAK PORTRA 400 • 35mm';
+
+                if (isContactSheet) {
+                    card.className = 'contact-sheet-card';
+                    card.onclick = () => openLightbox(idx);
+                    card.innerHTML = `
+                        <span class="contact-frame-num">${frameNum}</span>
+                        <span class="contact-film-stock">${photo.category}</span>
+                        <div class="contact-img-wrap">
+                            <img src="${photo.src}" alt="${photo.title}" loading="lazy" ${fallbackAttr}>
+                        </div>
+                        <div class="contact-meta">
+                            <span class="contact-title">${photo.title}</span>
+                            <span style="color: var(--accent); font-size: 0.65rem;">${filmInfo}</span>
+                        </div>
+                    `;
+                } else {
+                    card.className = `editorial-card ${photo.orientation === 'horizontal' ? 'horizontal' : ''}`;
+                    card.onclick = () => openLightbox(idx);
+                    card.innerHTML = `
+                        <img src="${photo.src}" alt="${photo.title}" class="editorial-img" loading="lazy" ${fallbackAttr}>
+                        <div class="editorial-overlay">
+                            <div class="editorial-tag">${photo.category} • ${filmInfo}</div>
+                            <h3 class="editorial-title">${photo.title}</h3>
+                        </div>
+                    `;
+                }
+                grid.appendChild(card);
+            });
+        }
+
+        function filterGallery(category) {
+            STATE.filter = category;
+            document.querySelectorAll('#filter-container .btn-toggle').forEach(btn => {
+                btn.classList.toggle('active', btn.getAttribute('data-filter') === category);
+            });
+            renderGallery();
+        }
+
+        function openLightbox(index) {
+            STATE.activeLightboxIndex = index;
+            updateLightboxContent();
+            document.getElementById('lightbox').classList.add('open');
+            document.body.style.overflow = 'hidden';
+            playShutterSound();
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        function prevLightbox() {
+            if (STATE.filteredPhotos.length === 0) return;
+            STATE.activeLightboxIndex = (STATE.activeLightboxIndex - 1 + STATE.filteredPhotos.length) % STATE.filteredPhotos.length;
+            updateLightboxContent();
+            playShutterSound();
+        }
+
+        function nextLightbox() {
+            if (STATE.filteredPhotos.length === 0) return;
+            STATE.activeLightboxIndex = (STATE.activeLightboxIndex + 1) % STATE.filteredPhotos.length;
+            updateLightboxContent();
+            playShutterSound();
+        }
+
+        function updateLightboxContent() {
+            const photo = STATE.filteredPhotos[STATE.activeLightboxIndex];
+            if (!photo) return;
+
+            const img = document.getElementById('lightbox-img');
+            img.src = photo.src;
+            if (photo.fallback) img.onerror = () => { img.src = photo.fallback; };
+
+            document.getElementById('lightbox-title').textContent = photo.title;
+            const currentNum = String(STATE.activeLightboxIndex + 1).padStart(2, '0');
+            const totalNum = String(STATE.filteredPhotos.length).padStart(2, '0');
+            const filmInfo = photo.film || '35mm ANALÓGICO';
+            document.getElementById('lightbox-film').textContent = `${filmInfo} • FOTOGRAMA ${currentNum} / ${totalNum}`;
+        }
+
+        /* --- VISUAL STUDIO EDITOR --- */
+        function openPasswordModal() {
+            if (sessionStorage.getItem('leon_editor_auth') === 'true') {
+                openEditor();
+            } else {
+                const modal = document.getElementById('password-modal');
+                modal.classList.add('open');
+                const inp = document.getElementById('pwd-input');
+                inp.value = '';
+                inp.focus();
+            }
+        }
+
+        function closePasswordModal() {
+            document.getElementById('password-modal').classList.remove('open');
+        }
+
+        function handlePasswordSubmit(e) {
+            e.preventDefault();
+            const val = document.getElementById('pwd-input').value.trim();
+            if (val === 'luzysombra' || val === 'admin') {
+                sessionStorage.setItem('leon_editor_auth', 'true');
+                closePasswordModal();
+                openEditor();
+                showToast("Acceso concedido al Estudio Visual");
+            } else {
+                showToast("Clave incorrecta.");
+            }
+        }
+
+        function openEditor() {
+            document.getElementById('editor-drawer').classList.add('open');
+            renderEditorPhotos();
+            populateEditorTexts();
+        }
+
+        function closeEditor() {
+            document.getElementById('editor-drawer').classList.remove('open');
+        }
+
+        function switchEditorTab(tabName) {
+            document.querySelectorAll('.editor-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.editor-section').forEach(s => s.classList.remove('active'));
+
+            const btn = document.getElementById('tab-btn-' + tabName);
+            const sec = document.getElementById('sec-' + tabName);
+            if (btn) btn.classList.add('active');
+            if (sec) sec.classList.add('active');
+        }
+
+        function renderEditorPhotos() {
+            const container = document.getElementById('editor-photos-container');
+            const countEl = document.getElementById('editor-photo-count');
+            if (countEl) countEl.textContent = STATE.photos.length;
+            if (!container) return;
+
+            container.innerHTML = '';
+
+            STATE.photos.forEach((photo, idx) => {
+                const item = document.createElement('div');
+                item.className = 'editor-photo-item';
+                item.innerHTML = `
+                    <img src="${photo.src}" class="editor-photo-thumb" onerror="this.src='${photo.fallback || ''}'">
+                    <div>
+                        <input type="text" class="form-input" value="${photo.title}" placeholder="Título" onchange="updatePhotoTitle(${idx}, this.value)" style="padding: 0.3rem 0.5rem; font-size: 0.78rem; margin-bottom: 0.3rem;">
+                        <div style="display: flex; gap: 0.4rem;">
+                            <select class="form-input" style="padding: 0.2rem 0.4rem; font-size: 0.72rem;" onchange="updatePhotoCategory(${idx}, this.value)">
+                                <option value="Retratos" ${photo.category === 'Retratos' ? 'selected' : ''}>Retratos</option>
+                                <option value="Moda" ${photo.category === 'Moda' ? 'selected' : ''}>Moda & Editorial</option>
+                                <option value="Paisaje" ${photo.category === 'Paisaje' ? 'selected' : ''}>Paisajes</option>
+                                <option value="Urbana" ${photo.category === 'Urbana' ? 'selected' : ''}>Urbana</option>
+                                <option value="Producto" ${photo.category === 'Producto' ? 'selected' : ''}>Producto</option>
+                            </select>
+                            <button type="button" class="btn-exp" style="padding: 0.2rem 0.5rem; font-size: 0.65rem;" onclick="setAsCover(${idx})">Portada</button>
+                        </div>
+                    </div>
+                    <button type="button" style="color: var(--danger); font-size: 1.3rem; padding: 0 0.4rem;" onclick="deletePhoto(${idx})">&times;</button>
+                `;
+                container.appendChild(item);
+            });
+
+            const coverSelect = document.getElementById('edit-text-cover-select');
+            if (coverSelect) {
+                coverSelect.innerHTML = '';
+                STATE.photos.forEach((p) => {
+                    const opt = document.createElement('option');
+                    opt.value = p.src;
+                    opt.textContent = p.title + ' (' + p.category + ')';
+                    if (STATE.texts.coverSrc === p.src) opt.selected = true;
+                    coverSelect.appendChild(opt);
+                });
+            }
+        }
+
+        async function handleFileUpload(event) {
+            const files = Array.from(event.target.files);
+            if (!files.length) return;
+
+            showToast(`Cargando ${files.length} foto(s)...`);
+
+            for (const file of files) {
+                const base64 = await readFileAsBase64(file);
+                STATE.photos.unshift({
+                    id: "usr_" + Date.now() + "_" + Math.random().toString(36).substr(2, 4),
+                    src: base64,
+                    fallback: "",
+                    title: file.name.replace(/.[^/.]+$/, ""),
+                    category: "Retratos",
+                    film: "35mm ANALÓGICO",
+                    orientation: "vertical"
+                });
+            }
+
+            await saveAllPhotos(STATE.photos);
+            renderEditorPhotos();
+            renderGallery();
+            showToast(`${files.length} foto(s) agregada(s)`);
+        }
+
+        function readFileAsBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+
+        async function addNewEmptyPhoto() {
+            STATE.photos.unshift({
+                id: "usr_" + Date.now(),
+                src: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1200&q=80",
+                fallback: "",
+                title: "Nueva Obra",
+                category: "Retratos",
+                film: "35mm",
+                orientation: "vertical"
+            });
+            await saveAllPhotos(STATE.photos);
+            renderEditorPhotos();
+            renderGallery();
+        }
+
+        async function updatePhotoTitle(idx, val) {
+            STATE.photos[idx].title = val;
+            await saveAllPhotos(STATE.photos);
+            renderGallery();
+        }
+
+        async function updatePhotoCategory(idx, val) {
+            STATE.photos[idx].category = val;
+            await saveAllPhotos(STATE.photos);
+            renderGallery();
+        }
+
+        async function setAsCover(idx) {
+            STATE.texts.coverSrc = STATE.photos[idx].src;
+            await saveToStore('settings', { key: 'texts', data: STATE.texts });
+            renderTexts();
+            showToast("Portada actualizada ✦");
+        }
+
+        function updateCoverFromSelect(src) {
+            STATE.texts.coverSrc = src;
+            saveToStore('settings', { key: 'texts', data: STATE.texts });
+            renderTexts();
+            showToast("Portada actualizada ✦");
+        }
+
+        async function deletePhoto(idx) {
+            if (confirm("¿Eliminar esta foto?")) {
+                STATE.photos.splice(idx, 1);
+                await saveAllPhotos(STATE.photos);
+                renderEditorPhotos();
+                renderGallery();
+                showToast("Eliminada");
+            }
+        }
+
+        function populateEditorTexts() {
+            const t = STATE.texts;
+            document.getElementById('edit-text-name').value = t.name || DEFAULT_TEXTS.name;
+            document.getElementById('edit-text-tagline-es').value = t.tagline_es || DEFAULT_TEXTS.tagline_es;
+            document.getElementById('edit-text-tagline-en').value = t.tagline_en || DEFAULT_TEXTS.tagline_en;
+            document.getElementById('edit-text-statement-es').value = t.statement_es || DEFAULT_TEXTS.statement_es;
+            document.getElementById('edit-text-bio-es').value = t.bio_es || DEFAULT_TEXTS.bio_es;
+            document.getElementById('edit-text-email').value = t.email || DEFAULT_TEXTS.email;
+            document.getElementById('edit-text-insta').value = t.insta || DEFAULT_TEXTS.insta;
+            document.getElementById('edit-text-loc').value = t.loc || DEFAULT_TEXTS.loc;
+        }
+
+        async function handleTextsSave(e) {
+            e.preventDefault();
+            STATE.texts = {
+                ...STATE.texts,
+                name: document.getElementById('edit-text-name').value.trim(),
+                tagline_es: document.getElementById('edit-text-tagline-es').value.trim(),
+                tagline_en: document.getElementById('edit-text-tagline-en').value.trim(),
+                statement_es: document.getElementById('edit-text-statement-es').value.trim(),
+                bio_es: document.getElementById('edit-text-bio-es').value.trim(),
+                email: document.getElementById('edit-text-email').value.trim(),
+                insta: document.getElementById('edit-text-insta').value.trim(),
+                loc: document.getElementById('edit-text-loc').value.trim()
+            };
+
+            await saveToStore('settings', { key: 'texts', data: STATE.texts });
+            localStorage.setItem('leon_portfolio_texts', JSON.stringify(STATE.texts));
+            renderTexts();
+            showToast("Datos guardados ✦");
+        }
+
+        function exportStandaloneHTML() {
+            const blob = new Blob(["<!DOCTYPE html>\n" + document.documentElement.outerHTML], { type: 'text/html;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'index.html';
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast("index.html autónomo descargado");
+        }
+
+        function exportJSONBackup() {
+            const blob = new Blob([JSON.stringify({ photos: STATE.photos, texts: STATE.texts }, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'portfolio_backup.json';
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast("Backup JSON guardado");
+        }
+
+        function importJSONBackup(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (data.photos) { STATE.photos = data.photos; await saveAllPhotos(STATE.photos); }
+                    if (data.texts) { STATE.texts = data.texts; await saveToStore('settings', { key: 'texts', data: STATE.texts }); }
+                    renderTexts();
+                    renderGallery();
+                    renderEditorPhotos();
+                    populateEditorTexts();
+                    showToast("Restaurado con éxito");
+                } catch (err) {
+                    showToast("Error al importar JSON");
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        async function resetToDefaults() {
+            if (confirm("¿Restablecer todo a los valores iniciales?")) {
+                STATE.photos = [...DEFAULT_PHOTOS];
+                STATE.texts = { ...DEFAULT_TEXTS };
+                await saveAllPhotos(STATE.photos);
+                await saveToStore('settings', { key: 'texts', data: STATE.texts });
+                renderTexts();
+                renderGallery();
+                renderEditorPhotos();
+                populateEditorTexts();
+                showToast("Valores restablecidos");
+            }
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        function handleContactSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('form-name').value;
+            const email = document.getElementById('form-email').value;
+            const msg = document.getElementById('form-msg').value;
+
+            const targetEmail = STATE.texts.email || DEFAULT_TEXTS.email;
+            window.location.href = `mailto:${targetEmail}?subject=${encodeURIComponent('Consulta de Portfolio - ' + name)}&body=${encodeURIComponent('Nombre: ' + name + '\nEmail: ' + email + '\n\nMensaje:\n' + msg)}`;
+            showToast("Abriendo correo...");
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') { closeLightbox(); closePasswordModal(); closeEditor(); }
+            if (e.key === 'ArrowLeft' && document.getElementById('lightbox').classList.contains('open')) prevLightbox();
+            if (e.key === 'ArrowRight' && document.getElementById('lightbox').classList.contains('open')) nextLightbox();
+            if (e.shiftKey && (e.key === 'E' || e.key === 'e')) { e.preventDefault(); openPasswordModal(); }
+        });
+
+        window.addEventListener('DOMContentLoaded', async () => {
+            await loadData();
+            applyDarkroomState();
+            setLayoutMode(STATE.layoutMode);
+            setLanguage(STATE.lang);
+            document.getElementById('current-year').textContent = new Date().getFullYear();
+            
+            setTimeout(() => {
+                const p = document.getElementById('preloader');
+                if (p) p.classList.add('loaded');
+            }, 500);
+        });
+    </script>
+</body>
+</html>
