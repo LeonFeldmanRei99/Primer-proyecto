@@ -90,9 +90,9 @@
         <!-- Dashboard CMS -->
         <div id="dashboard">
             <div class="tabs">
-                <button class="tab-btn active" onclick="switchTab('tab-photos')">Fotografías & Obras</button>
-                <button class="tab-btn" onclick="switchTab('tab-upload')">Subir Nueva Foto</button>
-                <button class="tab-btn" onclick="switchTab('tab-profile')">Perfil & Bio</button>
+                <button class="tab-btn active" onclick="switchTab('tab-photos', this)">Fotografías & Obras</button>
+                <button class="tab-btn" onclick="switchTab('tab-upload', this)">Subir Nueva Foto</button>
+                <button class="tab-btn" onclick="switchTab('tab-profile', this)">Perfil & Bio</button>
             </div>
 
             <!-- Tab 1: Fotografías -->
@@ -282,11 +282,14 @@
             }
         }
 
-        function switchTab(tabId) {
+        function switchTab(tabId, element) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            event.target.classList.add('active');
-            document.getElementById(tabId).classList.add('active');
+            if (element) {
+                element.classList.add('active');
+            }
+            const target = document.getElementById(tabId);
+            if (target) target.classList.add('active');
         }
 
         function showToast(msg) {
