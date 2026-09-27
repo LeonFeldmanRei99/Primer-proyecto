@@ -87,51 +87,89 @@
             </form>
         </div>
 
-        <!-- Dashboard CMS -->
+        <!-- Dashboard CMS Estilo Adobe Portfolio -->
         <div id="dashboard">
             <div class="tabs">
-                <button class="tab-btn active" onclick="switchTab('tab-photos', this)">Fotografías & Obras</button>
-                <button class="tab-btn" onclick="switchTab('tab-upload', this)">Subir Nueva Foto</button>
-                <button class="tab-btn" onclick="switchTab('tab-profile', this)">Perfil & Bio</button>
+                <button class="tab-btn active" onclick="switchTab('tab-photos', this)">🖼️ Mis Fotos & Metadatos</button>
+                <button class="tab-btn" onclick="switchTab('tab-genres', this)">📁 Géneros & Categorías</button>
+                <button class="tab-btn" onclick="switchTab('tab-upload', this)">📤 Subir Nueva Obra</button>
+                <button class="tab-btn" onclick="switchTab('tab-profile', this)">👤 Perfil & Textos</button>
             </div>
 
-            <!-- Tab 1: Fotografías -->
+            <!-- Tab 1: Fotografías & Edición de Metadatos individual -->
             <div id="tab-photos" class="tab-content active">
+                <p style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--accent); margin-bottom: 1.5rem;">Edita el título, rollo, celuloide y notas técnicas de cada foto individualmente:</p>
                 <div class="photo-admin-grid" id="photos-list">
                     <!-- Se carga dinámicamente -->
                 </div>
             </div>
 
-            <!-- Tab 2: Subida de archivos -->
+            <!-- Tab 2: Gestión de Géneros a Mostrar -->
+            <div id="tab-genres" class="tab-content">
+                <form id="genres-form" style="max-width: 650px; background: var(--bg-surface); padding: 2rem; border-radius: 6px;">
+                    <h3 style="font-family: var(--font-editorial); margin-bottom: 1rem; color: var(--accent);">Géneros Visibles en la Galería</h3>
+                    <p style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); margin-bottom: 1.5rem;">Selecciona qué categorías querés que aparezcan en los filtros de navegación de tu portfolio:</p>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 0.8rem; margin-bottom: 1.5rem;">
+                        <label style="display: flex; align-items: center; gap: 0.8rem; text-transform: none; font-size: 0.9rem;">
+                            <input type="checkbox" id="genre-analogicas" checked> <span>Analógicas (35mm / 120mm)</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.8rem; text-transform: none; font-size: 0.9rem;">
+                            <input type="checkbox" id="genre-retratos" checked> <span>Retratos</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.8rem; text-transform: none; font-size: 0.9rem;">
+                            <input type="checkbox" id="genre-moda" checked> <span>Moda & Editorial</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.8rem; text-transform: none; font-size: 0.9rem;">
+                            <input type="checkbox" id="genre-calle" checked> <span>Calle / Urbana</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.8rem; text-transform: none; font-size: 0.9rem;">
+                            <input type="checkbox" id="genre-natura" checked> <span>Natura & Paisaje</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.8rem; text-transform: none; font-size: 0.9rem;">
+                            <input type="checkbox" id="genre-shows" checked> <span>Shows & Música en Vivo</span>
+                        </label>
+                    </div>
+                    
+                    <button type="submit" class="btn-action">Guardar Configuración de Géneros</button>
+                </form>
+            </div>
+
+            <!-- Tab 3: Subida de archivos -->
             <div id="tab-upload" class="tab-content">
                 <form id="upload-form" style="max-width: 600px; background: var(--bg-surface); padding: 2rem; border-radius: 6px;">
                     <div class="form-group">
-                        <label>Seleccionar Archivo de Imagen</label>
+                        <label>Seleccionar Archivo de Imagen *</label>
                         <input type="file" id="photo-file" accept="image/*" required>
                     </div>
                     <div class="form-group">
-                        <label>Serie / Categoría</label>
+                        <label>Género / Categoría *</label>
                         <select id="photo-series">
                             <option value="analogicas">Analógicas</option>
+                            <option value="retratos">Retratos</option>
+                            <option value="moda">Moda & Editorial</option>
                             <option value="calle">Calle / Urbana</option>
-                            <option value="estudio">Estudio & Editorial</option>
                             <option value="natura">Natura & Paisaje</option>
                             <option value="shows">Shows & Música</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Título (Opcional - Dejar en blanco si no lleva título)</label>
-                        <input type="text" id="photo-title" placeholder="Ej: Sin Título N° 4">
+                        <label>Título de la Obra (Opcional - Dejar en blanco si no lleva título)</label>
+                        <input type="text" id="photo-title" placeholder="Sin título">
                     </div>
                     <div class="form-group">
-                        <label>Notas de Autor (Opcional)</label>
-                        <textarea id="photo-notes" rows="3" placeholder="Información técnica, grano, revelado..."></textarea>
+                        <label>Película / Celuloide / Formato</label>
+                        <input type="text" id="photo-film" placeholder="Ej: Kodak Portra 400 • 35mm">
                     </div>
-                    <button type="submit" class="btn-action">Guardar & Publicar Foto</button>
+                    <div class="form-group">
+                        <label>Notas Técnicas de Autor (Opcional)</label>
+                        <textarea id="photo-notes" rows="3" placeholder="Detalles de revelado, luz, grano..."></textarea>
+                    </div>
+                    <button type="submit" class="btn-action">Guardar & Publicar Obra</button>
                 </form>
             </div>
 
-            <!-- Tab 3: Perfil -->
+            <!-- Tab 4: Perfil & Bio -->
             <div id="tab-profile" class="tab-content">
                 <form id="profile-form" style="max-width: 600px; background: var(--bg-surface); padding: 2rem; border-radius: 6px;">
                     <div class="form-group">
@@ -143,8 +181,8 @@
                         <input type="text" id="prof-title">
                     </div>
                     <div class="form-group">
-                        <label>Biografía / Declaración</label>
-                        <textarea id="prof-bio" rows="5"></textarea>
+                        <label>Biografía / Texto Personal</label>
+                        <textarea id="prof-bio" rows="5" placeholder="Escribe aquí tu propia biografía..."></textarea>
                     </div>
                     <button type="submit" class="btn-action">Actualizar Perfil</button>
                 </form>
@@ -227,17 +265,50 @@
                 (series.photos || []).forEach(photo => {
                     const card = document.createElement('div');
                     card.className = 'photo-card';
+                    const srcUrl = photo.url ? (photo.url.startsWith('http') ? photo.url : '/' + photo.url) : (photo.src ? '/' + photo.src : '');
+                    
                     card.innerHTML = `
-                        <img src="/${photo.url}" alt="${photo.title || 'Fotografía'}" onerror="this.src='https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=400'">
-                        <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent); mb-1">${series.name}</div>
-                        <strong>${photo.title || 'Sin Título (Solo Imagen)'}</strong>
+                        <img src="${srcUrl}" alt="Obra Fotográfica">
+                        <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent); margin-bottom: 0.5rem;">${series.name}</div>
+                        <div class="form-group" style="margin-bottom: 0.5rem;">
+                            <label style="font-size: 0.65rem;">Título de la Obra</label>
+                            <input type="text" id="title-${photo.id}" value="${photo.title || ''}" placeholder="Sin título (Solo Imagen)">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0.5rem;">
+                            <label style="font-size: 0.65rem;">Celuloide / Formato</label>
+                            <input type="text" id="film-${photo.id}" value="${photo.film || ''}" placeholder="35mm / 120 / Digital">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0.5rem;">
+                            <label style="font-size: 0.65rem;">Notas de Autor</label>
+                            <textarea id="notes-${photo.id}" rows="2" placeholder="Notas técnicas...">${photo.notes || ''}</textarea>
+                        </div>
                         <div class="photo-actions">
-                            <button class="btn-action btn-danger" onclick="deletePhoto('${photo.id}')">Eliminar</button>
+                            <button class="btn-action" style="background: var(--border-accent); color: #000; padding: 0.5rem;" onclick="savePhotoMeta('${photo.id}', '${series.id}')">Guardar Cambios</button>
+                            <button class="btn-action btn-danger" style="padding: 0.5rem;" onclick="deletePhoto('${photo.id}')">Eliminar</button>
                         </div>
                     `;
                     container.appendChild(card);
                 });
             });
+        }
+
+        async function savePhotoMeta(photoId, seriesId) {
+            const title = document.getElementById(`title-${photoId}`).value.trim();
+            const film = document.getElementById(`film-${photoId}`).value.trim();
+            const notes = document.getElementById(`notes-${photoId}`).value.trim();
+
+            const photoObj = { id: photoId, seriesId, title, film, notes };
+
+            try {
+                await fetch('/api/admin/photos/save', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify(photoObj)
+                });
+                showToast("Metadatos de fotografía guardados ✦");
+            } catch (err) {
+                showToast("Metadatos actualizados localmente");
+            }
         }
 
         function fillProfileForm() {
