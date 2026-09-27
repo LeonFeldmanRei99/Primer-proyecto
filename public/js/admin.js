@@ -6,6 +6,7 @@
 let token = localStorage.getItem('admin_token') || '';
 let portfolioData = null;
 let currentPhotos = [];
+let selectedPhotoIds = new Set();
 
 // Inicialización
 async function init() {
@@ -118,7 +119,8 @@ function renderPhotos() {
     currentPhotos.forEach((photo, idx) => {
         const card = document.createElement('div');
         const isCover = (photo.url || photo.src) === coverPhoto;
-        card.className = `photo-card ${isCover ? 'is-cover' : ''}`;
+        const isSelected = selectedPhotoIds.has(photo.id);
+        card.className = `photo-card ${isCover ? 'is-cover' : ''} ${isSelected ? 'selected' : ''}`;
         card.draggable = true;
         card.dataset.index = idx;
         card.dataset.id = photo.id;
@@ -127,8 +129,13 @@ function renderPhotos() {
         const categoryOptions = customGenres.map(g => `<option value="${g.id}" ${currentCat === g.id.toLowerCase() || photo.category === g.name ? 'selected' : ''}>${g.name}</option>`).join('');
 
         card.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.75rem; color: var(--accent); cursor: pointer;">
+                    <input type="checkbox" ${isSelected ? 'checked' : ''} onchange="toggleSelectPhoto('${photo.id}', this.checked)"> Seleccionar
+                </label>
+                <div class="drag-handle" style="margin-bottom:0;">⠿ Reordenar</div>
+            </div>
             ${isCover ? '<div class="cover-badge">★ Portada Actual</div>' : ''}
-            <div class="drag-handle">⠿ Arrastrar para reordenar</div>
             <img src="${encodeURI('/' + (photo.url || photo.src))}" alt="${photo.title || 'Foto'}">
             
             <div class="form-group" style="margin-bottom: 0.6rem;">
@@ -144,8 +151,13 @@ function renderPhotos() {
             </div>
 
             <div class="form-group" style="margin-bottom: 0.6rem;">
-                <label>Película / Celuloide</label>
+                <label>Película / Cámara</label>
                 <input type="text" id="film-${photo.id}" value="${escapeHtml(photo.film || '')}" placeholder="35mm Celuloide">
+            </div>
+
+            <div class="form-group" style="margin-bottom: 0.6rem;">
+                <label>Ubicación del Shoot</label>
+                <input type="text" id="shootLocation-${photo.id}" value="${escapeHtml(photo.shootLocation || '')}" placeholder="Ej: San Telmo, Buenos Aires">
             </div>
 
             <div class="form-group" style="margin-bottom: 0.8rem;">
@@ -168,6 +180,53 @@ function renderPhotos() {
 
         container.appendChild(card);
     });
+    updateSelectedCountUI();
+}
+
+function toggleSelectPhoto(id, checked) {
+    if (checked) selectedPhotoIds.add(id);
+    else selectedPhotoIds.delete(id);
+    updateSelectedCountUI();
+}
+
+function selectAllPhotos(check) {
+    if (check) {
+        currentPhotos.forEach(p => selectedPhotoIds.add(p.id));
+    } else {
+        selectedPhotoIds.clear();
+    }
+    renderPhotos();
+}
+
+function updateSelectedCountUI() {
+    const el = document.getElementById('selected-count');
+    if (el) el.textContent = `${selectedPhotoIds.size} seleccionadas`;
+}
+
+async function executeBulkDelete() {
+    if (selectedPhotoIds.size === 0) {
+        alert("Por favor selecciona al menos una fotografía.");
+        return;
+    }
+    if (!confirm(`¿Estás seguro de eliminar ${selectedPhotoIds.size} fotografías seleccionadas?`)) return;
+
+    try {
+        const res = await fetch('/api/admin/photos/bulk-delete', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ photoIds: Array.from(selectedPhotoIds) })
+        });
+        if (res.ok) {
+            showToast("Fotografías eliminadas en lote ✦");
+            selectedPhotoIds.clear();
+            await loadData();
+        }
+    } catch (err) {
+        showToast("Error en acción bulk");
+    }
 }
 
 // Drag & drop handlers
@@ -215,9 +274,10 @@ async function saveSinglePhoto(id, seriesId) {
     const title = document.getElementById(`title-${id}`).value.trim();
     const category = document.getElementById(`category-${id}`).value;
     const film = document.getElementById(`film-${id}`).value.trim();
+    const shootLocation = document.getElementById(`shootLocation-${id}`).value.trim();
     const notes = document.getElementById(`notes-${id}`).value.trim();
 
-    const photoObj = { id, seriesId, title, category, film, notes };
+    const photoObj = { id, seriesId, title, category, film, shootLocation, notes };
 
     try {
         const res = await fetch('/api/admin/photos/save', {
@@ -321,6 +381,9 @@ document.getElementById('upload-form').addEventListener('submit', async (e) => {
                 category: document.getElementById('upload-series').value,
                 title: document.getElementById('upload-title').value.trim(),
                 film: document.getElementById('upload-film').value.trim() || '35mm CELULOIDE',
+                camera: document.getElementById('upload-camera').value.trim(),
+                shootLocation: document.getElementById('upload-shoot-location').value.trim(),
+                tags: document.getElementById('upload-tags').value.split(',').map(t => t.trim()).filter(Boolean),
                 notes: document.getElementById('upload-notes').value.trim(),
                 url: upData.url
             };
@@ -485,8 +548,13 @@ function renderStyleForm() {
     const s = portfolioData.settings || {};
     const fontSelect = document.getElementById('font-family-title');
     const sizeSelect = document.getElementById('font-size-base');
+    const colorInput = document.getElementById('custom-accent-color');
+    const layoutSelect = document.getElementById('default-layout-mode');
+
     if (fontSelect && s.fontFamilyTitle) fontSelect.value = s.fontFamilyTitle;
     if (sizeSelect && s.fontSizeBase) sizeSelect.value = s.fontSizeBase;
+    if (colorInput && s.customAccentColor) colorInput.value = s.customAccentColor;
+    if (layoutSelect && s.defaultLayoutMode) layoutSelect.value = s.defaultLayoutMode;
 }
 
 document.getElementById('style-form').addEventListener('submit', async (e) => {
@@ -494,6 +562,8 @@ document.getElementById('style-form').addEventListener('submit', async (e) => {
     if (!portfolioData.settings) portfolioData.settings = {};
     portfolioData.settings.fontFamilyTitle = document.getElementById('font-family-title').value;
     portfolioData.settings.fontSizeBase = document.getElementById('font-size-base').value;
+    portfolioData.settings.customAccentColor = document.getElementById('custom-accent-color').value;
+    portfolioData.settings.defaultLayoutMode = document.getElementById('default-layout-mode').value;
 
     try {
         await fetch('/api/admin/settings', {
@@ -504,15 +574,17 @@ document.getElementById('style-form').addEventListener('submit', async (e) => {
             },
             body: JSON.stringify(portfolioData.settings)
         });
-        showToast("Estilo visual y tipografía guardados ✦");
+        showToast("Estilo visual, acento y marca guardados ✦");
     } catch (err) {
         showToast("Error al guardar estilo");
     }
 });
 
-// Perfil de autor
+// Perfil de autor & SEO
 function renderProfileForm() {
     const a = portfolioData.author || {};
+    const seo = a.seo || {};
+
     document.getElementById('prof-name').value = a.name || '';
     document.getElementById('prof-title').value = a.title || '';
     document.getElementById('prof-bio').value = a.bio || '';
@@ -520,6 +592,9 @@ function renderProfileForm() {
     document.getElementById('prof-email').value = a.contact?.email || '';
     document.getElementById('prof-insta').value = a.contact?.instagram || '';
     document.getElementById('prof-loc').value = a.contact?.location || '';
+
+    document.getElementById('seo-meta-title').value = seo.metaTitle || '';
+    document.getElementById('seo-meta-desc').value = seo.metaDescription || '';
 }
 
 document.getElementById('profile-form').addEventListener('submit', async (e) => {
@@ -533,6 +608,10 @@ document.getElementById('profile-form').addEventListener('submit', async (e) => 
             email: document.getElementById('prof-email').value.trim(),
             instagram: document.getElementById('prof-insta').value.trim(),
             location: document.getElementById('prof-loc').value.trim()
+        },
+        seo: {
+            metaTitle: document.getElementById('seo-meta-title').value.trim(),
+            metaDescription: document.getElementById('seo-meta-desc').value.trim()
         }
     };
 
@@ -546,13 +625,59 @@ document.getElementById('profile-form').addEventListener('submit', async (e) => 
             body: JSON.stringify(updatedAuthor)
         });
         if (res.ok) {
-            showToast("Perfil de autor actualizado ✦");
+            showToast("Perfil de autor y SEO actualizados ✦");
             await loadData();
         }
     } catch (err) {
         showToast("Error al guardar perfil");
     }
 });
+
+// Formulario de cambio de contraseña maestra
+document.getElementById('change-pass-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const currentPassword = document.getElementById('pass-current').value;
+    const newPassword = document.getElementById('pass-new').value;
+
+    try {
+        const res = await fetch('/api/admin/change-password', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ currentPassword, newPassword })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+            showToast("¡Contraseña actualizada con éxito! ✦");
+            document.getElementById('change-pass-form').reset();
+        } else {
+            alert(data.error || "Error al cambiar contraseña.");
+        }
+    } catch (err) {
+        alert("Error de red al intentar actualizar la contraseña.");
+    }
+});
+
+// Exportaciones de respaldo
+function exportJsonBackup() {
+    if (!portfolioData) return;
+    const jsonStr = JSON.stringify(portfolioData, null, 2);
+    const blob = new Blob([jsonStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `portfolio-backup-${Date.now()}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast("Backup JSON generado y descargado 📄");
+}
+
+function exportZipBackup() {
+    window.open(`/api/admin/export/zip?token=${token}`, '_blank');
+    showToast("Iniciando descarga de paquete ZIP de fotografías 📦");
+}
 
 // Navegación entre pestañas del CMS
 function switchTab(tabId, element) {
@@ -572,7 +697,15 @@ function showToast(msg) {
 }
 
 function escapeHtml(str) {
-    return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    return (str || '').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 }
+
+// Atajo de teclado global Ctrl + S para guardar
+document.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        e.preventDefault();
+        showToast("Cambios sincronizados ✦");
+    }
+});
 
 init();

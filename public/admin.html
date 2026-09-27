@@ -6,7 +6,7 @@
     <title>Studio CMS | León Feldman Editor Profesional</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;600&family=Cinzel:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/admin.css">
 </head>
 <body>
@@ -25,7 +25,7 @@
         <!-- Formulario de Acceso Privado -->
         <div id="login-section">
             <h2 style="font-family: var(--font-editorial); font-size: 2rem; margin-bottom: 0.5rem; font-weight: normal;">Acceso al Laboratorio</h2>
-            <p style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted); margin-bottom: 2rem;">Inicia sesión para gestionar obras, géneros y diseño.</p>
+            <p style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted); margin-bottom: 2rem;">Inicia sesión con autenticación estricta JWT + Bcrypt.</p>
             <form id="login-form">
                 <div class="form-group">
                     <label for="admin-pass">Contraseña Maestra</label>
@@ -38,24 +38,34 @@
         <!-- Dashboard CMS Estilo Adobe Portfolio -->
         <div id="dashboard">
             <div class="tabs">
-                <button class="tab-btn active" onclick="switchTab('tab-photos', this)">🖼️ Galería & Obras</button>
-                <button class="tab-btn" onclick="switchTab('tab-upload', this)">📤 Subir Nueva Foto</button>
-                <button class="tab-btn" onclick="switchTab('tab-genres', this)">📁 Géneros Visibles</button>
-                <button class="tab-btn" onclick="switchTab('tab-style', this)">🎨 Tipografía & Estilo</button>
-                <button class="tab-btn" onclick="switchTab('tab-profile', this)">👤 Perfil & Textos</button>
+                <button class="tab-btn active" onclick="switchTab('tab-photos', this)">🖼️ Obras & Galería</button>
+                <button class="tab-btn" onclick="switchTab('tab-upload', this)">📤 Subir Obra</button>
+                <button class="tab-btn" onclick="switchTab('tab-genres', this)">📁 Géneros & Carpetas</button>
+                <button class="tab-btn" onclick="switchTab('tab-style', this)">🎨 Marca & Paleta</button>
+                <button class="tab-btn" onclick="switchTab('tab-profile', this)">👤 Perfil & SEO</button>
+                <button class="tab-btn" onclick="switchTab('tab-system', this)">🔒 Seguridad & Backup</button>
             </div>
 
-            <!-- Tab 1: Galería, Reordenamiento Drag & Drop y Metadatos -->
+            <!-- Tab 1: Galería, Reordenamiento Drag & Drop, Bulk Actions & Metadatos Extendidos -->
             <div id="tab-photos" class="tab-content active">
-                <p style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent); margin-bottom: 1.5rem;">
-                    ⠿ Puedes arrastrar las fotos para definir su orden de exhibición. Modifica títulos, película o notas técnicas directamente:
-                </p>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem; background: var(--bg-surface); padding: 1rem 1.5rem; border-radius: 6px; border: 1px solid var(--border-subtle);">
+                    <div>
+                        <span style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--accent);">Acciones en Lote (Bulk):</span>
+                        <span id="selected-count" style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); margin-left: 0.5rem;">0 seleccionadas</span>
+                    </div>
+                    <div style="display: flex; gap: 0.8rem;">
+                        <button type="button" class="btn-action btn-secondary" style="width: auto; padding: 0.4rem 0.8rem; font-size: 0.72rem;" onclick="selectAllPhotos(true)">Seleccionar Todo</button>
+                        <button type="button" class="btn-action btn-secondary" style="width: auto; padding: 0.4rem 0.8rem; font-size: 0.72rem;" onclick="selectAllPhotos(false)">Desmarcar Todo</button>
+                        <button type="button" class="btn-action btn-danger" style="width: auto; padding: 0.4rem 0.8rem; font-size: 0.72rem;" onclick="executeBulkDelete()">Eliminar Lote</button>
+                    </div>
+                </div>
+
                 <div class="photo-admin-grid" id="photos-list">
                     <!-- Se carga dinámicamente -->
                 </div>
             </div>
 
-            <!-- Tab 2: Subida de Obras con Preview Inmediato -->
+            <!-- Tab 2: Subida de Obras -->
             <div id="tab-upload" class="tab-content">
                 <form id="upload-form" style="max-width: 650px; background: var(--bg-surface); padding: 2.5rem; border-radius: 6px; border: 1px solid var(--border-subtle);">
                     <h3 style="font-family: var(--font-editorial); margin-bottom: 1.5rem; color: var(--accent);">Publicar Nueva Fotografía</h3>
@@ -73,24 +83,32 @@
 
                     <div class="form-group" style="margin-top: 1.5rem;">
                         <label>Género / Categoría *</label>
-                        <select id="upload-series" required>
-                            <option value="analogicas">Analógicas</option>
-                            <option value="retratos">Retratos</option>
-                            <option value="moda">Moda & Editorial</option>
-                            <option value="calle">Calle / Urbana</option>
-                            <option value="natura">Natura & Paisaje</option>
-                            <option value="shows">Shows & Música</option>
-                        </select>
+                        <select id="upload-series" required></select>
                     </div>
 
                     <div class="form-group">
-                        <label>Título de la Obra (Opcional - dejar en blanco para exhibir solo la imagen)</label>
+                        <label>Título de la Obra (Opcional)</label>
                         <input type="text" id="upload-title" placeholder="Ej: Claroscuro en San Telmo">
                     </div>
 
                     <div class="form-group">
                         <label>Película / Formato</label>
                         <input type="text" id="upload-film" value="35mm CELULOIDE" placeholder="Ej: Kodak Tri-X 400 • 35mm">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Cámara / Equipo</label>
+                        <input type="text" id="upload-camera" placeholder="Ej: Leica M3 / Canon AE-1">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Ubicación del Shoot</label>
+                        <input type="text" id="upload-shoot-location" placeholder="Ej: San Telmo, Buenos Aires">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Tags Libres (separados por coma)</label>
+                        <input type="text" id="upload-tags" placeholder="35mm, nocturna, retrato, blanco-y-negro">
                     </div>
 
                     <div class="form-group">
@@ -106,7 +124,7 @@
             <div id="tab-genres" class="tab-content">
                 <div style="max-width: 650px; background: var(--bg-surface); padding: 2.5rem; border-radius: 6px; border: 1px solid var(--border-subtle); margin-bottom: 2rem;">
                     <h3 style="font-family: var(--font-editorial); margin-bottom: 0.8rem; color: var(--accent);">Crear Nuevo Género / Carpeta</h3>
-                    <p style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); margin-bottom: 1.5rem;">Añade categorías personalizadas para organizar tus obras (ej: Moda, Editorial, Retratos, Experimentos):</p>
+                    <p style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); margin-bottom: 1.5rem;">Añade categorías personalizadas para organizar tus obras:</p>
                     
                     <form id="create-genre-form" style="display: flex; gap: 1rem;">
                         <input type="text" id="new-genre-name" placeholder="Ej: Publicidad & Moda" required style="flex: 1; padding: 0.8rem; background: var(--bg-card); border: 1px solid var(--border-medium); color: #fff; font-size: 0.9rem;">
@@ -126,11 +144,11 @@
                 </form>
             </div>
 
-            <!-- Tab 4: Tipografía & Estilo Visual -->
+            <!-- Tab 4: Marca & Paleta Visual -->
             <div id="tab-style" class="tab-content">
                 <form id="style-form" style="max-width: 650px; background: var(--bg-surface); padding: 2.5rem; border-radius: 6px; border: 1px solid var(--border-subtle);">
-                    <h3 style="font-family: var(--font-editorial); margin-bottom: 0.8rem; color: var(--accent);">Personalización Visual Estilo Adobe Portfolio</h3>
-                    <p style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); margin-bottom: 1.8rem;">Define el sistema tipográfico y escala visual de todo el portfolio:</p>
+                    <h3 style="font-family: var(--font-editorial); margin-bottom: 0.8rem; color: var(--accent);">Personalización Visual & Marca</h3>
+                    <p style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); margin-bottom: 1.8rem;">Personaliza paletas de color, tipografía y diseño global:</p>
 
                     <div class="form-group">
                         <label>Familia Tipográfica Principal</label>
@@ -151,14 +169,30 @@
                         </select>
                     </div>
 
-                    <button type="submit" class="btn-action">Guardar Estilo Visual ✦</button>
+                    <div class="form-group">
+                        <label>Color de Acento Principal</label>
+                        <div style="display: flex; gap: 1rem; align-items: center;">
+                            <input type="color" id="custom-accent-color" value="#C49A5A" style="width: 50px; height: 40px; border: none; cursor: pointer; background: transparent;">
+                            <span style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted);">Elige el tono acento de la interfaz</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Vista de Galería Predeterminada</label>
+                        <select id="default-layout-mode">
+                            <option value="contact-sheet">🎞️ Hoja de Contactos 35mm</option>
+                            <option value="editorial">🖼️ Editorial / Full-Screen</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn-action">Guardar Estilo & Marca ✦</button>
                 </form>
             </div>
 
-            <!-- Tab 5: Perfil & Bio del Autor -->
+            <!-- Tab 5: Perfil & SEO del Autor -->
             <div id="tab-profile" class="tab-content">
                 <form id="profile-form" style="max-width: 650px; background: var(--bg-surface); padding: 2.5rem; border-radius: 6px; border: 1px solid var(--border-subtle);">
-                    <h3 style="font-family: var(--font-editorial); margin-bottom: 1.5rem; color: var(--accent);">Datos del Autor & Contacto</h3>
+                    <h3 style="font-family: var(--font-editorial); margin-bottom: 1.5rem; color: var(--accent);">Perfil del Autor, Contacto & SEO</h3>
 
                     <div class="form-group">
                         <label>Nombre del Autor</label>
@@ -172,7 +206,7 @@
 
                     <div class="form-group">
                         <label>Biografía Profesional</label>
-                        <textarea id="prof-bio" rows="5" required></textarea>
+                        <textarea id="prof-bio" rows="4" required></textarea>
                     </div>
 
                     <div class="form-group">
@@ -195,8 +229,50 @@
                         <input type="text" id="prof-loc">
                     </div>
 
-                    <button type="submit" class="btn-action">Actualizar Perfil de Autor ✦</button>
+                    <h4 style="font-family: var(--font-editorial); font-size: 1.3rem; margin: 2rem 0 1rem; color: var(--accent);">Optimización para Buscadores (SEO)</h4>
+
+                    <div class="form-group">
+                        <label>Título de Pestaña (Meta Title)</label>
+                        <input type="text" id="seo-meta-title" placeholder="León Feldman Reinoso | Fotografía & Dirección Visual (35mm)">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Descripción Meta (Meta Description)</label>
+                        <textarea id="seo-meta-desc" rows="3" placeholder="Portfolio y archivo analógico 35mm de León Feldman Reinoso..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn-action">Actualizar Perfil & SEO ✦</button>
                 </form>
+            </div>
+
+            <!-- Tab 6: Seguridad & Exportación de Respaldos -->
+            <div id="tab-system" class="tab-content">
+                <div style="max-width: 650px; background: var(--bg-surface); padding: 2.5rem; border-radius: 6px; border: 1px solid var(--border-subtle); margin-bottom: 2rem;">
+                    <h3 style="font-family: var(--font-editorial); margin-bottom: 0.8rem; color: var(--accent);">Cambio de Contraseña Maestra</h3>
+                    <p style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); margin-bottom: 1.5rem;">Modifica tu clave de acceso. Se actualizará de forma encriptada en el servidor:</p>
+                    
+                    <form id="change-pass-form">
+                        <div class="form-group">
+                            <label>Contraseña Actual</label>
+                            <input type="password" id="pass-current" required autocomplete="current-password">
+                        </div>
+                        <div class="form-group">
+                            <label>Nueva Contraseña</label>
+                            <input type="password" id="pass-new" required autocomplete="new-password">
+                        </div>
+                        <button type="submit" class="btn-action" style="width: auto; padding: 0.8rem 1.4rem;">Actualizar Contraseña ✦</button>
+                    </form>
+                </div>
+
+                <div style="max-width: 650px; background: var(--bg-surface); padding: 2.5rem; border-radius: 6px; border: 1px solid var(--border-subtle);">
+                    <h3 style="font-family: var(--font-editorial); margin-bottom: 0.8rem; color: var(--accent);">Exportación & Respaldos Completo</h3>
+                    <p style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); margin-bottom: 1.5rem;">Descarga copias de seguridad locales de todos tus datos e imágenes:</p>
+
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                        <button type="button" class="btn-action" style="width: auto; padding: 0.8rem 1.4rem;" onclick="exportJsonBackup()">Descargar Backup JSON 📄</button>
+                        <button type="button" class="btn-action btn-secondary" style="width: auto; padding: 0.8rem 1.4rem;" onclick="exportZipBackup()">Descargar Fotos en ZIP 📦</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

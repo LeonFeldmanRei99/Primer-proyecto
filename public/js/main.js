@@ -102,7 +102,7 @@ async function loadPortfolioData() {
     }
 }
 
-// Aplicar estilos personalizados del backend (tipografía, tamaño, portada)
+// Aplicar estilos personalizados del backend (tipografía, tamaño, portada, color acento)
 function applySettings() {
     if (!STATE.portfolio || !STATE.portfolio.settings) return;
     const s = STATE.portfolio.settings;
@@ -113,9 +113,23 @@ function applySettings() {
     if (s.fontSizeBase) {
         document.documentElement.style.setProperty('--font-size-root', s.fontSizeBase);
     }
+    if (s.customAccentColor) {
+        document.documentElement.style.setProperty('--accent', s.customAccentColor);
+        document.documentElement.style.setProperty('--border-accent', s.customAccentColor);
+    }
     if (s.coverPhoto) {
         const heroImg = document.getElementById('hero-bg-img');
-        if (heroImg) heroImg.src = s.coverPhoto;
+        if (heroImg) heroImg.src = encodeURI(`/${s.coverPhoto}`);
+    }
+
+    // SEO dinámico
+    const seo = STATE.portfolio.author?.seo;
+    if (seo) {
+        if (seo.metaTitle) document.title = seo.metaTitle;
+        if (seo.metaDescription) {
+            let metaDesc = document.querySelector('meta[name="description"]');
+            if (metaDesc) metaDesc.content = seo.metaDescription;
+        }
     }
 }
 

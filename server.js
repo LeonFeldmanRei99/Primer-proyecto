@@ -5,6 +5,7 @@ const path = require('path');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const multer = require('multer');
+const archiver = require('archiver');
 require('dotenv').config();
 
 const app = express();
@@ -61,7 +62,18 @@ function readData() {
     if (!fs.existsSync(DATA_FILE)) return {};
     try {
         const raw = fs.readFileSync(DATA_FILE, 'utf8');
-        return JSON.parse(raw);
+        const parsed = JSON.parse(raw);
+        // Garantizar estructura de usuarios si no existe
+        if (!parsed.users || parsed.users.length === 0) {
+            parsed.users = [{
+                id: 'usr-1',
+                username: 'leon',
+                passwordHash: bcrypt.hashSync(ADMIN_PASSWORD, 10),
+                role: 'admin',
+                name: 'León Feldman Reinoso'
+            }];
+        }
+        return parsed;
     } catch (err) {
         console.error("Error leyendo portfolio.json", err);
         return {};
@@ -100,21 +112,68 @@ function authenticateToken(req, res, next) {
 // GET all portfolio data
 app.get('/api/portfolio', (req, res) => {
     const data = readData();
-    res.json(data);
+    // Remover hashes de contraseña antes de enviar al cliente público
+    const safeData = JSON.parse(JSON.stringify(data));
+    delete safeData.users;
+    res.json(safeData);
 });
 
-// POST Admin Login
+// POST Admin Login con bcrypt
 app.post('/api/admin/login', (req, res) => {
-    const { password } = req.body;
+    const { password, username } = req.body;
     if (!password) {
         return res.status(400).json({ success: false, error: 'Se requiere contraseña.' });
     }
 
-    if (password === ADMIN_PASSWORD) {
-        const token = jwt.sign({ role: 'admin' }, JWT_SECRET, { expiresIn: '7d' });
+    const data = readData();
+    const targetUser = (data.users && data.users.length > 0)
+        ? (data.users.find(u => u.username === (username || 'leon')) || data.users[0])
+        : null;
+
+    let valid = false;
+    if (targetUser && targetUser.passwordHash) {
+        valid = bcrypt.compareSync(password, targetUser.passwordHash);
+    } else {
+        valid = (password === ADMIN_PASSWORD);
+    }
+
+    if (valid) {
+        const token = jwt.sign({ id: targetUser?.id || 'usr-1', role: 'admin' }, JWT_SECRET, { expiresIn: '7d' });
         return res.json({ success: true, token, message: 'Autenticación exitosa.' });
     }
     return res.status(401).json({ success: false, error: 'Contraseña incorrecta.' });
+});
+
+// POST Cambiar Contraseña del Administrador
+app.post('/api/admin/change-password', authenticateToken, (req, res) => {
+    const { currentPassword, newPassword } = req.body;
+    if (!currentPassword || !newPassword) {
+        return res.status(400).json({ error: 'Campos requeridos faltantes.' });
+    }
+
+    const data = readData();
+    const user = data.users ? data.users[0] : null;
+
+    if (user && user.passwordHash) {
+        if (!bcrypt.compareSync(currentPassword, user.passwordHash)) {
+            return res.status(401).json({ error: 'La contraseña actual no es correcta.' });
+        }
+        user.passwordHash = bcrypt.hashSync(newPassword, 10);
+    } else {
+        if (currentPassword !== ADMIN_PASSWORD) {
+            return res.status(401).json({ error: 'La contraseña actual no es correcta.' });
+        }
+        data.users = [{
+            id: 'usr-1',
+            username: 'leon',
+            passwordHash: bcrypt.hashSync(newPassword, 10),
+            role: 'admin',
+            name: 'León Feldman Reinoso'
+        }];
+    }
+
+    writeData(data);
+    res.json({ success: true, message: 'Contraseña actualizada correctamente.' });
 });
 
 // Verify token status
@@ -126,15 +185,15 @@ app.get('/api/admin/verify', authenticateToken, (req, res) => {
 // FULL CRUD ADMIN API
 // ==========================================
 
-// UPDATE Author Profile & Bio
+// UPDATE Author Profile, Bio, Social Links & SEO
 app.put('/api/admin/author', authenticateToken, (req, res) => {
     const data = readData();
     data.author = { ...data.author, ...req.body };
     writeData(data);
-    res.json({ success: true, author: data.author, message: 'Datos de autor actualizados.' });
+    res.json({ success: true, author: data.author, message: 'Datos de autor y SEO actualizados.' });
 });
 
-// UPDATE Visual Style & Settings (Typography, Cover, Genres)
+// UPDATE Visual Style & Settings (Typography, Cover, Colors, Layout, Sections)
 app.put('/api/admin/settings', authenticateToken, (req, res) => {
     const data = readData();
     data.settings = { ...data.settings, ...req.body };
@@ -176,9 +235,9 @@ app.put('/api/admin/photos/reorder', authenticateToken, (req, res) => {
     res.json({ success: true, message: 'Orden de fotografías actualizado.' });
 });
 
-// ADD or EDIT Photo
+// ADD or EDIT Photo (con metadatos extendidos: tags, focalPoint, fecha, cliente, alt)
 app.post('/api/admin/photos/save', authenticateToken, (req, res) => {
-    const photoObj = req.body; // includes id, seriesId, title, film, frameNumber, notes, url, etc.
+    const photoObj = req.body;
     const data = readData();
     if (!data.series) data.series = [];
 
@@ -199,6 +258,42 @@ app.post('/api/admin/photos/save', authenticateToken, (req, res) => {
 
     writeData(data);
     res.json({ success: true, photo: photoObj, message: 'Fotografía guardada con éxito.' });
+});
+
+// BULK DELETE Photos
+app.post('/api/admin/photos/bulk-delete', authenticateToken, (req, res) => {
+    const { photoIds } = req.body;
+    if (!Array.isArray(photoIds)) return res.status(400).json({ error: 'photoIds invalido' });
+
+    const data = readData();
+    (data.series || []).forEach(seriesItem => {
+        if (seriesItem.photos) {
+            seriesItem.photos = seriesItem.photos.filter(p => !photoIds.includes(p.id));
+        }
+    });
+
+    writeData(data);
+    res.json({ success: true, message: `${photoIds.length} fotografías eliminadas.` });
+});
+
+// BULK UPDATE Category / Genre
+app.post('/api/admin/photos/bulk-category', authenticateToken, (req, res) => {
+    const { photoIds, newCategory } = req.body;
+    if (!Array.isArray(photoIds) || !newCategory) return res.status(400).json({ error: 'Datos requeridos no válidos' });
+
+    const data = readData();
+    (data.series || []).forEach(seriesItem => {
+        if (seriesItem.photos) {
+            seriesItem.photos.forEach(p => {
+                if (photoIds.includes(p.id)) {
+                    p.category = newCategory;
+                }
+            });
+        }
+    });
+
+    writeData(data);
+    res.json({ success: true, message: `Categoría actualizada a ${newCategory} para ${photoIds.length} fotos.` });
 });
 
 // DELETE Photo
@@ -233,91 +328,24 @@ app.post('/api/admin/upload-file', authenticateToken, upload.single('photo'), (r
     res.json({ success: true, url: relativeUrl, message: 'Archivo subido correctamente.' });
 });
 
-// ADD/EDIT Audiovisual project
-app.post('/api/admin/audiovisual/save', authenticateToken, (req, res) => {
-    const data = readData();
-    if (!data.audiovisual) data.audiovisual = [];
-    const av = req.body;
+// EXPORT BACKUP ZIP de todas las fotografías
+app.get('/api/admin/export/zip', authenticateToken, (req, res) => {
+    const archive = archiver('zip', { zlib: { level: 9 } });
+    res.attachment('portfolio-fotos-backup.zip');
 
-    const idx = data.audiovisual.findIndex(a => a.id === av.id);
-    if (idx !== -1) {
-        data.audiovisual[idx] = { ...data.audiovisual[idx], ...av };
-    } else {
-        av.id = av.id || 'av-' + Date.now();
-        data.audiovisual.push(av);
-    }
+    archive.on('error', err => res.status(500).send({ error: err.message }));
+    archive.pipe(res);
 
-    writeData(data);
-    res.json({ success: true, project: av, message: 'Proyecto audiovisual guardado.' });
-});
+    // Adjuntar carpetas locales de fotos y uploads
+    const folders = ['Analógicas', 'Calle', 'Estudio', 'Natura', 'Shows', 'uploads'];
+    folders.forEach(folderName => {
+        const fullPath = path.join(__dirname, folderName);
+        if (fs.existsSync(fullPath)) {
+            archive.directory(fullPath, folderName);
+        }
+    });
 
-// DELETE Audiovisual project
-app.delete('/api/admin/audiovisual/:id', authenticateToken, (req, res) => {
-    const data = readData();
-    if (data.audiovisual) {
-        data.audiovisual = data.audiovisual.filter(a => a.id !== req.params.id);
-        writeData(data);
-        return res.json({ success: true, message: 'Proyecto audiovisual eliminado.' });
-    }
-    res.status(404).json({ error: 'No encontrado.' });
-});
-
-// ADD/EDIT Essay (Texto + Imagen)
-app.post('/api/admin/essays/save', authenticateToken, (req, res) => {
-    const data = readData();
-    if (!data.essays) data.essays = [];
-    const essay = req.body;
-
-    const idx = data.essays.findIndex(e => e.id === essay.id);
-    if (idx !== -1) {
-        data.essays[idx] = { ...data.essays[idx], ...essay };
-    } else {
-        essay.id = essay.id || 'ens-' + Date.now();
-        data.essays.push(essay);
-    }
-
-    writeData(data);
-    res.json({ success: true, essay, message: 'Ensayo visual guardado.' });
-});
-
-// DELETE Essay
-app.delete('/api/admin/essays/:id', authenticateToken, (req, res) => {
-    const data = readData();
-    if (data.essays) {
-        data.essays = data.essays.filter(e => e.id !== req.params.id);
-        writeData(data);
-        return res.json({ success: true, message: 'Ensayo eliminado.' });
-    }
-    res.status(404).json({ error: 'No encontrado.' });
-});
-
-// ADD/EDIT IA Lab Case (Experimentos IA)
-app.post('/api/admin/ia-lab/save', authenticateToken, (req, res) => {
-    const data = readData();
-    if (!data.ia_lab) data.ia_lab = [];
-    const iaCase = req.body;
-
-    const idx = data.ia_lab.findIndex(i => i.id === iaCase.id);
-    if (idx !== -1) {
-        data.ia_lab[idx] = { ...data.ia_lab[idx], ...iaCase };
-    } else {
-        iaCase.id = iaCase.id || 'ia-' + Date.now();
-        data.ia_lab.push(iaCase);
-    }
-
-    writeData(data);
-    res.json({ success: true, iaCase, message: 'Caso de laboratorio IA guardado.' });
-});
-
-// DELETE IA Lab Case
-app.delete('/api/admin/ia-lab/:id', authenticateToken, (req, res) => {
-    const data = readData();
-    if (data.ia_lab) {
-        data.ia_lab = data.ia_lab.filter(i => i.id !== req.params.id);
-        writeData(data);
-        return res.json({ success: true, message: 'Experimento IA eliminado.' });
-    }
-    res.status(404).json({ error: 'No encontrado.' });
+    archive.finalize();
 });
 
 // Start Server if run directly
