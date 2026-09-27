@@ -1,0 +1,338 @@
+{
+  "author": {
+    "name": "León Feldman Reinoso",
+    "title": "Fotógrafo, Director Visual & Investigador de Medios",
+    "location": "Buenos Aires & Conurbano Bonaerense, Argentina",
+    "bio": "Laboratorio visual y archivo experimental. Espacio para la catalogación de obra fotográfica analógica (35mm / 120mm), dirección audiovisual y experimentación con inteligencia artificial.",
+    "statement": "La imagen es memoria, grano y territorio. Desde el triacetato químico hasta la simulación digital, este espacio centraliza obras, notas de laboratorio y proyectos.",
+    "contact": {
+      "email": "leonfeldman.foto@gmail.com",
+      "instagram": "@leonfeldman.ph",
+      "vimeo": "vimeo.com/leonfeldman",
+      "location": "Buenos Aires, Argentina"
+    }
+  },
+  "series": [
+    {
+      "id": "analogicas",
+      "name": "Analógicas",
+      "badge": "CELULOIDE 35MM / 120MM",
+      "description": "Película química, grano tangible y revelado de laboratorio.",
+      "photos": [
+        {
+          "id": "ana-1",
+          "title": "Obra Analógica I",
+          "film": "35mm Celuloide",
+          "roll": "Rollo #01",
+          "frame": "03",
+          "category": "Retratos",
+          "year": "2024",
+          "url": "Analógicas/000005570003.jpg",
+          "aspectRatio": "4:3",
+          "notes": "Notas del autor sobre toma y revelado."
+        },
+        {
+          "id": "ana-2",
+          "title": "Obra Analógica II",
+          "film": "35mm Celuloide",
+          "roll": "Rollo #01",
+          "frame": "19",
+          "category": "Analógicas",
+          "year": "2024",
+          "url": "Analógicas/000008800019.jpg",
+          "aspectRatio": "4:3",
+          "notes": "Notas del autor sobre la luz y el grano."
+        },
+        {
+          "id": "ana-3",
+          "title": "Obra Analógica III",
+          "film": "35mm Celuloide",
+          "roll": "Rollo #02",
+          "frame": "04",
+          "category": "Analógicas",
+          "year": "2024",
+          "url": "Analógicas/000026680004.jpg",
+          "aspectRatio": "4:3",
+          "notes": "Notas del autor."
+        },
+        {
+          "id": "ana-4",
+          "title": "Obra Analógica IV",
+          "film": "35mm Celuloide",
+          "roll": "Rollo #02",
+          "frame": "24",
+          "category": "Retratos",
+          "year": "2024",
+          "url": "Analógicas/000026680024.jpg",
+          "aspectRatio": "4:3",
+          "notes": "Notas del autor."
+        },
+        {
+          "id": "ana-5",
+          "title": "Obra Analógica V",
+          "film": "35mm Celuloide",
+          "roll": "Rollo #02",
+          "frame": "25",
+          "category": "Analógicas",
+          "year": "2024",
+          "url": "Analógicas/000026680025.jpg",
+          "aspectRatio": "4:3",
+          "notes": "Notas del autor."
+        },
+        {
+          "id": "ana-6",
+          "title": "Obra Analógica VI",
+          "film": "35mm Celuloide",
+          "roll": "Rollo #02",
+          "frame": "34",
+          "category": "Retratos",
+          "year": "2024",
+          "url": "Analógicas/000026680034.jpg",
+          "aspectRatio": "4:3",
+          "notes": "Notas del autor."
+        },
+        {
+          "id": "ana-7",
+          "title": "Obra Analógica VII",
+          "film": "35mm Celuloide",
+          "roll": "Rollo #02",
+          "frame": "35",
+          "category": "Moda",
+          "year": "2024",
+          "url": "Analógicas/000026680035.jpg",
+          "aspectRatio": "4:3",
+          "notes": "Notas del autor."
+        },
+        {
+          "id": "ana-8",
+          "title": "Obra Analógica VIII",
+          "film": "35mm Celuloide",
+          "roll": "Rollo #03",
+          "frame": "05",
+          "category": "Analógicas",
+          "year": "2024",
+          "url": "Analógicas/000041600005.jpg",
+          "aspectRatio": "4:3",
+          "notes": "Notas del autor."
+        }
+      ]
+    },
+    {
+      "id": "calle",
+      "name": "Calle / Urbana & Conurbano",
+      "badge": "CALLE & TERRITORIO",
+      "description": "Fotografía urbana y exploración del paisaje citadino.",
+      "photos": [
+        {
+          "id": "cal-1",
+          "title": "Serie Urbana I",
+          "film": "Digital / 35mm",
+          "roll": "Serie Calle",
+          "frame": "01",
+          "category": "Urbana",
+          "year": "2024",
+          "url": "Calle/DSC02663.jpg",
+          "aspectRatio": "4:3",
+          "notes": "Notas de encuadre urbano."
+        },
+        {
+          "id": "cal-2",
+          "title": "Serie Urbana II",
+          "film": "Digital / 35mm",
+          "roll": "Serie Calle",
+          "frame": "02",
+          "category": "Urbana",
+          "year": "2024",
+          "url": "Calle/DSC08251.jpg",
+          "aspectRatio": "4:3",
+          "notes": "Notas de luz nocturna."
+        },
+        {
+          "id": "cal-3",
+          "title": "Serie Urbana III",
+          "film": "Digital / 35mm",
+          "roll": "Serie Calle",
+          "frame": "03",
+          "category": "Urbana",
+          "year": "2024",
+          "url": "Calle/DSC08306.jpg",
+          "aspectRatio": "4:3",
+          "notes": "Notas del autor."
+        },
+        {
+          "id": "cal-4",
+          "title": "Serie Urbana IV",
+          "film": "Digital / 35mm",
+          "roll": "Serie Calle",
+          "frame": "04",
+          "category": "Urbana",
+          "year": "2024",
+          "url": "Calle/DSC09583.jpg",
+          "aspectRatio": "4:3",
+          "notes": "Notas del autor."
+        }
+      ]
+    },
+    {
+      "id": "estudio",
+      "name": "Estudio & Editorial",
+      "badge": "PUESTA EN ESCENA",
+      "description": "Fotografía de estudio, dirección de arte y retratos editorial.",
+      "photos": [
+        {
+          "id": "est-1",
+          "title": "Estudio Editorial I",
+          "film": "Digital Studio",
+          "roll": "Estudio",
+          "frame": "01",
+          "category": "Moda",
+          "year": "2024",
+          "url": "Estudio/DSC01657.jpg",
+          "aspectRatio": "4:5",
+          "notes": "Esquema de luz de estudio."
+        }
+      ]
+    },
+    {
+      "id": "natura",
+      "name": "Natura & Paisaje",
+      "badge": "PAISAJE & NATURALEZA",
+      "description": "Registro de naturaleza, montañas y horizontes.",
+      "photos": [
+        {
+          "id": "nat-1",
+          "title": "Paisaje I",
+          "film": "Digital 35mm",
+          "roll": "Natura",
+          "frame": "01",
+          "category": "Paisaje",
+          "year": "2024",
+          "url": "Natura/DSC01567.jpg",
+          "aspectRatio": "16:9",
+          "notes": "Notas sobre paisaje."
+        },
+        {
+          "id": "nat-2",
+          "title": "Paisaje II",
+          "film": "Digital 35mm",
+          "roll": "Natura",
+          "frame": "02",
+          "category": "Paisaje",
+          "year": "2024",
+          "url": "Natura/DSC03167.jpg",
+          "aspectRatio": "16:9",
+          "notes": "Notas de cordillera."
+        },
+        {
+          "id": "nat-3",
+          "title": "Paisaje III",
+          "film": "Analógico 35mm",
+          "roll": "Natura",
+          "frame": "03",
+          "category": "Paisaje",
+          "year": "2024",
+          "url": "Natura/DSC06285.jpeg",
+          "aspectRatio": "4:3",
+          "notes": "Textura vegetal."
+        },
+        {
+          "id": "nat-4",
+          "title": "Paisaje IV",
+          "film": "Analógico 35mm",
+          "roll": "Natura",
+          "frame": "04",
+          "category": "Paisaje",
+          "year": "2024",
+          "url": "Natura/DSC06941.jpeg",
+          "aspectRatio": "16:9",
+          "notes": "Horizonte."
+        },
+        {
+          "id": "nat-5",
+          "title": "Paisaje El Bolsón",
+          "film": "Analógico 35mm",
+          "roll": "Natura",
+          "frame": "05",
+          "category": "Paisaje",
+          "year": "2024",
+          "url": "Natura/paisaje bolson.jpg",
+          "aspectRatio": "16:9",
+          "notes": "Patagonia."
+        }
+      ]
+    },
+    {
+      "id": "shows",
+      "name": "Shows & Música en Vivo",
+      "badge": "MÚSICA & RITUAL VIVO",
+      "description": "Registro de bandas, escenario y performance.",
+      "photos": [
+        {
+          "id": "sho-1",
+          "title": "Registro de Show I",
+          "film": "Digital Low-Light",
+          "roll": "Shows",
+          "frame": "01",
+          "category": "Shows",
+          "year": "2024",
+          "url": "Shows/DSC03913.jpeg",
+          "aspectRatio": "4:3",
+          "notes": "Captura escénica."
+        }
+      ]
+    }
+  ],
+  "audiovisual": [
+    {
+      "id": "av-1",
+      "title": "Showreel Cinematográfico & Dirección Visual",
+      "role": "Director / Director de Fotografía",
+      "year": "2024",
+      "type": "Showreel",
+      "duration": "01:45",
+      "embedType": "youtube",
+      "videoUrl": "https://www.youtube.com/embed/dQw4w9WgXcQ",
+      "thumbnail": "Analógicas/000026680024.jpg",
+      "synopsis": "Espacio para la sinopsis de tu trabajo audiovisual."
+    }
+  ],
+  "essays": [
+    {
+      "id": "ens-1",
+      "title": "Título del Ensayo Visual",
+      "subtitle": "Subtítulo del escrito o reflexión",
+      "date": "2024",
+      "readingTime": "3 min",
+      "photoUrl": "Analógicas/000008800019.jpg",
+      "quote": "«Escribe aquí una cita o frase destacada que encabece tu escrito.»",
+      "content": "Espacio libre para redactar tu propio ensayo visual, reflexión crítica o texto personal entrelazado con tus imágenes."
+    }
+  ],
+  "ia_lab": [
+    {
+      "id": "ia-1",
+      "title": "Proyecto de Experimentación con IA",
+      "academicContext": "Trabajo Final — IA para la Producción Audiovisual (Image Campus)",
+      "category": "Preproducción & Concept Art",
+      "photoUrl": "Analógicas/000026680035.jpg",
+      "workflow": "Escribe aquí la metodología de tu experimento con IA, herramientas utilizadas y pipeline audiovisual.",
+      "promptExample": "Escribe aquí la arquitectura de prompts o parámetros utilizados en tu prueba.",
+      "conclusion": "Reflexión o conclusión personal sobre los resultados de la prueba."
+    }
+  ],
+  "influences_cine": [
+    {
+      "title": "Título de Película o Referencia",
+      "director": "Director / Año",
+      "notes": "Escribe tus notas de análisis cinematográfico o influencia estética."
+    }
+  ],
+  "cartography": [
+    {
+      "place": "Espacio / Lugar del Conurbano o CABA",
+      "zone": "Ubicación / Zona",
+      "type": "Categoría de espacio",
+      "notes": "Escribe tus notas de campo o reseña territorial."
+    }
+  ]
+}

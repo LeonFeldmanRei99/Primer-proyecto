@@ -35,18 +35,32 @@
 
         /* Darkroom Safe-Light Mode Variables */
         body.darkroom-mode {
-            --bg-base: #090102;
-            --bg-surface: #120304;
-            --bg-card: #1B0507;
-            --border-subtle: #2A080B;
+            --bg-base: #040001;
+            --bg-surface: #0B0102;
+            --bg-card: #120203;
+            --border-subtle: #240406;
             --border-medium: #4D0E13;
-            --border-accent: #FF2E2E;
-            --text-main: #FFD6D6;
-            --text-secondary: #E08585;
-            --text-muted: #8F3A3A;
-            --accent: #FF2E2E;
-            --accent-light: #FF6666;
-            --accent-glow: rgba(255, 46, 46, 0.35);
+            --border-accent: #FF1A1A;
+            --text-main: #FFCCCC;
+            --text-secondary: #E06666;
+            --text-muted: #8F2424;
+            --accent: #FF1A1A;
+            --accent-light: #FF4D4D;
+            --accent-glow: rgba(255, 26, 26, 0.45);
+        }
+
+        /* Overlay linterna inmersiva de Cuarto Oscuro */
+        #darkroom-spotlight {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            background: radial-gradient(circle 200px at var(--mouse-x, 50%) var(--mouse-y, 50%), transparent 0%, rgba(4, 0, 1, 0.93) 100%);
+        }
+        body.darkroom-mode #darkroom-spotlight {
+            opacity: 1;
         }
 
         *, *::before, *::after {
@@ -701,10 +715,6 @@
                     <button type="button" class="btn-toggle active" id="btn-lang-es" onclick="setLanguage('es')">ES</button>
                     <button type="button" class="btn-toggle" id="btn-lang-en" onclick="setLanguage('en')">EN</button>
                 </div>
-
-                <button type="button" class="btn-exp" style="padding: 0.45rem 0.9rem; font-size: 0.7rem;" onclick="openPasswordModal()">
-                    <span>✦</span> Editor
-                </button>
             </div>
         </div>
     </header>
@@ -755,19 +765,14 @@
         </div>
     </section>
 
-    <!-- About Section Experimental -->
+    <!-- About Section Clean -->
     <section id="sobre-mi">
         <div class="container">
-            <div class="about-grid">
-                <div class="about-portrait">
-                    <img src="DSC08251.jpg" alt="León Feldman Reinoso" id="about-img" onerror="this.src='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80'">
-                </div>
-                <div>
-                    <div class="font-mono" style="font-size: 0.68rem; letter-spacing: 0.25em; color: var(--accent); margin-bottom: 0.8rem;">TRAYECTORIA & DECLARACIÓN</div>
-                    <h2 class="font-serif" style="font-size: 2.8rem; margin-bottom: 1.5rem;" id="about-title-display">León Feldman Reinoso</h2>
-                    <p class="about-quote" id="about-statement-display">"Capturar la atmósfera exacta donde la autenticidad humana se encuentra con la estética cinematográfica."</p>
-                    <p class="about-text" id="about-bio-display">Fotógrafo y director visual radicado en Buenos Aires, especializado en retrato editorial, moda contemporánea y documentación de atmósferas poéticas. Con un profundo dominio tanto del medio analógico tradicional (35mm y Formato Medio) como de la tecnología digital de alta gama, su trabajo explora el claroscuro y la textura.</p>
-                </div>
+            <div style="max-width: 800px; margin: 0 auto; text-align: center;">
+                <div class="font-mono" style="font-size: 0.68rem; letter-spacing: 0.25em; color: var(--accent); margin-bottom: 0.8rem;">AUTOR & DECLARACIÓN</div>
+                <h2 class="font-serif" style="font-size: 2.8rem; margin-bottom: 1.5rem;" id="about-title-display">León Feldman Reinoso</h2>
+                <p class="about-quote" id="about-statement-display" style="display: none;"></p>
+                <p class="about-text" id="about-bio-display" style="font-size: 1.1rem; line-height: 1.8; color: var(--text-secondary);"></p>
             </div>
         </div>
     </section>
@@ -957,38 +962,48 @@
     <!-- JavaScript Engine & Web Audio API Synthesizer -->
     <script>
         /* --- DEFAULT EXPERIMENTAL DATA --- */
+        /* --- DEFAULT PHOTOS (SÓLO ARCHIVO REAL LOCAL) --- */
         const DEFAULT_PHOTOS = [
-            { id: "p1", src: "DSC08306.jpg", fallback: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1200&q=80", title: "Claroscuro & Presencia", category: "Retratos", film: "KODAK PORTRA 400 • 35mm • f/1.4", orientation: "vertical" },
-            { id: "p2", src: "000005570003.jpg", fallback: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1200&q=80", title: "Silueta Editorial I", category: "Moda", film: "TRI-X 400 • 35mm • 1/250s", orientation: "vertical" },
-            { id: "p3", src: "000026680004.jpg", fallback: "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=1200&q=80", title: "Textura & Estilismo", category: "Moda", film: "FUJIFILM PRO 400H • 120", orientation: "vertical" },
-            { id: "p4", src: "DSC08251.jpg", fallback: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=1200&q=80", title: "Retrato en Penumbra", category: "Retratos", film: "ILFORD HP5 PLUS • 35mm", orientation: "vertical" },
-            { id: "p5", src: "000026680025.jpg", fallback: "https://images.unsplash.com/photo-1492633423870-43d1cd2775eb?auto=format&fit=crop&w=1200&q=80", title: "Mirada Introspectiva", category: "Retratos", film: "KODAK PORTRA 800 • 120", orientation: "vertical" },
-            { id: "p6", src: "000041600005.jpg", fallback: "https://images.unsplash.com/photo-1469334031218-e382a71b716b?auto=format&fit=crop&w=1200&q=80", title: "Vanguardia & Forma", category: "Moda", film: "LEICA M10 • 50mm Summilux", orientation: "vertical" },
-            { id: "p7", src: "000008800019.jpg", fallback: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=1200&q=80", title: "Carácter 35mm", category: "Retratos", film: "KODAK GOLD 200 • 35mm", orientation: "vertical" },
-            { id: "p8", src: "000026680024.jpg", fallback: "https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=1200&q=80", title: "Atmósfera Urbana Nocturna", category: "Urbana", film: "CINESTILL 800T • 35mm", orientation: "vertical" },
-            { id: "p9", src: "000026680034.jpg", fallback: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=1200&q=80", title: "Expresión & Gesto", category: "Retratos", film: "ILFORD DELTA 3200 • 35mm", orientation: "vertical" },
-            { id: "p10", src: "000026680035.jpg", fallback: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1200&q=80", title: "Composición Editorial II", category: "Moda", film: "HASSELBLAD 500C • 80mm", orientation: "vertical" },
-            { id: "p11", src: "DSC01567.jpg", fallback: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=1200&q=80", title: "Luz Natural & Retrato", category: "Retratos", film: "KODAK EKTACHROME • 35mm", orientation: "vertical" },
-            { id: "p12", src: "DSC01657.jpg", fallback: "https://images.unsplash.com/photo-1477959858617-67f30bc75b82?auto=format&fit=crop&w=1200&q=80", title: "Geometría & Sombras", category: "Urbana", film: "LEICA Q2 • 28mm Summilux", orientation: "horizontal" },
-            { id: "p13", src: "DSC02663.jpg", fallback: "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=1200&q=80", title: "Detalle & Objeto", category: "Producto", film: "ROLLEIFLEX 2.8F • 120", orientation: "vertical" },
-            { id: "p14", src: "DSC03167.jpg", fallback: "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1200&q=80", title: "Horizonte & Niebla", category: "Paisaje", film: "CONTAX T2 • 38mm Sonnar", orientation: "horizontal" },
-            { id: "p15", src: "DSC03913.jpeg", fallback: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=1200&q=80", title: "Retrato Analógico Tonal", category: "Retratos", film: "KODAK TRI-X 400 • 35mm", orientation: "vertical" },
-            { id: "p16", src: "DSC06285.jpeg", fallback: "https://images.unsplash.com/photo-1488161628813-04466f872be2?auto=format&fit=crop&w=1200&q=80", title: "Editorial Primavera", category: "Moda", film: "KODAK PORTRA 400 • 120", orientation: "vertical" },
-            { id: "p17", src: "DSC06941.jpeg", fallback: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=1200&q=80", title: "Mirada & Luz Cenital", category: "Retratos", film: "FUJIFILM VELVIA 50 • 35mm", orientation: "vertical" },
-            { id: "p18", src: "DSC09583.jpg", fallback: "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=1200&q=80", title: "Retrato de Estudio", category: "Retratos", film: "PENTAX 67 • 105mm f/2.4", orientation: "vertical" },
-            { id: "p19", src: "paisaje bolson.jpg", fallback: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80", title: "El Bolsón — Cordillera", category: "Paisaje", film: "MAMIYA 7II • 43mm f/4.5", orientation: "horizontal" }
+            // Analógicas
+            { id: "ana-1", src: "Analógicas/000005570003.jpg", category: "Analógicas", film: "35mm Celuloide", orientation: "vertical" },
+            { id: "ana-2", src: "Analógicas/000008800019.jpg", category: "Analógicas", film: "35mm Celuloide", orientation: "vertical" },
+            { id: "ana-3", src: "Analógicas/000026680004.jpg", category: "Analógicas", film: "35mm Celuloide", orientation: "vertical" },
+            { id: "ana-4", src: "Analógicas/000026680024.jpg", category: "Analógicas", film: "35mm Celuloide", orientation: "vertical" },
+            { id: "ana-5", src: "Analógicas/000026680025.jpg", category: "Analógicas", film: "35mm Celuloide", orientation: "vertical" },
+            { id: "ana-6", src: "Analógicas/000026680034.jpg", category: "Analógicas", film: "35mm Celuloide", orientation: "vertical" },
+            { id: "ana-7", src: "Analógicas/000026680035.jpg", category: "Analógicas", film: "35mm Celuloide", orientation: "vertical" },
+            { id: "ana-8", src: "Analógicas/000041600005.jpg", category: "Analógicas", film: "35mm Celuloide", orientation: "vertical" },
+
+            // Calle
+            { id: "cal-1", src: "Calle/DSC02663.jpg", category: "Calle", film: "35mm / Digital", orientation: "vertical" },
+            { id: "cal-2", src: "Calle/DSC08251.jpg", category: "Calle", film: "35mm / Digital", orientation: "vertical" },
+            { id: "cal-3", src: "Calle/DSC08306.jpg", category: "Calle", film: "35mm / Digital", orientation: "vertical" },
+            { id: "cal-4", src: "Calle/DSC09583.jpg", category: "Calle", film: "35mm / Digital", orientation: "vertical" },
+
+            // Estudio
+            { id: "est-1", src: "Estudio/DSC01657.jpg", category: "Estudio", film: "Estudio", orientation: "horizontal" },
+
+            // Natura
+            { id: "nat-1", src: "Natura/DSC01567.jpg", category: "Natura", film: "Digital / Analógico", orientation: "horizontal" },
+            { id: "nat-2", src: "Natura/DSC03167.jpg", category: "Natura", film: "Digital / Analógico", orientation: "horizontal" },
+            { id: "nat-3", src: "Natura/DSC06285.jpeg", category: "Natura", film: "Digital / Analógico", orientation: "vertical" },
+            { id: "nat-4", src: "Natura/DSC06941.jpeg", category: "Natura", film: "Digital / Analógico", orientation: "horizontal" },
+            { id: "nat-5", src: "Natura/paisaje bolson.jpg", category: "Natura", film: "Digital / Analógico", orientation: "horizontal" },
+
+            // Shows
+            { id: "sho-1", src: "Shows/DSC03913.jpeg", category: "Shows", film: "Low-Light Live", orientation: "vertical" }
         ];
 
         const DEFAULT_TEXTS = {
             name: "LEÓN FELDMAN REINOSO",
-            coverSrc: "DSC08306.jpg",
-            tagline_es: "La luz no solo revela la forma, construye la memoria y el misterio.",
-            tagline_en: "Light does not merely reveal form, it constructs memory and mystery.",
-            statement_es: "Capturar la atmósfera exacta donde la autenticidad humana se encuentra con la estética cinematográfica.",
-            statement_en: "Capturing the exact atmosphere where human authenticity meets cinematic aesthetics.",
-            bio_es: "Fotógrafo y director visual radicado en Buenos Aires, especializado en retrato editorial, moda contemporánea y documentación de atmósferas poéticas. Con un profundo dominio tanto del medio analógico tradicional (35mm y Formato Medio) como de la tecnología digital de alta gama, su trabajo explora el claroscuro y la textura.",
-            bio_en: "Photographer and visual director based in Buenos Aires, specializing in editorial portraiture, contemporary fashion, and evocative atmospheres. Mastering both traditional analog film (35mm & 120 Medium Format) and high-end digital systems, his work explores chiaroscuro and texture.",
-            email: "contacto@leonfeldman.com",
+            coverSrc: "Calle/DSC08306.jpg",
+            tagline_es: "",
+            tagline_en: "",
+            statement_es: "",
+            statement_en: "",
+            bio_es: "",
+            bio_en: "",
+            email: "leonfeldman.foto@gmail.com",
             insta: "@leonfeldman.ph",
             loc: "Buenos Aires, Argentina"
         };
@@ -1096,18 +1111,16 @@
 
         async function loadData() {
             await initDB();
+            // Forzar actualización a tus carpetas reales limpiando cache de stock anterior
+            STATE.photos = [...DEFAULT_PHOTOS];
             if (STATE.db) {
-                const photos = await getAllFromStore('photos');
-                STATE.photos = (photos && photos.length > 0) ? photos : [...DEFAULT_PHOTOS];
-                if (!photos || photos.length === 0) await saveAllPhotos(STATE.photos);
-
+                await saveAllPhotos(STATE.photos);
                 const texts = await getFromStore('settings', 'texts');
                 STATE.texts = (texts && texts.data) ? texts.data : { ...DEFAULT_TEXTS };
                 if (!texts) await saveToStore('settings', { key: 'texts', data: STATE.texts });
             } else {
-                const localP = localStorage.getItem('leon_portfolio_photos');
+                localStorage.setItem('leon_portfolio_photos', JSON.stringify(STATE.photos));
                 const localT = localStorage.getItem('leon_portfolio_texts');
-                STATE.photos = localP ? JSON.parse(localP) : [...DEFAULT_PHOTOS];
                 STATE.texts = localT ? JSON.parse(localT) : { ...DEFAULT_TEXTS };
             }
         }
@@ -1214,17 +1227,23 @@
             document.getElementById('hero-title-display').textContent = t.name || DEFAULT_TEXTS.name;
             document.getElementById('about-title-display').textContent = t.name || DEFAULT_TEXTS.name;
 
-            document.getElementById('hero-tagline-display').textContent = isEs ? 
-                `"${t.tagline_es || DEFAULT_TEXTS.tagline_es}"` : 
-                `"${t.tagline_en || DEFAULT_TEXTS.tagline_en}"`;
+            const tagline = isEs ? t.tagline_es : t.tagline_en;
+            const heroTaglineEl = document.getElementById('hero-tagline-display');
+            if (tagline && tagline.trim().length > 0) {
+                heroTaglineEl.textContent = `"${tagline}"`;
+                heroTaglineEl.style.display = 'block';
+            } else {
+                heroTaglineEl.style.display = 'none';
+            }
 
-            document.getElementById('about-statement-display').textContent = isEs ? 
-                `"${t.statement_es || DEFAULT_TEXTS.statement_es}"` : 
-                `"${t.statement_en || DEFAULT_TEXTS.statement_en}"`;
-
-            document.getElementById('about-bio-display').textContent = isEs ? 
-                (t.bio_es || DEFAULT_TEXTS.bio_es) : 
-                (t.bio_en || DEFAULT_TEXTS.bio_en);
+            const bio = isEs ? t.bio_es : t.bio_en;
+            const aboutBioEl = document.getElementById('about-bio-display');
+            if (bio && bio.trim().length > 0) {
+                aboutBioEl.textContent = bio;
+                aboutBioEl.style.display = 'block';
+            } else {
+                aboutBioEl.style.display = 'none';
+            }
 
             document.getElementById('contact-email-display').textContent = t.email || DEFAULT_TEXTS.email;
             document.getElementById('contact-insta-display').textContent = t.insta || DEFAULT_TEXTS.insta;
@@ -1262,6 +1281,9 @@
                 const frameNum = String(idx + 1).padStart(2, '0') + 'A';
                 const filmInfo = photo.film || 'KODAK PORTRA 400 • 35mm';
 
+                const hasTitle = photo.title && photo.title.trim().length > 0 && !photo.title.toLowerCase().startsWith('obra analógica') && !photo.title.toLowerCase().startsWith('serie urbana');
+                const displayTitle = hasTitle ? photo.title : '';
+
                 if (isContactSheet) {
                     card.className = 'contact-sheet-card';
                     card.onclick = () => openLightbox(idx);
@@ -1269,10 +1291,10 @@
                         <span class="contact-frame-num">${frameNum}</span>
                         <span class="contact-film-stock">${photo.category}</span>
                         <div class="contact-img-wrap">
-                            <img src="${photo.src}" alt="${photo.title}" loading="lazy" ${fallbackAttr}>
+                            <img src="${photo.src}" alt="${displayTitle}" loading="lazy" ${fallbackAttr}>
                         </div>
                         <div class="contact-meta">
-                            <span class="contact-title">${photo.title}</span>
+                            ${displayTitle ? `<span class="contact-title">${displayTitle}</span>` : ''}
                             <span style="color: var(--accent); font-size: 0.65rem;">${filmInfo}</span>
                         </div>
                     `;
@@ -1280,10 +1302,10 @@
                     card.className = `editorial-card ${photo.orientation === 'horizontal' ? 'horizontal' : ''}`;
                     card.onclick = () => openLightbox(idx);
                     card.innerHTML = `
-                        <img src="${photo.src}" alt="${photo.title}" class="editorial-img" loading="lazy" ${fallbackAttr}>
+                        <img src="${photo.src}" alt="${displayTitle}" class="editorial-img" loading="lazy" ${fallbackAttr}>
                         <div class="editorial-overlay">
                             <div class="editorial-tag">${photo.category} • ${filmInfo}</div>
-                            <h3 class="editorial-title">${photo.title}</h3>
+                            ${displayTitle ? `<h3 class="editorial-title">${displayTitle}</h3>` : ''}
                         </div>
                     `;
                 }
@@ -1634,18 +1656,24 @@
             if (e.shiftKey && (e.key === 'E' || e.key === 'e')) { e.preventDefault(); openPasswordModal(); }
         });
 
-        window.addEventListener('DOMContentLoaded', async () => {
-            await loadData();
-            applyDarkroomState();
-            setLayoutMode(STATE.layoutMode);
-            setLanguage(STATE.lang);
-            document.getElementById('current-year').textContent = new Date().getFullYear();
-            
-            setTimeout(() => {
-                const p = document.getElementById('preloader');
-                if (p) p.classList.add('loaded');
-            }, 500);
-        });
-    </script>
-</body>
-</html>
+            document.addEventListener('mousemove', (e) => {
+                document.documentElement.style.setProperty('--mouse-x', e.clientX + 'px');
+                document.documentElement.style.setProperty('--mouse-y', e.clientY + 'px');
+            });
+
+            window.addEventListener('DOMContentLoaded', async () => {
+                await loadData();
+                applyDarkroomState();
+                setLayoutMode(STATE.layoutMode);
+                setLanguage(STATE.lang);
+                document.getElementById('current-year').textContent = new Date().getFullYear();
+                
+                setTimeout(() => {
+                    const p = document.getElementById('preloader');
+                    if (p) p.classList.add('loaded');
+                }, 500);
+            });
+        </script>
+        <div id="darkroom-spotlight"></div>
+    </body>
+    </html>

@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Control | León Feldman Studio Editor</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-base: #0B0A08;
+            --bg-surface: #14120E;
+            --bg-card: #1C1914;
+            --border-subtle: #28231B;
+            --border-accent: #C49A5A;
+            --text-main: #F5F0E6;
+            --text-muted: #807565;
+            --accent: #C49A5A;
+            --accent-glow: rgba(196, 154, 90, 0.2);
+            --danger: #E05252;
+            --font-editorial: 'Cormorant Garamond', Georgia, serif;
+            --font-mono: 'Space Mono', monospace;
+            --font-ui: 'Inter', sans-serif;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: var(--bg-base); color: var(--text-main); font-family: var(--font-ui); padding: 2rem; }
+        
+        .admin-container { max-width: 1200px; margin: 0 auto; }
+        header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-subtle); padding-bottom: 1.5rem; margin-bottom: 2rem; }
+        .logo { font-family: var(--font-editorial); font-size: 1.8rem; text-transform: uppercase; letter-spacing: 0.1em; }
+        .badge { font-family: var(--font-mono); font-size: 0.7rem; color: var(--accent); border: 1px solid var(--border-accent); padding: 0.2rem 0.6rem; border-radius: 4px; }
+
+        /* Login Modal / Form */
+        #login-section { max-width: 400px; margin: 5rem auto; background: var(--bg-surface); padding: 2.5rem; border: 1px solid var(--border-subtle); border-radius: 6px; text-align: center; }
+        .form-group { margin-bottom: 1.2rem; text-align: left; }
+        label { display: block; font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent); margin-bottom: 0.5rem; text-transform: uppercase; }
+        input[type="text"], input[type="password"], textarea, select {
+            width: 100%; padding: 0.75rem; background: var(--bg-base); border: 1px solid var(--border-subtle); color: var(--text-main); font-family: inherit; font-size: 0.9rem; border-radius: 4px;
+        }
+        input:focus, textarea:focus, select:focus { outline: none; border-color: var(--accent); }
+
+        .btn-action {
+            display: inline-block; width: 100%; padding: 0.8rem; background: var(--accent); color: #0B0A08; font-family: var(--font-mono); font-weight: bold; border: none; cursor: pointer; text-transform: uppercase; letter-spacing: 0.1em; border-radius: 4px; transition: 0.3s;
+        }
+        .btn-action:hover { background: #E2B978; box-shadow: 0 0 15px var(--accent-glow); }
+        .btn-danger { background: var(--danger); color: #FFF; }
+        .btn-danger:hover { background: #FF6666; }
+
+        /* Tabs Dashboard */
+        #dashboard { display: none; }
+        .tabs { display: flex; gap: 1rem; border-bottom: 1px solid var(--border-subtle); margin-bottom: 2rem; }
+        .tab-btn { padding: 0.8rem 1.5rem; font-family: var(--font-mono); font-size: 0.8rem; background: none; border: none; color: var(--text-muted); cursor: pointer; border-bottom: 2px solid transparent; }
+        .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* Grid de fotos */
+        .photo-admin-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
+        .photo-card { background: var(--bg-card); border: 1px solid var(--border-subtle); padding: 1rem; border-radius: 6px; }
+        .photo-card img { width: 100%; height: 180px; object-fit: cover; border-radius: 4px; margin-bottom: 1rem; }
+        .photo-actions { display: flex; gap: 0.5rem; margin-top: 1rem; }
+        
+        .toast { position: fixed; bottom: 2rem; right: 2rem; background: var(--accent); color: #000; padding: 0.8rem 1.5rem; font-family: var(--font-mono); border-radius: 4px; opacity: 0; transition: 0.4s; pointer-events: none; }
+        .toast.show { opacity: 1; }
+    </style>
+</head>
+<body>
+
+    <div class="admin-container">
+        <header>
+            <div class="logo">Studio CMS <span class="badge">Editor de Portfolio</span></div>
+            <a href="/" target="_blank" style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--accent);">Ver Sitio Público ↗</a>
+        </header>
+
+        <!-- Formulario Autenticación -->
+        <div id="login-section">
+            <h2 style="font-family: var(--font-editorial); margin-bottom: 1rem; font-weight: normal;">Acceso Privado</h2>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="admin-pass">Contraseña de Administrador</label>
+                    <input type="password" id="admin-pass" required placeholder="••••••••">
+                </div>
+                <button type="submit" class="btn-action">Ingresar al Editor</button>
+            </form>
+        </div>
+
+        <!-- Dashboard CMS -->
+        <div id="dashboard">
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('tab-photos')">Fotografías & Obras</button>
+                <button class="tab-btn" onclick="switchTab('tab-upload')">Subir Nueva Foto</button>
+                <button class="tab-btn" onclick="switchTab('tab-profile')">Perfil & Bio</button>
+            </div>
+
+            <!-- Tab 1: Fotografías -->
+            <div id="tab-photos" class="tab-content active">
+                <div class="photo-admin-grid" id="photos-list">
+                    <!-- Se carga dinámicamente -->
+                </div>
+            </div>
+
+            <!-- Tab 2: Subida de archivos -->
+            <div id="tab-upload" class="tab-content">
+                <form id="upload-form" style="max-width: 600px; background: var(--bg-surface); padding: 2rem; border-radius: 6px;">
+                    <div class="form-group">
+                        <label>Seleccionar Archivo de Imagen</label>
+                        <input type="file" id="photo-file" accept="image/*" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Serie / Categoría</label>
+                        <select id="photo-series">
+                            <option value="analogicas">Analógicas</option>
+                            <option value="calle">Calle / Urbana</option>
+                            <option value="estudio">Estudio & Editorial</option>
+                            <option value="natura">Natura & Paisaje</option>
+                            <option value="shows">Shows & Música</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Título (Opcional - Dejar en blanco si no lleva título)</label>
+                        <input type="text" id="photo-title" placeholder="Ej: Sin Título N° 4">
+                    </div>
+                    <div class="form-group">
+                        <label>Notas de Autor (Opcional)</label>
+                        <textarea id="photo-notes" rows="3" placeholder="Información técnica, grano, revelado..."></textarea>
+                    </div>
+                    <button type="submit" class="btn-action">Guardar & Publicar Foto</button>
+                </form>
+            </div>
+
+            <!-- Tab 3: Perfil -->
+            <div id="tab-profile" class="tab-content">
+                <form id="profile-form" style="max-width: 600px; background: var(--bg-surface); padding: 2rem; border-radius: 6px;">
+                    <div class="form-group">
+                        <label>Nombre del Autor</label>
+                        <input type="text" id="prof-name">
+                    </div>
+                    <div class="form-group">
+                        <label>Título / Especialidad</label>
+                        <input type="text" id="prof-title">
+                    </div>
+                    <div class="form-group">
+                        <label>Biografía / Declaración</label>
+                        <textarea id="prof-bio" rows="5"></textarea>
+                    </div>
+                    <button type="submit" class="btn-action">Actualizar Perfil</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast">Guardado correctamente</div>
+
+    <script>
+        let token = localStorage.getItem('cms_token') || '';
+        let portfolioData = {};
+
+        async function init() {
+            if (token) {
+                showDashboard();
+            }
+        }
+
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const password = document.getElementById('admin-pass').value;
+            try {
+                const res = await fetch('/api/admin/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    token = data.token;
+                    localStorage.setItem('cms_token', token);
+                    showDashboard();
+                } else {
+                    alert("Contraseña incorrecta");
+                }
+            } catch (err) {
+                alert("Error de conexión");
+            }
+        });
+
+        async function showDashboard() {
+            document.getElementById('login-section').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
+            await loadPortfolioData();
+        }
+
+        async function loadPortfolioData() {
+            const res = await fetch('/api/portfolio');
+            portfolioData = await res.json();
+            renderPhotos();
+            fillProfileForm();
+        }
+
+        function renderPhotos() {
+            const container = document.getElementById('photos-list');
+            container.innerHTML = '';
+            
+            (portfolioData.series || []).forEach(series => {
+                (series.photos || []).forEach(photo => {
+                    const card = document.createElement('div');
+                    card.className = 'photo-card';
+                    card.innerHTML = `
+                        <img src="/${photo.url}" alt="${photo.title || 'Fotografía'}" onerror="this.src='https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=400'">
+                        <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent); mb-1">${series.name}</div>
+                        <strong>${photo.title || 'Sin Título (Solo Imagen)'}</strong>
+                        <div class="photo-actions">
+                            <button class="btn-action btn-danger" onclick="deletePhoto('${photo.id}')">Eliminar</button>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            });
+        }
+
+        function fillProfileForm() {
+            if (portfolioData.author) {
+                document.getElementById('prof-name').value = portfolioData.author.name || '';
+                document.getElementById('prof-title').value = portfolioData.author.title || '';
+                document.getElementById('prof-bio').value = portfolioData.author.bio || '';
+            }
+        }
+
+        document.getElementById('upload-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const fileInput = document.getElementById('photo-file');
+            if (!fileInput.files[0]) return;
+
+            const formData = new FormData();
+            formData.append('photo', fileInput.files[0]);
+
+            try {
+                const uploadRes = await fetch('/api/admin/upload-file', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    body: formData
+                });
+                const uploadData = await uploadRes.json();
+
+                if (uploadData.success) {
+                    const photoObj = {
+                        seriesId: document.getElementById('photo-series').value,
+                        title: document.getElementById('photo-title').value.trim(),
+                        notes: document.getElementById('photo-notes').value.trim(),
+                        url: uploadData.url
+                    };
+
+                    await fetch('/api/admin/photos/save', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify(photoObj)
+                    });
+
+                    showToast("Foto subida y guardada exitosamente ✦");
+                    fileInput.value = '';
+                    await loadPortfolioData();
+                    switchTab('tab-photos');
+                }
+            } catch (err) {
+                alert("Error al subir imagen");
+            }
+        });
+
+        async function deletePhoto(id) {
+            if (confirm("¿Seguro que deseas eliminar esta fotografía?")) {
+                await fetch(`/api/admin/photos/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                showToast("Fotografía eliminada");
+                await loadPortfolioData();
+            }
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 3000);
+        }
+
+        init();
+    </script>
+</body>
+</html>
