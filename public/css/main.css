@@ -1,18 +1,18 @@
 /* ========================================================
-   LEÓN FELDMAN REINOSO — PORTFOLIO EXPERIMENTAL & ARCHIVO 35MM
-   Sistema de Diseño Editorial / Laboratorio Fotoquímico & Mesa de Luz
+   LEÓN FELDMAN REINOSO — LABORATORIO VISUAL & ARCHIVO 35MM
+   Sistema de Interfaz de Mesa de Luz sin Scroll Vertical Convencional
    ======================================================== */
 
 :root {
-    --bg-base: #0A0907;
-    --bg-surface: #12100C;
-    --bg-card: #181510;
-    --border-subtle: #242018;
-    --border-medium: #3A3326;
+    --bg-base: #070908;
+    --bg-surface: #0E1210;
+    --bg-card: #131916;
+    --border-subtle: #1C2420;
+    --border-medium: #2C3832;
     --border-accent: #C49A5A;
     --text-main: #F5F0E6;
-    --text-secondary: #A8A092;
-    --text-muted: #6B6354;
+    --text-secondary: #9DA8A2;
+    --text-muted: #5E6963;
     --accent: #C49A5A;
     --accent-light: #E2B978;
     --accent-glow: rgba(196, 154, 90, 0.25);
@@ -41,7 +41,6 @@ body.darkroom-mode {
     --accent-glow: rgba(255, 26, 26, 0.45);
 }
 
-/* Spotlight interactivo de luz roja en cuarto oscuro */
 #darkroom-spotlight {
     position: fixed;
     inset: 0;
@@ -61,21 +60,14 @@ body.darkroom-mode #darkroom-spotlight {
     padding: 0;
 }
 
-html {
-    scroll-behavior: smooth;
+html, body.app-mode {
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
     background-color: var(--bg-base);
     color: var(--text-main);
     font-family: var(--font-ui);
     font-size: var(--font-size-root);
-    line-height: 1.6;
-}
-
-body {
-    background-color: var(--bg-base);
-    color: var(--text-main);
-    min-height: 100vh;
-    transition: background-color 0.5s ease, color 0.5s ease;
-    overflow-x: hidden;
 }
 
 img { max-width: 100%; height: auto; display: block; }
@@ -95,23 +87,22 @@ h1, h2, h3, h4, .font-serif {
 .container {
     max-width: 1500px;
     margin: 0 auto;
-    padding: 0 2.5rem;
+    padding: 0 2rem;
 }
-@media (max-width: 768px) { .container { padding: 0 1.25rem; } }
 
-/* Botones con estilo analógico */
+/* Botones */
 .btn-exp {
     display: inline-flex;
     align-items: center;
     gap: 0.6rem;
-    padding: 0.75rem 1.8rem;
+    padding: 0.75rem 1.6rem;
     font-family: var(--font-mono);
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     letter-spacing: 0.15em;
     text-transform: uppercase;
     border: 1px solid var(--border-accent);
     color: var(--text-main);
-    background: rgba(196, 154, 90, 0.05);
+    background: rgba(196, 154, 90, 0.08);
     transition: var(--transition-smooth);
 }
 .btn-exp:hover {
@@ -121,9 +112,9 @@ h1, h2, h3, h4, .font-serif {
 }
 
 .btn-toggle {
-    padding: 0.4rem 0.85rem;
+    padding: 0.35rem 0.75rem;
     font-family: var(--font-mono);
-    font-size: 0.7rem;
+    font-size: 0.68rem;
     letter-spacing: 0.1em;
     border: 1px solid var(--border-medium);
     border-radius: 20px;
@@ -133,7 +124,7 @@ h1, h2, h3, h4, .font-serif {
 .btn-toggle.active {
     border-color: var(--accent);
     color: var(--accent-light);
-    background: rgba(196, 154, 90, 0.12);
+    background: rgba(196, 154, 90, 0.15);
 }
 
 /* Preloader */
@@ -150,34 +141,35 @@ h1, h2, h3, h4, .font-serif {
 }
 #preloader.loaded { opacity: 0; visibility: hidden; pointer-events: none; }
 
-/* Header Navigation con Tira de Negativos */
+/* Header Fijo */
 header {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
+    height: 72px;
     z-index: 1000;
-    padding: 0.9rem 0;
-    background: rgba(10, 9, 7, 0.92);
+    background: rgba(7, 9, 8, 0.94);
     backdrop-filter: blur(15px);
     border-bottom: 1px solid var(--border-subtle);
-    transition: var(--transition-smooth);
+    display: flex;
+    align-items: center;
 }
 .nav-wrapper {
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 1.5rem;
 }
 .brand-logo { display: flex; flex-direction: column; }
-.brand-name { font-family: var(--font-editorial); font-size: 1.35rem; letter-spacing: 0.15em; text-transform: uppercase; line-height: 1; }
-.brand-sub { font-family: var(--font-mono); font-size: 0.58rem; letter-spacing: 0.25em; color: var(--accent); margin-top: 0.2rem; }
+.brand-name { font-family: var(--font-editorial); font-size: 1.3rem; letter-spacing: 0.15em; text-transform: uppercase; line-height: 1; }
+.brand-sub { font-family: var(--font-mono); font-size: 0.55rem; letter-spacing: 0.25em; color: var(--accent); margin-top: 0.2rem; }
 
-/* TIRA DE NEGATIVOS NAVEGACIÓN */
+/* TIRA DE NEGATIVOS — NAVEGADOR DE VISTAS */
 .film-strip-nav {
     display: flex;
     align-items: center;
-    background: #020202;
+    background: #000;
     border: 1px solid var(--border-medium);
     border-radius: 4px;
     padding: 2px;
@@ -186,10 +178,10 @@ header {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 0.35rem 0.9rem;
+    padding: 0.35rem 0.85rem;
     font-family: var(--font-mono);
     transition: var(--transition-smooth);
-    border-right: 1px solid #222;
+    border-right: 1px solid #1a1a1a;
 }
 .film-nav-item:last-child { border-right: none; }
 .film-nav-frame {
@@ -198,13 +190,13 @@ header {
     letter-spacing: 0.1em;
 }
 .film-nav-label {
-    font-size: 0.68rem;
+    font-size: 0.65rem;
     color: var(--text-secondary);
     text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.08em;
 }
 .film-nav-item:hover, .film-nav-item.active {
-    background: rgba(196, 154, 90, 0.15);
+    background: rgba(196, 154, 90, 0.18);
 }
 .film-nav-item:hover .film-nav-label, .film-nav-item.active .film-nav-label {
     color: #fff;
@@ -218,10 +210,10 @@ header {
 .darkroom-toggle-btn {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.45rem 0.9rem;
+    gap: 0.4rem;
+    padding: 0.4rem 0.8rem;
     font-family: var(--font-mono);
-    font-size: 0.72rem;
+    font-size: 0.68rem;
     letter-spacing: 0.1em;
     border: 1px solid var(--border-accent);
     border-radius: 4px;
@@ -234,22 +226,45 @@ header {
 }
 
 /* ========================================================
-   LANDING 3D THREE.JS — CHASIS 35MM
+   CONTENEDOR DE VISTAS (APP VIEWPORT SIN SCROLL VERTICAL)
    ======================================================== */
-#landing-3d-wrapper {
-    position: relative;
-    width: 100%;
-    height: 100vh;
-    min-height: 650px;
-    background: radial-gradient(circle at center, #121815 0%, #040605 75%);
+#app-viewport {
+    position: fixed;
+    top: 72px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    height: calc(100vh - 72px);
     overflow: hidden;
+}
+
+.app-view {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s ease;
+    transform: scale(0.98);
+}
+.app-view.active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: scale(1);
+}
+
+/* VISTA 0: CHASIS 3D */
+#view-landing-3d {
+    background: radial-gradient(circle at center, #121815 0%, #040605 75%);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    border-bottom: 1px solid var(--border-subtle);
 }
-
 #canvas-3d-container {
     position: absolute;
     inset: 0;
@@ -262,14 +277,11 @@ header {
 .landing-overlay-ui {
     position: relative;
     z-index: 10;
-    pointer-events: none;
     text-align: center;
     margin-top: auto;
     margin-bottom: 3.5rem;
 }
-
 .landing-cta-btn {
-    pointer-events: auto;
     display: inline-flex;
     align-items: center;
     gap: 0.8rem;
@@ -282,8 +294,8 @@ header {
     font-size: 0.75rem;
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    transition: var(--transition-smooth);
     box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+    transition: var(--transition-smooth);
 }
 .landing-cta-btn:hover {
     background: var(--accent);
@@ -291,7 +303,6 @@ header {
     box-shadow: 0 0 25px var(--accent-glow);
     transform: translateY(-2px);
 }
-
 .landing-hint {
     font-family: var(--font-mono);
     font-size: 0.65rem;
@@ -301,70 +312,66 @@ header {
     margin-top: 0.8rem;
 }
 
-/* ========================================================
-   MESA DE LUZ (HOME) — SUPERFICIE ILUMINADA DE LABORATORIO
-   ======================================================== */
-#mesa-de-luz {
-    position: relative;
-    min-height: 100vh;
-    background: radial-gradient(circle at 50% 50%, #1e2622 0%, #0d120f 50%, #050806 100%);
-    padding: 7rem 2rem 5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    border-bottom: 1px solid var(--border-subtle);
+/* VISTA 1: MESA DE LUZ DE LABORATORIO */
+#view-mesa-de-luz {
+    background: radial-gradient(circle at 50% 50%, #16201b 0%, #0a0e0c 60%, #040605 100%);
+    overflow-y: auto;
+    padding: 2.5rem;
 }
-
-.light-table-surface {
-    position: relative;
-    width: 100%;
+.light-table-container {
     max-width: 1450px;
-    background: radial-gradient(ellipse at center, rgba(255,255,255,0.08) 0%, rgba(200,230,220,0.02) 60%, transparent 100%);
+    margin: 0 auto;
+}
+.light-table-surface {
+    background: radial-gradient(ellipse at center, rgba(255,255,255,0.06) 0%, rgba(200,230,220,0.01) 60%, transparent 100%);
     border: 1px solid rgba(255,255,255,0.08);
     border-radius: 8px;
-    padding: 3.5rem;
-    box-shadow: inset 0 0 80px rgba(255,255,255,0.03), 0 20px 60px rgba(0,0,0,0.8);
+    padding: 2.5rem;
+    box-shadow: inset 0 0 80px rgba(255,255,255,0.02), 0 20px 60px rgba(0,0,0,0.8);
 }
-@media (max-width: 768px) { .light-table-surface { padding: 1.5rem; } }
-
-.hero-integrated-card {
-    max-width: 750px;
-    margin-bottom: 3.5rem;
-    position: relative;
-    z-index: 5;
+.light-table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 2rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-subtle);
 }
 .hero-meta-badge {
     font-family: var(--font-mono);
-    font-size: 0.7rem;
-    letter-spacing: 0.25em;
+    font-size: 0.68rem;
+    letter-spacing: 0.2em;
     color: var(--accent);
-    margin-bottom: 1rem;
+    margin-bottom: 0.6rem;
     text-transform: uppercase;
 }
 .hero-title {
-    font-size: clamp(2.8rem, 6vw, 5.5rem);
+    font-size: clamp(2.2rem, 4.5vw, 4.2rem);
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    margin-bottom: 1.2rem;
+    margin-bottom: 0.6rem;
 }
 .hero-tagline {
     font-family: var(--font-editorial);
-    font-size: clamp(1.2rem, 2vw, 1.6rem);
+    font-size: clamp(1.1rem, 1.8vw, 1.4rem);
     font-style: italic;
     color: var(--accent-light);
-    margin-bottom: 2rem;
+}
+.light-table-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.8rem;
 }
 
-/* Negativos dispersos sobre la mesa de luz */
-.light-table-negatives {
+/* Negativos en la mesa de luz */
+.light-table-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 2rem;
-    position: relative;
-    z-index: 4;
 }
-
 .negative-strip-card {
     background: #000;
     border: 2px solid #282828;
@@ -372,7 +379,7 @@ header {
     border-radius: 2px;
     cursor: pointer;
     position: relative;
-    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     box-shadow: 0 10px 25px rgba(0,0,0,0.7);
 }
 .negative-strip-card::before, .negative-strip-card::after {
@@ -388,7 +395,6 @@ header {
     white-space: nowrap;
 }
 .negative-strip-card::after { margin-top: 0.4rem; margin-bottom: 0; }
-
 .negative-img-wrap {
     aspect-ratio: 4 / 3;
     overflow: hidden;
@@ -398,11 +404,9 @@ header {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    filter: invert(0.85) contrast(1.2) brightness(0.9);
+    filter: invert(0.88) contrast(1.2) brightness(0.9);
     transition: filter 0.5s ease, transform 0.5s ease;
 }
-
-/* Efecto al enfocar / hover: El negativo se vuelve positivo iluminado por la mesa de luz */
 .negative-strip-card:hover {
     transform: translateY(-8px) scale(1.04);
     border-color: #fff;
@@ -413,7 +417,6 @@ header {
     filter: invert(0) contrast(1.08) brightness(1.05);
     transform: scale(1.05);
 }
-
 .negative-meta {
     margin-top: 0.5rem;
     display: flex;
@@ -424,37 +427,35 @@ header {
 }
 .negative-strip-card:hover .negative-meta { color: var(--accent); }
 
-/* ========================================================
-   GALERÍA — HOJA DE CONTACTOS 35MM (ÚNICO FORMATO)
-   ======================================================== */
-#portfolio {
-    padding: 6rem 0;
-    border-top: 1px solid var(--border-subtle);
+/* VISTA 2: HOJA DE CONTACTOS 35MM (SCROLL DEDICADO) */
+#view-portfolio {
+    overflow-y: auto;
+    padding: 2.5rem;
 }
-
+.gallery-viewport-container {
+    max-width: 1500px;
+    margin: 0 auto;
+}
 .view-controls {
     display: flex;
     align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
     gap: 1.5rem;
-    margin-bottom: 3rem;
-    padding-bottom: 1.5rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.2rem;
     border-bottom: 1px solid var(--border-subtle);
 }
-
 .filter-group {
     display: flex;
     flex-wrap: wrap;
     gap: 0.6rem;
 }
-
 .gallery-grid.mode-contact-sheet {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: 2.5rem;
 }
-
 .contact-sheet-card {
     background: #000;
     border: 2px solid #222;
@@ -523,28 +524,42 @@ header {
 }
 .contact-title { font-family: var(--font-editorial); font-size: 1.2rem; color: #fff; }
 
-/* ========================================================
-   SOBRE MÍ & CONTACTO
-   ======================================================== */
-#sobre-mi {
-    padding: 7rem 0;
+/* VISTA 3: SOBRE MÍ */
+#view-sobre-mi {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
     background: var(--bg-surface);
-    border-top: 1px solid var(--border-subtle);
-    border-bottom: 1px solid var(--border-subtle);
 }
-#contacto {
-    padding: 7rem 0;
+.author-card-panel {
+    max-width: 850px;
+    text-align: center;
+    padding: 3rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-medium);
+}
+
+/* VISTA 4: CONTACTO */
+#view-contacto {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2.5rem;
+}
+.contact-viewport-container {
+    max-width: 1100px;
+    width: 100%;
 }
 .contact-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 4rem;
 }
-@media (max-width: 900px) { .contact-grid { grid-template-columns: 1fr; gap: 2.5rem; } }
+@media (max-width: 900px) { .contact-grid { grid-template-columns: 1fr; gap: 2rem; } }
 .contact-item { margin-bottom: 1.8rem; }
 .contact-item-label { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.15em; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.3rem; }
 .contact-item-val { font-size: 1.25rem; font-family: var(--font-editorial); color: var(--text-main); }
-
 .form-group { margin-bottom: 1.5rem; }
 .form-label { display: block; font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.1em; color: var(--accent); margin-bottom: 0.5rem; text-transform: uppercase; }
 .form-input, .form-textarea {
@@ -558,10 +573,6 @@ header {
 }
 .form-input:focus, .form-textarea:focus { outline: none; border-color: var(--accent); }
 .form-textarea { resize: vertical; min-height: 120px; }
-
-/* Footer */
-footer { padding: 4rem 0; background: var(--bg-base); border-top: 1px solid var(--border-subtle); }
-.footer-flex { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1.5rem; }
 
 /* Lightbox Proyector */
 #lightbox {

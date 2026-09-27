@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>León Feldman Reinoso | Fotografía & Dirección Visual (35mm)</title>
+    <title>León Feldman Reinoso | Laboratorio Visual & Archivo 35mm</title>
     <meta name="description" content="Portfolio y archivo analógico de León Feldman Reinoso. Fotografía 35mm, dirección editorial y laboratorio visual en Buenos Aires.">
     
     <!-- Google Fonts -->
@@ -14,7 +14,7 @@
     <!-- CSS del Sistema de Diseño -->
     <link rel="stylesheet" href="css/main.css">
 </head>
-<body>
+<body class="app-mode">
 
     <!-- Toast de Notificaciones -->
     <div id="toast">
@@ -27,43 +27,36 @@
         <div class="font-mono" style="font-size: 0.68rem; letter-spacing: 0.3em; color: var(--accent); margin-top: 0.5rem;">FOTOGRAFÍA & DIRECCIÓN VISUAL</div>
     </div>
 
-    <!-- PIEZA 3D THREE.JS — CHASIS 35MM NEUTRO INTERACTIVO -->
-    <section id="landing-3d-wrapper">
-        <div id="canvas-3d-container" title="Pasa el cursor para desplegar el celuloide 35mm"></div>
-        <div class="landing-overlay-ui">
-            <a href="#mesa-de-luz" class="landing-cta-btn">
-                <span>✦</span> Entrar a la Mesa de Luz <span>✦</span>
-            </a>
-            <div class="landing-hint">Interacción 3D • Arrastra para rotar el chasis</div>
-        </div>
-    </section>
-
-    <!-- Header Navigation -->
+    <!-- Header / Barra de Navegación de Laboratorio -->
     <header id="main-header">
         <div class="container nav-wrapper">
-            <a href="#mesa-de-luz" class="brand-logo">
+            <div class="brand-logo" onclick="switchAppView('landing-3d')" style="cursor: pointer;">
                 <span class="brand-name" id="nav-brand-name">LEÓN FELDMAN REINOSO</span>
                 <span class="brand-sub">LABORATORIO & DIRECCIÓN VISUAL</span>
-            </a>
+            </div>
 
-            <!-- TIRA DE NEGATIVOS — NAVEGACIÓN PRINCIPAL ENTRE SECCIONES -->
+            <!-- TIRA DE NEGATIVOS — NAVEGADOR PRINCIPAL DE VISTAS (SIN SCROLL VERTICAL) -->
             <nav class="film-strip-nav" id="film-strip-nav">
-                <a href="#mesa-de-luz" class="film-nav-item active">
+                <button type="button" class="film-nav-item active" onclick="switchAppView('mesa-de-luz')" id="nav-btn-mesa">
                     <span class="film-nav-frame">01A</span>
                     <span class="film-nav-label">Mesa de Luz</span>
-                </a>
-                <a href="#portfolio" class="film-nav-item">
+                </button>
+                <button type="button" class="film-nav-item" onclick="switchAppView('portfolio')" id="nav-btn-portfolio">
                     <span class="film-nav-frame">02A</span>
-                    <span class="film-nav-label">Contactos</span>
-                </a>
-                <a href="#sobre-mi" class="film-nav-item">
+                    <span class="film-nav-label">Hoja Contactos</span>
+                </button>
+                <button type="button" class="film-nav-item" onclick="switchAppView('sobre-mi')" id="nav-btn-autor">
                     <span class="film-nav-frame">03A</span>
                     <span class="film-nav-label">Autor</span>
-                </a>
-                <a href="#contacto" class="film-nav-item">
+                </button>
+                <button type="button" class="film-nav-item" onclick="switchAppView('contacto')" id="nav-btn-contacto">
                     <span class="film-nav-frame">04A</span>
                     <span class="film-nav-label">Contacto</span>
-                </a>
+                </button>
+                <button type="button" class="film-nav-item" onclick="switchAppView('landing-3d')" id="nav-btn-3d" title="Ver chasis 3D">
+                    <span class="film-nav-frame">00</span>
+                    <span class="film-nav-label">Chasis 3D</span>
+                </button>
             </nav>
 
             <div class="nav-actions">
@@ -79,109 +72,117 @@
         </div>
     </header>
 
-    <!-- MESA DE LUZ (HOME) — SUPERFICIE ILUMINADA CON NEGATIVOS INTERACTIVOS -->
-    <section id="mesa-de-luz">
-        <div class="light-table-surface">
-            <!-- Hero Integrado en la Mesa de Luz -->
-            <div class="hero-integrated-card">
-                <div class="hero-meta-badge" id="hero-badge-display">AUTOR • BUENOS AIRES • CELULOIDE 35mm / DIGITAL</div>
-                <h1 class="hero-title" id="hero-title-display">LEÓN FELDMAN REINOSO</h1>
-                <p class="hero-tagline" id="hero-tagline-display">"La luz no solo revela la forma, construye la memoria y el misterio."</p>
-                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-                    <a href="#portfolio" class="btn-exp" id="hero-btn1-display">Explorar Obras ✦</a>
-                    <a href="#contacto" class="btn-exp" id="hero-btn2-display" style="border-color: var(--border-medium);">Contacto Directo</a>
-                </div>
+    <!-- CONTENEDOR PRINCIPAL DE LA APP DE LABORATORIO (VISTAS ACTIVAS) -->
+    <main id="app-viewport">
+
+        <!-- VISTA 0: CHASIS 3D THREE.JS -->
+        <section id="view-landing-3d" class="app-view">
+            <div id="canvas-3d-container" title="Pasa el cursor para desplegar el celuloide 35mm"></div>
+            <div class="landing-overlay-ui">
+                <button type="button" class="landing-cta-btn" onclick="switchAppView('mesa-de-luz')">
+                    <span>✦</span> Explorar Mesa de Luz de Laboratorio <span>✦</span>
+                </button>
+                <div class="landing-hint">Interacción 3D • Arrastra para rotar el chasis</div>
             </div>
+        </section>
 
-            <!-- Contenedor de Tiras de Negativos Dispersos en la Mesa de Luz -->
-            <div class="light-table-negatives" id="light-table-negatives">
-                <!-- Se llena dinámicamente con fotos tratadas como negativos que se enfocan e iluminan al hover -->
-            </div>
-        </div>
-    </section>
-
-    <!-- Galería de Obras — Formato Único Hoja de Contactos 35mm -->
-    <section id="portfolio">
-        <div class="container">
-            <div class="view-controls">
-                <div class="filter-group" id="filter-container">
-                    <!-- Botones de filtros generados dinámicamente -->
-                </div>
-
-                <div class="view-mode-group">
-                    <span class="font-mono" style="font-size: 0.65rem; color: var(--accent); text-transform: uppercase;">🎞️ HOJA DE CONTACTOS 35MM (ARCHIVO)</span>
-                </div>
-            </div>
-
-            <div class="gallery-grid mode-contact-sheet" id="portfolio-grid">
-                <!-- Fotografías renderizadas en tiempo real desde la API -->
-            </div>
-        </div>
-    </section>
-
-    <!-- Sección Sobre Mí -->
-    <section id="sobre-mi">
-        <div class="container">
-            <div style="max-width: 850px; margin: 0 auto; text-align: center;">
-                <div class="font-mono" style="font-size: 0.68rem; letter-spacing: 0.25em; color: var(--accent); margin-bottom: 0.8rem;">AUTOR & DECLARACIÓN</div>
-                <h2 class="font-serif" style="font-size: 2.8rem; margin-bottom: 1.5rem;" id="about-title-display">León Feldman Reinoso</h2>
-                <p class="about-text" id="about-bio-display" style="font-size: 1.15rem; line-height: 1.9; color: var(--text-secondary);"></p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Sección Contacto -->
-    <section id="contacto">
-        <div class="container">
-            <div class="contact-grid">
-                <div>
-                    <div class="font-mono" style="font-size: 0.68rem; letter-spacing: 0.25em; color: var(--accent); margin-bottom: 0.8rem;">CONTACTO DIRECTO</div>
-                    <h2 class="font-serif" style="font-size: 2.8rem; margin-bottom: 2rem;">Conversemos sobre tu visión</h2>
-                    
-                    <div class="contact-item">
-                        <div class="contact-item-label">Email de Consulta</div>
-                        <div class="contact-item-val" id="contact-email-display">leonfeldman.foto@gmail.com</div>
+        <!-- VISTA 1: MESA DE LUZ DE NEGATIVOS (HOME) -->
+        <section id="view-mesa-de-luz" class="app-view active">
+            <div class="light-table-container">
+                <div class="light-table-surface">
+                    <div class="light-table-header">
+                        <div>
+                            <div class="hero-meta-badge" id="hero-badge-display">AUTOR • BUENOS AIRES • CELULOIDE 35mm / DIGITAL</div>
+                            <h1 class="hero-title" id="hero-title-display">LEÓN FELDMAN REINOSO</h1>
+                            <p class="hero-tagline" id="hero-tagline-display">"La luz no solo revela la forma, construye la memoria y el misterio."</p>
+                        </div>
+                        <div class="light-table-controls">
+                            <span class="font-mono" style="font-size: 0.7rem; color: var(--accent);">🔬 PASA EL CURSOR SOBRE CADA NEGATIVO PARA POSITIVIZAR</span>
+                            <button type="button" class="btn-exp" onclick="switchAppView('portfolio')">Ver Hoja de Contactos Completa ✦</button>
+                        </div>
                     </div>
-                    <div class="contact-item">
-                        <div class="contact-item-label">Instagram Oficial</div>
-                        <div class="contact-item-val" id="contact-insta-display">@leonfeldman.ph</div>
+
+                    <!-- Grilla interactiva de Negativos sobre la Mesa de Luz -->
+                    <div class="light-table-grid" id="light-table-negatives">
+                        <!-- Generado dinámicamente -->
                     </div>
-                    <div class="contact-item">
-                        <div class="contact-item-label">Estudio / Base</div>
-                        <div class="contact-item-val" id="contact-loc-display">Buenos Aires, Argentina</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VISTA 2: GALERÍA — HOJA DE CONTACTOS 35MM (ARCHIVO) -->
+        <section id="view-portfolio" class="app-view">
+            <div class="gallery-viewport-container">
+                <div class="view-controls">
+                    <div class="filter-group" id="filter-container">
+                        <!-- Botones de filtros generados dinámicamente -->
+                    </div>
+                    <div class="view-mode-group">
+                        <span class="font-mono" style="font-size: 0.68rem; color: var(--accent);">🎞️ ARCHIVO COMPLETO DE FOTOGRAMAS 35MM</span>
                     </div>
                 </div>
 
-                <div>
-                    <form id="contact-form" onsubmit="handleContactSubmit(event)">
-                        <div class="form-group">
-                            <label class="form-label">Nombre Completo *</label>
-                            <input type="text" class="form-input" id="form-name" required placeholder="Tu nombre">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Correo Electrónico *</label>
-                            <input type="email" class="form-input" id="form-email" required placeholder="ejemplo@correo.com">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Detalles de la Consulta *</label>
-                            <textarea class="form-textarea" id="form-msg" required placeholder="Cuéntame sobre tu proyecto o visión fotográfica..."></textarea>
-                        </div>
-                        <button type="submit" class="btn-exp" style="width: 100%;">Enviar Mensaje ✦</button>
-                    </form>
+                <div class="gallery-grid mode-contact-sheet" id="portfolio-grid">
+                    <!-- Fotografías renderizadas en tiempo real desde la API -->
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Footer -->
-    <footer>
-        <div class="container footer-flex">
-            <div>
-                <span class="font-serif" style="font-size: 1.2rem; letter-spacing: 0.15em;">LEÓN FELDMAN REINOSO</span>
-                <span class="font-mono" style="display: block; font-size: 0.65rem; color: var(--text-muted); margin-top: 0.3rem;">&copy; <span id="current-year">2026</span> Todos los derechos reservados.</span>
+        <!-- VISTA 3: SOBRE MÍ / AUTOR -->
+        <section id="view-sobre-mi" class="app-view">
+            <div class="author-viewport-container">
+                <div class="author-card-panel">
+                    <div class="font-mono" style="font-size: 0.68rem; letter-spacing: 0.25em; color: var(--accent); margin-bottom: 0.8rem;">AUTOR & DECLARACIÓN</div>
+                    <h2 class="font-serif" style="font-size: 3rem; margin-bottom: 1.5rem;" id="about-title-display">León Feldman Reinoso</h2>
+                    <p class="about-text" id="about-bio-display" style="font-size: 1.15rem; line-height: 1.9; color: var(--text-secondary);"></p>
+                </div>
             </div>
-        </div>
-    </footer>
+        </section>
+
+        <!-- VISTA 4: CONTACTO -->
+        <section id="view-contacto" class="app-view">
+            <div class="contact-viewport-container">
+                <div class="contact-grid">
+                    <div>
+                        <div class="font-mono" style="font-size: 0.68rem; letter-spacing: 0.25em; color: var(--accent); margin-bottom: 0.8rem;">CONTACTO DIRECTO</div>
+                        <h2 class="font-serif" style="font-size: 2.8rem; margin-bottom: 2rem;">Conversemos sobre tu visión</h2>
+                        
+                        <div class="contact-item">
+                            <div class="contact-item-label">Email de Consulta</div>
+                            <div class="contact-item-val" id="contact-email-display">leonfeldman.foto@gmail.com</div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-item-label">Instagram Oficial</div>
+                            <div class="contact-item-val" id="contact-insta-display">@leonfeldman.ph</div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-item-label">Estudio / Base</div>
+                            <div class="contact-item-val" id="contact-loc-display">Buenos Aires, Argentina</div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <form id="contact-form" onsubmit="handleContactSubmit(event)">
+                            <div class="form-group">
+                                <label class="form-label">Nombre Completo *</label>
+                                <input type="text" class="form-input" id="form-name" required placeholder="Tu nombre">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Correo Electrónico *</label>
+                                <input type="email" class="form-input" id="form-email" required placeholder="ejemplo@correo.com">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Detalles de la Consulta *</label>
+                                <textarea class="form-textarea" id="form-msg" required placeholder="Cuéntame sobre tu proyecto o visión fotográfica..."></textarea>
+                            </div>
+                            <button type="submit" class="btn-exp" style="width: 100%;">Enviar Mensaje ✦</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
 
     <!-- Fullscreen Lightbox Modal (Lupa / Proyector Analógico) -->
     <div id="lightbox" role="dialog" aria-modal="true">

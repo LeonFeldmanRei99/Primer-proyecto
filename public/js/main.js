@@ -1,12 +1,12 @@
 /**
  * LEÓN FELDMAN REINOSO — MOTOR DEL SITIO PÚBLICO
- * Mesa de Luz + Navegación por Tira de Negativos + Lupa de Contactos 35mm
+ * Mesa de Luz + Navegación SPA sin scroll vertical + Lupa de Contactos 35mm
  */
 
 const STATE = {
     portfolio: null,
     activeFilter: 'all',
-    layoutMode: 'contact-sheet',
+    currentView: 'mesa-de-luz',
     lang: localStorage.getItem('leon_lang') || 'es',
     darkroom: localStorage.getItem('leon_darkroom') === 'true',
     activeLightboxIndex: 0,
@@ -17,11 +17,7 @@ const STATE = {
 const TRANSLATIONS = {
     es: {
         all: "Todas",
-        enterLightTable: "✦ Entrar a la Mesa de Luz ✦",
-        explore: "Explorar Obras ✦",
-        contactDirect: "Contacto Directo",
-        aboutEyebrow: "AUTOR & DECLARACIÓN",
-        contactEyebrow: "CONTACTO DIRECTO",
+        enterLightTable: "✦ Explorar Mesa de Luz de Laboratorio ✦",
         contactHeading: "Conversemos sobre tu visión",
         nameLabel: "Nombre Completo *",
         emailLabel: "Correo Electrónico *",
@@ -32,11 +28,7 @@ const TRANSLATIONS = {
     },
     en: {
         all: "All",
-        enterLightTable: "✦ Enter Light Table ✦",
-        explore: "Explore Works ✦",
-        contactDirect: "Direct Contact",
-        aboutEyebrow: "AUTHOR & STATEMENT",
-        contactEyebrow: "DIRECT INQUIRIES",
+        enterLightTable: "✦ Explore Darkroom Light Table ✦",
         contactHeading: "Let's discuss your visual project",
         nameLabel: "Full Name *",
         emailLabel: "Email Address *",
@@ -80,6 +72,30 @@ function playShutterSound() {
     }
 }
 
+// Conmutador de vistas principales sin scroll vertical
+function switchAppView(viewName) {
+    STATE.currentView = viewName;
+
+    // Actualizar secciones
+    document.querySelectorAll('.app-view').forEach(view => view.classList.remove('active'));
+    const target = document.getElementById(`view-${viewName}`);
+    if (target) target.classList.add('active');
+
+    // Actualizar botones de la tira de negativos en el header
+    document.querySelectorAll('.film-nav-item').forEach(item => item.classList.remove('active'));
+    const navMap = {
+        'mesa-de-luz': 'nav-btn-mesa',
+        'portfolio': 'nav-btn-portfolio',
+        'sobre-mi': 'nav-btn-autor',
+        'contacto': 'nav-btn-contacto',
+        'landing-3d': 'nav-btn-3d'
+    };
+    const btn = document.getElementById(navMap[viewName]);
+    if (btn) btn.classList.add('active');
+
+    playShutterSound();
+}
+
 // Cargar datos desde el Backend REST
 async function loadPortfolioData() {
     try {
@@ -97,7 +113,7 @@ async function loadPortfolioData() {
     }
 }
 
-// Aplicar estilos personalizados del backend (tipografía, acento, SEO)
+// Aplicar estilos personalizados del backend
 function applySettings() {
     if (!STATE.portfolio || !STATE.portfolio.settings) return;
     const s = STATE.portfolio.settings;
@@ -133,20 +149,11 @@ function renderTexts() {
     const brandName = document.getElementById('nav-brand-name');
     if (brandName) brandName.textContent = a.name || 'LEÓN FELDMAN REINOSO';
 
-    // Hero Badge editable
     const heroBadge = document.getElementById('hero-badge-display');
     if (heroBadge) heroBadge.textContent = a.heroBadge || "AUTOR • BUENOS AIRES • CELULOIDE 35mm / DIGITAL";
 
-    // Hero Title editable
     const heroTitle = document.getElementById('hero-title-display');
     if (heroTitle) heroTitle.textContent = a.heroTitleOverride || a.name || 'LEÓN FELDMAN REINOSO';
-
-    // Hero Botones CTA editables
-    const heroBtn1 = document.getElementById('hero-btn1-display');
-    if (heroBtn1) heroBtn1.textContent = a.heroBtn1Text || "Explorar Obras ✦";
-
-    const heroBtn2 = document.getElementById('hero-btn2-display');
-    if (heroBtn2) heroBtn2.textContent = a.heroBtn2Text || "Contacto Directo";
 
     const heroTagline = document.getElementById('hero-tagline-display');
     if (heroTagline) {
@@ -225,7 +232,6 @@ function renderLightTable() {
     if (!container) return;
 
     const allPhotos = getAllPhotos();
-    // Tomar 6-8 fotos representativas para la mesa de luz
     const samplePhotos = allPhotos.slice(0, 8);
     container.innerHTML = '';
 
@@ -249,7 +255,7 @@ function renderLightTable() {
     });
 }
 
-// Renderizar Galería (SIEMPRE Hoja de Contactos 35mm)
+// Renderizar Galería (Formato Único Hoja de Contactos 35mm)
 function renderGallery() {
     const grid = document.getElementById('portfolio-grid');
     if (!grid) return;
@@ -332,7 +338,7 @@ function applyDarkroomState() {
     if (darkroomText) darkroomText.textContent = STATE.darkroom ? t.safeLightOn : t.safeLightOff;
 }
 
-// Lightbox (Lupa de Contactos)
+// Lightbox
 let activeFilteredList = [];
 function openLightbox(index, photosList) {
     activeFilteredList = photosList;
@@ -383,25 +389,6 @@ document.addEventListener('mousemove', (e) => {
     document.documentElement.style.setProperty('--mouse-y', e.clientY + 'px');
 });
 
-// Resaltar sección activa en la tira de negativos al hacer scroll
-window.addEventListener('scroll', () => {
-    const sections = ['mesa-de-luz', 'portfolio', 'sobre-mi', 'contacto'];
-    const scrollPos = window.scrollY + 200;
-
-    sections.forEach((id, idx) => {
-        const el = document.getElementById(id);
-        const navItem = document.querySelectorAll('.film-nav-item')[idx];
-        if (el && navItem) {
-            const top = el.offsetTop;
-            const height = el.offsetHeight;
-            if (scrollPos >= top && scrollPos < top + height) {
-                document.querySelectorAll('.film-nav-item').forEach(n => n.classList.remove('active'));
-                navItem.classList.add('active');
-            }
-        }
-    });
-});
-
 // Teclado
 document.addEventListener('keydown', (e) => {
     const lb = document.getElementById('lightbox');
@@ -428,9 +415,6 @@ window.addEventListener('DOMContentLoaded', async () => {
     await loadPortfolioData();
     applyDarkroomState();
     setLanguage(STATE.lang);
-
-    const yearEl = document.getElementById('current-year');
-    if (yearEl) yearEl.textContent = new Date().getFullYear();
 
     setTimeout(() => {
         const p = document.getElementById('preloader');
