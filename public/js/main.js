@@ -1,12 +1,12 @@
 /**
  * LEÓN FELDMAN REINOSO — MOTOR DEL SITIO PÚBLICO
- * Consume la API REST del backend Node.js en tiempo real
+ * Mesa de Luz + Navegación por Tira de Negativos + Lupa de Contactos 35mm
  */
 
 const STATE = {
     portfolio: null,
     activeFilter: 'all',
-    layoutMode: localStorage.getItem('leon_layout_mode') || 'contact-sheet',
+    layoutMode: 'contact-sheet',
     lang: localStorage.getItem('leon_lang') || 'es',
     darkroom: localStorage.getItem('leon_darkroom') === 'true',
     activeLightboxIndex: 0,
@@ -17,10 +17,7 @@ const STATE = {
 const TRANSLATIONS = {
     es: {
         all: "Todas",
-        view: "Vista:",
-        contactSheet: "🎞️ Hoja de Contactos 35mm",
-        editorial: "🖼️ Editorial",
-        enterProjects: "✦ Desplegar Película 35mm — Entrar a Proyectos ✦",
+        enterLightTable: "✦ Entrar a la Mesa de Luz ✦",
         explore: "Explorar Obras ✦",
         contactDirect: "Contacto Directo",
         aboutEyebrow: "AUTOR & DECLARACIÓN",
@@ -35,10 +32,7 @@ const TRANSLATIONS = {
     },
     en: {
         all: "All",
-        view: "View:",
-        contactSheet: "🎞️ 35mm Contact Sheet",
-        editorial: "🖼️ Editorial",
-        enterProjects: "✦ Pull Film Strip — Enter Projects ✦",
+        enterLightTable: "✦ Enter Light Table ✦",
         explore: "Explore Works ✦",
         contactDirect: "Direct Contact",
         aboutEyebrow: "AUTHOR & STATEMENT",
@@ -96,13 +90,14 @@ async function loadPortfolioData() {
         applySettings();
         renderTexts();
         renderCategories();
+        renderLightTable();
         renderGallery();
     } catch (err) {
         console.error('Error cargando portfolio:', err);
     }
 }
 
-// Aplicar estilos personalizados del backend (tipografía, tamaño, portada, color acento)
+// Aplicar estilos personalizados del backend (tipografía, acento, SEO)
 function applySettings() {
     if (!STATE.portfolio || !STATE.portfolio.settings) return;
     const s = STATE.portfolio.settings;
@@ -116,10 +111,6 @@ function applySettings() {
     if (s.customAccentColor) {
         document.documentElement.style.setProperty('--accent', s.customAccentColor);
         document.documentElement.style.setProperty('--border-accent', s.customAccentColor);
-    }
-    if (s.coverPhoto) {
-        const heroImg = document.getElementById('hero-bg-img');
-        if (heroImg) heroImg.src = encodeURI(`/${s.coverPhoto}`);
     }
 
     // SEO dinámico
@@ -142,8 +133,20 @@ function renderTexts() {
     const brandName = document.getElementById('nav-brand-name');
     if (brandName) brandName.textContent = a.name || 'LEÓN FELDMAN REINOSO';
 
+    // Hero Badge editable
+    const heroBadge = document.getElementById('hero-badge-display');
+    if (heroBadge) heroBadge.textContent = a.heroBadge || "AUTOR • BUENOS AIRES • CELULOIDE 35mm / DIGITAL";
+
+    // Hero Title editable
     const heroTitle = document.getElementById('hero-title-display');
-    if (heroTitle) heroTitle.textContent = a.name || 'LEÓN FELDMAN REINOSO';
+    if (heroTitle) heroTitle.textContent = a.heroTitleOverride || a.name || 'LEÓN FELDMAN REINOSO';
+
+    // Hero Botones CTA editables
+    const heroBtn1 = document.getElementById('hero-btn1-display');
+    if (heroBtn1) heroBtn1.textContent = a.heroBtn1Text || "Explorar Obras ✦";
+
+    const heroBtn2 = document.getElementById('hero-btn2-display');
+    if (heroBtn2) heroBtn2.textContent = a.heroBtn2Text || "Contacto Directo";
 
     const heroTagline = document.getElementById('hero-tagline-display');
     if (heroTagline) {
@@ -216,7 +219,37 @@ function getAllPhotos() {
     return photos;
 }
 
-// Renderizar Galería (Hoja de Contactos vs Editorial)
+// Renderizar Negativos en la Mesa de Luz (Home)
+function renderLightTable() {
+    const container = document.getElementById('light-table-negatives');
+    if (!container) return;
+
+    const allPhotos = getAllPhotos();
+    // Tomar 6-8 fotos representativas para la mesa de luz
+    const samplePhotos = allPhotos.slice(0, 8);
+    container.innerHTML = '';
+
+    samplePhotos.forEach((photo, idx) => {
+        const card = document.createElement('div');
+        card.className = 'negative-strip-card';
+        const frameNum = String(idx + 1).padStart(2, '0') + 'A';
+        const filmInfo = photo.film || '35mm FILM';
+        
+        card.onclick = () => openLightbox(idx, samplePhotos);
+        card.innerHTML = `
+            <div class="negative-img-wrap">
+                <img src="${encodeURI('/' + (photo.url || photo.src))}" alt="Negativo 35mm" loading="lazy">
+            </div>
+            <div class="negative-meta">
+                <span>${frameNum} • ${filmInfo}</span>
+                <span>${photo.category || '35MM'}</span>
+            </div>
+        `;
+        container.appendChild(card);
+    });
+}
+
+// Renderizar Galería (SIEMPRE Hoja de Contactos 35mm)
 function renderGallery() {
     const grid = document.getElementById('portfolio-grid');
     if (!grid) return;
@@ -227,7 +260,6 @@ function renderGallery() {
         : allPhotos.filter(p => (p.category || p.seriesId || '').toLowerCase() === STATE.activeFilter.toLowerCase());
 
     grid.innerHTML = '';
-    const isContact = STATE.layoutMode === 'contact-sheet';
 
     if (filtered.length === 0) {
         grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 4rem 1rem; color: var(--text-muted);" class="font-mono">No hay obras registradas en este género.</div>`;
@@ -240,31 +272,19 @@ function renderGallery() {
         const filmInfo = photo.film || '35mm CELULOIDE';
         const displayTitle = (photo.title && !photo.title.toLowerCase().startsWith('obra analógica') && !photo.title.toLowerCase().startsWith('serie urbana')) ? photo.title : '';
 
-        if (isContact) {
-            card.className = 'contact-sheet-card';
-            card.onclick = () => openLightbox(idx, filtered);
-            card.innerHTML = `
-                <span class="contact-frame-num">${frameNum}</span>
-                <span class="contact-film-stock">${photo.category || '35MM'}</span>
-                <div class="contact-img-wrap">
-                    <img src="${encodeURI('/' + (photo.url || photo.src))}" alt="${displayTitle || 'Fotografía 35mm'}" loading="lazy">
-                </div>
-                <div class="contact-meta">
-                    ${displayTitle ? `<span class="contact-title">${displayTitle}</span>` : ''}
-                    <span style="color: var(--accent); font-size: 0.65rem;">${filmInfo}</span>
-                </div>
-            `;
-        } else {
-            card.className = `editorial-card ${photo.orientation === 'horizontal' ? 'horizontal' : ''}`;
-            card.onclick = () => openLightbox(idx, filtered);
-            card.innerHTML = `
-                <img src="${encodeURI('/' + (photo.url || photo.src))}" alt="${displayTitle || 'Fotografía'}" class="editorial-img" loading="lazy">
-                <div class="editorial-overlay">
-                    <div class="editorial-tag">${photo.category || '35MM'} • ${filmInfo}</div>
-                    ${displayTitle ? `<h3 class="editorial-title">${displayTitle}</h3>` : ''}
-                </div>
-            `;
-        }
+        card.className = 'contact-sheet-card';
+        card.onclick = () => openLightbox(idx, filtered);
+        card.innerHTML = `
+            <span class="contact-frame-num">${frameNum}</span>
+            <span class="contact-film-stock">${photo.category || '35MM'}</span>
+            <div class="contact-img-wrap">
+                <img src="${encodeURI('/' + (photo.url || photo.src))}" alt="${displayTitle || 'Fotografía 35mm'}" loading="lazy">
+            </div>
+            <div class="contact-meta">
+                ${displayTitle ? `<span class="contact-title">${displayTitle}</span>` : ''}
+                <span style="color: var(--accent); font-size: 0.65rem;">${filmInfo}</span>
+            </div>
+        `;
         grid.appendChild(card);
     });
 }
@@ -274,23 +294,6 @@ function setFilter(cat) {
     renderCategories();
     renderGallery();
     playShutterSound();
-}
-
-function setLayoutMode(mode) {
-    STATE.layoutMode = mode;
-    localStorage.setItem('leon_layout_mode', mode);
-
-    const btnContact = document.getElementById('btn-view-contact');
-    const btnEditorial = document.getElementById('btn-view-editorial');
-    if (btnContact) btnContact.classList.toggle('active', mode === 'contact-sheet');
-    if (btnEditorial) btnEditorial.classList.toggle('active', mode === 'editorial');
-
-    const grid = document.getElementById('portfolio-grid');
-    if (grid) {
-        grid.className = 'gallery-grid ' + (mode === 'contact-sheet' ? 'mode-contact-sheet' : 'mode-editorial');
-    }
-    playShutterSound();
-    renderGallery();
 }
 
 function setLanguage(lang) {
@@ -308,7 +311,7 @@ function setLanguage(lang) {
 function applyUiLanguage() {
     const t = TRANSLATIONS[STATE.lang];
     const ctaBtn = document.querySelector('.landing-cta-btn');
-    if (ctaBtn) ctaBtn.textContent = t.enterProjects;
+    if (ctaBtn) ctaBtn.textContent = t.enterLightTable;
 
     const darkroomText = document.getElementById('darkroom-btn-text');
     if (darkroomText) darkroomText.textContent = STATE.darkroom ? t.safeLightOn : t.safeLightOff;
@@ -329,7 +332,7 @@ function applyDarkroomState() {
     if (darkroomText) darkroomText.textContent = STATE.darkroom ? t.safeLightOn : t.safeLightOff;
 }
 
-// Lightbox
+// Lightbox (Lupa de Contactos)
 let activeFilteredList = [];
 function openLightbox(index, photosList) {
     activeFilteredList = photosList;
@@ -380,6 +383,25 @@ document.addEventListener('mousemove', (e) => {
     document.documentElement.style.setProperty('--mouse-y', e.clientY + 'px');
 });
 
+// Resaltar sección activa en la tira de negativos al hacer scroll
+window.addEventListener('scroll', () => {
+    const sections = ['mesa-de-luz', 'portfolio', 'sobre-mi', 'contacto'];
+    const scrollPos = window.scrollY + 200;
+
+    sections.forEach((id, idx) => {
+        const el = document.getElementById(id);
+        const navItem = document.querySelectorAll('.film-nav-item')[idx];
+        if (el && navItem) {
+            const top = el.offsetTop;
+            const height = el.offsetHeight;
+            if (scrollPos >= top && scrollPos < top + height) {
+                document.querySelectorAll('.film-nav-item').forEach(n => n.classList.remove('active'));
+                navItem.classList.add('active');
+            }
+        }
+    });
+});
+
 // Teclado
 document.addEventListener('keydown', (e) => {
     const lb = document.getElementById('lightbox');
@@ -405,7 +427,6 @@ function handleContactSubmit(e) {
 window.addEventListener('DOMContentLoaded', async () => {
     await loadPortfolioData();
     applyDarkroomState();
-    setLayoutMode(STATE.layoutMode);
     setLanguage(STATE.lang);
 
     const yearEl = document.getElementById('current-year');

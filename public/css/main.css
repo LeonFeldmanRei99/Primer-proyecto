@@ -1,6 +1,6 @@
 /* ========================================================
    LEÓN FELDMAN REINOSO — PORTFOLIO EXPERIMENTAL & ARCHIVO 35MM
-   Sistema de Diseño Editorial / Laboratorio Fotoquímico
+   Sistema de Diseño Editorial / Laboratorio Fotoquímico & Mesa de Luz
    ======================================================== */
 
 :root {
@@ -150,15 +150,15 @@ h1, h2, h3, h4, .font-serif {
 }
 #preloader.loaded { opacity: 0; visibility: hidden; pointer-events: none; }
 
-/* Header Navigation */
+/* Header Navigation con Tira de Negativos */
 header {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     z-index: 1000;
-    padding: 1.2rem 0;
-    background: rgba(10, 9, 7, 0.88);
+    padding: 0.9rem 0;
+    background: rgba(10, 9, 7, 0.92);
     backdrop-filter: blur(15px);
     border-bottom: 1px solid var(--border-subtle);
     transition: var(--transition-smooth);
@@ -167,10 +167,52 @@ header {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 1.5rem;
 }
 .brand-logo { display: flex; flex-direction: column; }
-.brand-name { font-family: var(--font-editorial); font-size: 1.45rem; letter-spacing: 0.15em; text-transform: uppercase; line-height: 1; }
-.brand-sub { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.25em; color: var(--accent); margin-top: 0.25rem; }
+.brand-name { font-family: var(--font-editorial); font-size: 1.35rem; letter-spacing: 0.15em; text-transform: uppercase; line-height: 1; }
+.brand-sub { font-family: var(--font-mono); font-size: 0.58rem; letter-spacing: 0.25em; color: var(--accent); margin-top: 0.2rem; }
+
+/* TIRA DE NEGATIVOS NAVEGACIÓN */
+.film-strip-nav {
+    display: flex;
+    align-items: center;
+    background: #020202;
+    border: 1px solid var(--border-medium);
+    border-radius: 4px;
+    padding: 2px;
+}
+.film-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0.35rem 0.9rem;
+    font-family: var(--font-mono);
+    transition: var(--transition-smooth);
+    border-right: 1px solid #222;
+}
+.film-nav-item:last-child { border-right: none; }
+.film-nav-frame {
+    font-size: 0.55rem;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+}
+.film-nav-label {
+    font-size: 0.68rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+.film-nav-item:hover, .film-nav-item.active {
+    background: rgba(196, 154, 90, 0.15);
+}
+.film-nav-item:hover .film-nav-label, .film-nav-item.active .film-nav-label {
+    color: #fff;
+}
+@media (max-width: 900px) {
+    .film-strip-nav { display: none; }
+}
+
 .nav-actions { display: flex; align-items: center; gap: 1rem; }
 
 .darkroom-toggle-btn {
@@ -199,7 +241,7 @@ header {
     width: 100%;
     height: 100vh;
     min-height: 650px;
-    background: radial-gradient(circle at center, #16120e 0%, #050403 70%);
+    background: radial-gradient(circle at center, #121815 0%, #040605 75%);
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -231,8 +273,8 @@ header {
     display: inline-flex;
     align-items: center;
     gap: 0.8rem;
-    padding: 0.85rem 2rem;
-    background: rgba(10, 9, 7, 0.75);
+    padding: 0.85rem 2.2rem;
+    background: rgba(10, 15, 12, 0.85);
     backdrop-filter: blur(10px);
     border: 1px solid var(--accent);
     color: var(--text-main);
@@ -260,40 +302,37 @@ header {
 }
 
 /* ========================================================
-   HERO SECTION
+   MESA DE LUZ (HOME) — SUPERFICIE ILUMINADA DE LABORATORIO
    ======================================================== */
-#hero {
+#mesa-de-luz {
     position: relative;
-    min-height: 90vh;
+    min-height: 100vh;
+    background: radial-gradient(circle at 50% 50%, #1e2622 0%, #0d120f 50%, #050806 100%);
+    padding: 7rem 2rem 5rem;
     display: flex;
     align-items: center;
-    padding: 8rem 0 5rem;
+    justify-content: center;
     overflow: hidden;
+    border-bottom: 1px solid var(--border-subtle);
 }
-.hero-bg {
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-}
-.hero-bg img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    filter: brightness(0.38) contrast(1.1);
-}
-.hero-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(180deg, rgba(10, 9, 7, 0.3) 0%, rgba(10, 9, 7, 0.95) 100%);
-    z-index: 2;
-}
-.hero-grid {
+
+.light-table-surface {
     position: relative;
-    z-index: 3;
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 2.5rem;
-    align-items: end;
+    width: 100%;
+    max-width: 1450px;
+    background: radial-gradient(ellipse at center, rgba(255,255,255,0.08) 0%, rgba(200,230,220,0.02) 60%, transparent 100%);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 8px;
+    padding: 3.5rem;
+    box-shadow: inset 0 0 80px rgba(255,255,255,0.03), 0 20px 60px rgba(0,0,0,0.8);
+}
+@media (max-width: 768px) { .light-table-surface { padding: 1.5rem; } }
+
+.hero-integrated-card {
+    max-width: 750px;
+    margin-bottom: 3.5rem;
+    position: relative;
+    z-index: 5;
 }
 .hero-meta-badge {
     font-family: var(--font-mono);
@@ -304,22 +343,89 @@ header {
     text-transform: uppercase;
 }
 .hero-title {
-    font-size: clamp(3rem, 7vw, 6.2rem);
+    font-size: clamp(2.8rem, 6vw, 5.5rem);
     letter-spacing: 0.08em;
     text-transform: uppercase;
     margin-bottom: 1.2rem;
 }
 .hero-tagline {
     font-family: var(--font-editorial);
-    font-size: clamp(1.2rem, 2.2vw, 1.7rem);
+    font-size: clamp(1.2rem, 2vw, 1.6rem);
     font-style: italic;
     color: var(--accent-light);
-    max-width: 800px;
     margin-bottom: 2rem;
 }
 
+/* Negativos dispersos sobre la mesa de luz */
+.light-table-negatives {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 2rem;
+    position: relative;
+    z-index: 4;
+}
+
+.negative-strip-card {
+    background: #000;
+    border: 2px solid #282828;
+    padding: 0.8rem;
+    border-radius: 2px;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.7);
+}
+.negative-strip-card::before, .negative-strip-card::after {
+    content: '••••••••••••••••••••';
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.55rem;
+    letter-spacing: 0.35em;
+    color: #444;
+    text-align: center;
+    margin-bottom: 0.4rem;
+    overflow: hidden;
+    white-space: nowrap;
+}
+.negative-strip-card::after { margin-top: 0.4rem; margin-bottom: 0; }
+
+.negative-img-wrap {
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: #0d0d0d;
+}
+.negative-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: invert(0.85) contrast(1.2) brightness(0.9);
+    transition: filter 0.5s ease, transform 0.5s ease;
+}
+
+/* Efecto al enfocar / hover: El negativo se vuelve positivo iluminado por la mesa de luz */
+.negative-strip-card:hover {
+    transform: translateY(-8px) scale(1.04);
+    border-color: #fff;
+    box-shadow: 0 0 35px rgba(255,255,255,0.4), 0 20px 40px rgba(0,0,0,0.9);
+    z-index: 10;
+}
+.negative-strip-card:hover .negative-img-wrap img {
+    filter: invert(0) contrast(1.08) brightness(1.05);
+    transform: scale(1.05);
+}
+
+.negative-meta {
+    margin-top: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--text-muted);
+}
+.negative-strip-card:hover .negative-meta { color: var(--accent); }
+
 /* ========================================================
-   GALERÍA & NAVEGACIÓN DE OBRAS
+   GALERÍA — HOJA DE CONTACTOS 35MM (ÚNICO FORMATO)
    ======================================================== */
 #portfolio {
     padding: 6rem 0;
@@ -343,13 +449,6 @@ header {
     gap: 0.6rem;
 }
 
-.view-mode-group {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-}
-
-/* Hoja de Contactos 35mm */
 .gallery-grid.mode-contact-sheet {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -423,56 +522,6 @@ header {
     font-size: 0.7rem;
 }
 .contact-title { font-family: var(--font-editorial); font-size: 1.2rem; color: #fff; }
-
-/* Vista Editorial */
-.gallery-grid.mode-editorial {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
-    gap: 2.5rem;
-}
-.editorial-card {
-    position: relative;
-    aspect-ratio: 4 / 5;
-    background: var(--bg-card);
-    border: 1px solid var(--border-subtle);
-    overflow: hidden;
-    cursor: pointer;
-    transition: var(--transition-smooth);
-}
-.editorial-card.horizontal { aspect-ratio: 16 / 10; }
-.editorial-card:hover {
-    transform: translateY(-6px);
-    border-color: var(--border-accent);
-    box-shadow: 0 20px 45px rgba(0,0,0,0.6);
-}
-.editorial-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.7s ease;
-}
-.editorial-card:hover .editorial-img { transform: scale(1.05); }
-.editorial-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(180deg, transparent 40%, rgba(10, 9, 7, 0.92) 100%);
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    padding: 1.8rem;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-.editorial-card:hover .editorial-overlay { opacity: 1; }
-.editorial-tag {
-    font-family: var(--font-mono);
-    font-size: 0.65rem;
-    letter-spacing: 0.2em;
-    color: var(--accent);
-    text-transform: uppercase;
-    margin-bottom: 0.4rem;
-}
-.editorial-title { font-family: var(--font-editorial); font-size: 1.5rem; color: var(--text-main); }
 
 /* ========================================================
    SOBRE MÍ & CONTACTO

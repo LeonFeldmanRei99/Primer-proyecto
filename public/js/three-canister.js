@@ -1,6 +1,7 @@
 /**
- * THREE.JS 35MM FILM CANISTER — PIEZA 3D INTERACTIVA FOTORREALISTA
- * Autor: León Feldman Reinoso — Dirección Visual & Fotografía Analógica
+ * THREE.JS 35MM FILM CANISTER — CHASIS NEUTRO FOTORREALISTA ESTÉTICA ANALÓGICA
+ * Chasis de celuloide verde oscuro mate + detalles metálicos plata (estilo rollo fotoquímico clásico)
+ * Sin textos impresos invasivos / Solo textura de material PBR
  */
 
 (function () {
@@ -27,11 +28,11 @@
     canisterGroup.position.set(-0.8, 0, 0);
 
     // --- ILUMINACIÓN FOTOGRÁFICA DE ESTUDIO (CINEMA SETUP) ---
-    const ambientLight = new THREE.AmbientLight(0xfff4e6, 0.6);
+    const ambientLight = new THREE.AmbientLight(0xfff8ee, 0.6);
     scene.add(ambientLight);
 
-    // Key Light cálida
-    const keyLight = new THREE.DirectionalLight(0xffebd2, 2.5);
+    // Key Light
+    const keyLight = new THREE.DirectionalLight(0xfff4e6, 2.6);
     keyLight.position.set(5, 6, 7);
     keyLight.castShadow = true;
     keyLight.shadow.mapSize.width = 1024;
@@ -39,34 +40,41 @@
     keyLight.shadow.bias = -0.001;
     scene.add(keyLight);
 
-    // Fill Light fría sutil
-    const fillLight = new THREE.DirectionalLight(0xa6c8e0, 0.8);
+    // Fill Light fría
+    const fillLight = new THREE.DirectionalLight(0x90b8d0, 0.9);
     fillLight.position.set(-6, -2, 4);
     scene.add(fillLight);
 
-    // Rim Light posterior para recortar el metal del chasis
-    const rimLight = new THREE.PointLight(0xc49a5a, 3.5, 20);
+    // Rim Light posterior
+    const rimLight = new THREE.PointLight(0xc49a5a, 3.2, 20);
     rimLight.position.set(2, 4, -4);
     scene.add(rimLight);
 
-    // --- MATERIALES PBR REALISTAS ---
-    // Metal oscuro esmaltado para el cuerpo del chasis
-    const canisterMetalMaterial = new THREE.MeshStandardMaterial({
-        color: 0x11100e,
-        roughness: 0.35,
-        metalness: 0.85
+    // --- MATERIALES PBR REALISTAS (CHASIS NEUTRO VERDE OSCURO MATE + PLATA) ---
+    // Cuerpo verde oscuro esmaltado mate (evoca películas fotoquímicas de alta sensibilidad)
+    const canisterBodyMaterial = new THREE.MeshStandardMaterial({
+        color: 0x15281e,
+        roughness: 0.38,
+        metalness: 0.65
     });
 
-    // Metal pulido para tapas y rebordes
+    // Franja decorativa plata satinada
+    const silverStripeMaterial = new THREE.MeshStandardMaterial({
+        color: 0xd8ded9,
+        roughness: 0.22,
+        metalness: 0.9
+    });
+
+    // Tapas y bordes metálicos pulidos
     const capMetalMaterial = new THREE.MeshStandardMaterial({
-        color: 0x24201a,
-        roughness: 0.25,
-        metalness: 0.95
+        color: 0x222624,
+        roughness: 0.28,
+        metalness: 0.92
     });
 
-    // Felpa / terciopelo negro mate estanco
+    // Felpa negra estanca del labio de salida
     const velvetMaterial = new THREE.MeshStandardMaterial({
-        color: 0x050404,
+        color: 0x050505,
         roughness: 0.98,
         metalness: 0.05
     });
@@ -74,10 +82,21 @@
     // --- GEOMETRÍA DEL CHASIS 35MM (PROPORCIONES REALES) ---
     // 1. Cuerpo Cilíndrico Principal
     const bodyGeometry = new THREE.CylinderGeometry(1.2, 1.2, 3.2, 64);
-    const bodyMesh = new THREE.Mesh(bodyGeometry, canisterMetalMaterial);
+    const bodyMesh = new THREE.Mesh(bodyGeometry, canisterBodyMaterial);
     bodyMesh.castShadow = true;
     bodyMesh.receiveShadow = true;
     canisterGroup.add(bodyMesh);
+
+    // Franjas de color y metal plata en el cilindro (procedural limpio, sin texto)
+    const stripeGeoTop = new THREE.CylinderGeometry(1.206, 1.206, 0.25, 64);
+    const stripeMeshTop = new THREE.Mesh(stripeGeoTop, silverStripeMaterial);
+    stripeMeshTop.position.y = 1.0;
+    canisterGroup.add(stripeMeshTop);
+
+    const stripeGeoBottom = new THREE.CylinderGeometry(1.206, 1.206, 0.25, 64);
+    const stripeMeshBottom = new THREE.Mesh(stripeGeoBottom, silverStripeMaterial);
+    stripeMeshBottom.position.y = -1.0;
+    canisterGroup.add(stripeMeshBottom);
 
     // 2. Tapa Inferior Plana
     const bottomCapGeo = new THREE.CylinderGeometry(1.23, 1.23, 0.18, 64);
@@ -114,69 +133,30 @@
     pinHole.position.y = 2.12;
     canisterGroup.add(pinHole);
 
-    // 5. Labio de Felpa / Terciopelo Negro de Salida (Slot)
+    // 5. Labio de Felpa Negra de Salida
     const lipGeo = new THREE.BoxGeometry(0.25, 2.9, 0.35);
     const lipMesh = new THREE.Mesh(lipGeo, velvetMaterial);
     lipMesh.position.set(1.18, 0, 0.15);
     lipMesh.rotation.y = -0.15;
     canisterGroup.add(lipMesh);
 
-    // --- ETIQUETA TIPOGRÁFICA PROCEDURAL 35MM (CANVAS TEXTURE) ---
-    const labelCanvas = document.createElement('canvas');
-    labelCanvas.width = 1024;
-    labelCanvas.height = 512;
-    const ctx = labelCanvas.getContext('2d');
-
-    ctx.fillStyle = '#100e0b';
-    ctx.fillRect(0, 0, labelCanvas.width, labelCanvas.height);
-
-    // Bandas doradas analógicas
-    ctx.fillStyle = '#c49a5a';
-    ctx.fillRect(0, 40, labelCanvas.width, 12);
-    ctx.fillRect(0, labelCanvas.height - 52, labelCanvas.width, 12);
-
-    // Tipografía técnica
-    ctx.fillStyle = '#f5f0e6';
-    ctx.font = 'bold 52px "Cormorant Garamond", Georgia, serif';
-    ctx.fillText('LEÓN FELDMAN REINOSO', 60, 180);
-
-    ctx.fillStyle = '#c49a5a';
-    ctx.font = '28px "Space Mono", monospace';
-    ctx.fillText('35mm CELULOIDE FOTOQUÍMICO', 60, 240);
-
-    ctx.fillStyle = '#888';
-    ctx.font = '22px "Space Mono", monospace';
-    ctx.fillText('36 EXPOSICIONES • KODAK SAFETY FILM • ISO 400', 60, 310);
-    ctx.fillText('PROCESO C-41 / D-76 • BUENOS AIRES', 60, 350);
-
-    const labelTexture = new THREE.CanvasTexture(labelCanvas);
-    const labelMaterial = new THREE.MeshStandardMaterial({
-        map: labelTexture,
-        roughness: 0.4,
-        metalness: 0.3
-    });
-
-    const labelMeshGeo = new THREE.CylinderGeometry(1.205, 1.205, 2.4, 64, 1, true, -Math.PI * 0.4, Math.PI * 0.9);
-    const labelMesh = new THREE.Mesh(labelMeshGeo, labelMaterial);
-    canisterGroup.add(labelMesh);
-
     // --- CINTA PROCEDURAL DE CELULOIDE 35MM DESPLEGABLE ---
     const filmWidth = 6.2;
     const filmHeight = 2.4;
     const filmGeo = new THREE.PlaneGeometry(filmWidth, filmHeight, 32, 1);
     
-    // Generar textura de película analógica con perforaciones y fotogramas
+    // Generar textura de película analógica limpia con perforaciones y fotogramas
     const filmCanvas = document.createElement('canvas');
     filmCanvas.width = 2048;
     filmCanvas.height = 768;
     const fCtx = filmCanvas.getContext('2d');
 
     function drawFilmTexture(images) {
-        fCtx.fillStyle = '#0a0806';
+        fCtx.fillStyle = '#080706';
         fCtx.fillRect(0, 0, filmCanvas.width, filmCanvas.height);
 
         // Perforaciones 35mm arriba y abajo
-        fCtx.fillStyle = '#020101';
+        fCtx.fillStyle = '#000000';
         const numHoles = 32;
         const holeWidth = 26;
         const holeHeight = 44;
@@ -189,35 +169,35 @@
             // Perforación inferior
             drawRoundedRect(fCtx, x, filmCanvas.height - 69, holeWidth, holeHeight, holeRadius);
 
-            // Numeración de fotogramas analógicos
+            // Numeración sutil de fotogramas analógicos (01A, 02A...)
             fCtx.fillStyle = '#c49a5a';
             fCtx.font = 'bold 18px "Space Mono", monospace';
             if (i % 4 === 0) {
                 const frameNum = String(Math.floor(i / 4) + 1).padStart(2, '0') + 'A';
                 fCtx.fillText(frameNum, x - 5, filmCanvas.height - 18);
-                fCtx.fillText('KODAK 400', x - 15, 20);
+                fCtx.fillText('35mm FILM', x - 12, 20);
             }
-            fCtx.fillStyle = '#020101';
+            fCtx.fillStyle = '#000000';
         }
 
-        // Dibujar fotogramas reales cargados o placeholders elegantes
+        // Dibujar fotogramas reales de León Feldman
         const frameW = 420;
         const frameH = 310;
         const frameY = 110;
 
         for (let j = 0; j < 4; j++) {
             const frameX = 80 + j * 480;
-            fCtx.fillStyle = '#161410';
+            fCtx.fillStyle = '#141310';
             fCtx.fillRect(frameX, frameY, frameW, frameH);
 
             if (images && images[j]) {
                 try {
                     fCtx.drawImage(images[j], frameX + 8, frameY + 8, frameW - 16, frameH - 16);
                 } catch (e) {
-                    // Fallback
+                    // Fallback silencioso
                 }
             } else {
-                fCtx.fillStyle = '#222';
+                fCtx.fillStyle = '#1c1a17';
                 fCtx.fillRect(frameX + 8, frameY + 8, frameW - 16, frameH - 16);
             }
         }
@@ -242,26 +222,25 @@
     const filmTexture = new THREE.CanvasTexture(filmCanvas);
     const filmMaterial = new THREE.MeshStandardMaterial({
         map: filmTexture,
-        roughness: 0.3,
+        roughness: 0.32,
         metalness: 0.15,
         side: THREE.DoubleSide
     });
 
     const filmMesh = new THREE.Mesh(filmGeo, filmMaterial);
-    // Posicionar anclado en la salida del chasis
     filmMesh.position.set(1.3 + filmWidth / 2, 0, 0.15);
     canisterGroup.add(filmMesh);
 
-    // Escalar la tira de film inicialmente replegada
-    let filmProgress = 0.08; // 8% visible por defecto (lider del rollo)
+    // Escalar la tira de película inicialmente replegada
+    let filmProgress = 0.08;
     let targetProgress = 0.08;
 
     filmMesh.scale.set(filmProgress, 1, 1);
     filmMesh.position.x = 1.3 + (filmWidth * filmProgress) / 2;
 
-    // Cargar fotos reales locales para pintar en la tira de película
+    // Cargar fotos reales locales
     const samplePhotos = [
-        'Analógicas/000005570003.jpg',
+        'Anal%C3%B3gicas/000005570003.jpg',
         'Calle/DSC08306.jpg',
         'Natura/DSC01567.jpg',
         'Analógicas/000041600005.jpg'
@@ -276,19 +255,16 @@
             loadCount++;
             if (loadCount >= 2) drawFilmTexture(loadedImages);
         };
-        img.onerror = () => {
-            loadCount++;
-        };
+        img.onerror = () => loadCount++;
         img.src = src;
     });
     drawFilmTexture(null);
 
-    // --- INTERACTIVIDAD 3D & PARALLAX DEL MOUSE ---
+    // --- INTERACTIVIDAD & DESPLIEGUE SUAVE ---
     let mouseX = 0;
     let mouseY = 0;
     let targetRotationY = 0.3;
     let targetRotationX = 0.15;
-    let isHovered = false;
 
     window.addEventListener('mousemove', (e) => {
         mouseX = (e.clientX / window.innerWidth) * 2 - 1;
@@ -298,18 +274,16 @@
     });
 
     container.addEventListener('mouseenter', () => {
-        isHovered = true;
         targetProgress = 0.95; // Desplegar película al 95%
     });
 
     container.addEventListener('mouseleave', () => {
-        isHovered = false;
-        targetProgress = 0.08; // Regresar a posición de reposo
+        targetProgress = 0.08; // Regresar a reposo
     });
 
     container.addEventListener('click', () => {
-        const portfolioSection = document.getElementById('portfolio');
-        if (portfolioSection) portfolioSection.scrollIntoView({ behavior: 'smooth' });
+        const lightTableSection = document.getElementById('mesa-de-luz') || document.getElementById('portfolio');
+        if (lightTableSection) lightTableSection.scrollIntoView({ behavior: 'smooth' });
     });
 
     // Responsive Resize
@@ -324,16 +298,13 @@
     function animate() {
         requestAnimationFrame(animate);
 
-        // Suavizado e inercia de rotación del chasis
         canisterGroup.rotation.y += (targetRotationY - canisterGroup.rotation.y) * 0.06;
         canisterGroup.rotation.x += (targetRotationX - canisterGroup.rotation.x) * 0.06;
 
-        // Despliegue animado y elástico de la tira de celuloide
         filmProgress += (targetProgress - filmProgress) * 0.08;
         filmMesh.scale.x = filmProgress;
         filmMesh.position.x = 1.3 + (filmWidth * filmProgress) / 2;
 
-        // Curvatura sutil en Z de la película en el espacio tridimensional
         const positions = filmGeo.attributes.position;
         for (let i = 0; i < positions.count; i++) {
             const u = positions.getX(i);

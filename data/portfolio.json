@@ -6,7 +6,10 @@
     "tagline_es": "La luz no solo revela la forma, construye la memoria y el misterio.",
     "tagline_en": "Light does not merely reveal form, it constructs memory and mystery.",
     "bio": "Laboratorio visual y archivo fotográfico. Espacio de investigación sobre el soporte fotoquímico de 35mm, el grano de película y el montaje cinematográfico como territorios de memoria y experimentación estética.",
-    "statement": "La imagen es memoria, grano y territorio. Desde el triacetato químico hasta la composición visual, este espacio centraliza obras, series y notas de autor.",
+    "heroBadge": "AUTOR • BUENOS AIRES • CELULOIDE 35mm / DIGITAL",
+    "heroTitleOverride": "",
+    "heroBtn1Text": "Explorar Obras ✦",
+    "heroBtn2Text": "Contacto Directo",
     "contact": {
       "email": "leonfeldman.foto@gmail.com",
       "instagram": "@leonfeldman.ph",

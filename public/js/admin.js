@@ -580,7 +580,7 @@ document.getElementById('style-form').addEventListener('submit', async (e) => {
     }
 });
 
-// Perfil de autor & SEO
+// Perfil de autor, Hero editable & SEO
 function renderProfileForm() {
     const a = portfolioData.author || {};
     const seo = a.seo || {};
@@ -593,6 +593,19 @@ function renderProfileForm() {
     document.getElementById('prof-insta').value = a.contact?.instagram || '';
     document.getElementById('prof-loc').value = a.contact?.location || '';
 
+    // Hero editable
+    const badgeEl = document.getElementById('hero-badge');
+    if (badgeEl) badgeEl.value = a.heroBadge || '';
+
+    const titleOverrideEl = document.getElementById('hero-title-override');
+    if (titleOverrideEl) titleOverrideEl.value = a.heroTitleOverride || '';
+
+    const btn1El = document.getElementById('hero-btn1-text');
+    if (btn1El) btn1El.value = a.heroBtn1Text || '';
+
+    const btn2El = document.getElementById('hero-btn2-text');
+    if (btn2El) btn2El.value = a.heroBtn2Text || '';
+
     document.getElementById('seo-meta-title').value = seo.metaTitle || '';
     document.getElementById('seo-meta-desc').value = seo.metaDescription || '';
 }
@@ -604,6 +617,10 @@ document.getElementById('profile-form').addEventListener('submit', async (e) => 
         title: document.getElementById('prof-title').value.trim(),
         bio: document.getElementById('prof-bio').value.trim(),
         statement: document.getElementById('prof-statement').value.trim(),
+        heroBadge: document.getElementById('hero-badge').value.trim(),
+        heroTitleOverride: document.getElementById('hero-title-override').value.trim(),
+        heroBtn1Text: document.getElementById('hero-btn1-text').value.trim(),
+        heroBtn2Text: document.getElementById('hero-btn2-text').value.trim(),
         contact: {
             email: document.getElementById('prof-email').value.trim(),
             instagram: document.getElementById('prof-insta').value.trim(),
@@ -625,7 +642,7 @@ document.getElementById('profile-form').addEventListener('submit', async (e) => 
             body: JSON.stringify(updatedAuthor)
         });
         if (res.ok) {
-            showToast("Perfil de autor y SEO actualizados ✦");
+            showToast("Perfil de autor, Hero y SEO actualizados ✦");
             await loadData();
         }
     } catch (err) {
