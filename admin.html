@@ -199,8 +199,22 @@
         }
 
         async function loadPortfolioData() {
-            const res = await fetch('/api/portfolio');
-            portfolioData = await res.json();
+            try {
+                const res = await fetch('/api/portfolio');
+                if (res.ok) {
+                    portfolioData = await res.json();
+                } else {
+                    throw new Error("API Offline");
+                }
+            } catch (err) {
+                // Fallback si se abre como archivo estático o sin backend Node
+                const localData = localStorage.getItem('leon_portfolio_photos');
+                const localAuthor = localStorage.getItem('leon_portfolio_texts');
+                portfolioData = {
+                    series: [{ id: 'analogicas', name: 'Analógicas', photos: localData ? JSON.parse(localData) : [] }],
+                    author: localAuthor ? JSON.parse(localAuthor) : {}
+                };
+            }
             renderPhotos();
             fillProfileForm();
         }
