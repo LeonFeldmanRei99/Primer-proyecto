@@ -91,12 +91,55 @@
         <div id="dashboard">
             <div class="tabs">
                 <button class="tab-btn active" onclick="switchTab('tab-photos', this)">🖼️ Mis Fotos & Metadatos</button>
+                <button class="tab-btn" onclick="switchTab('tab-style', this)">🎨 Tipografía & Estilo</button>
                 <button class="tab-btn" onclick="switchTab('tab-genres', this)">📁 Géneros & Categorías</button>
                 <button class="tab-btn" onclick="switchTab('tab-upload', this)">📤 Subir Nueva Obra</button>
                 <button class="tab-btn" onclick="switchTab('tab-profile', this)">👤 Perfil & Textos</button>
             </div>
 
-            <!-- Tab 1: Fotografías & Edición de Metadatos individual -->
+            <!-- Tab 2: Configuración de Tipografía & Estilo Visual -->
+            <div id="tab-style" class="tab-content">
+                <form id="style-form" style="max-width: 600px; background: var(--bg-surface); padding: 2rem; border-radius: 6px;" onsubmit="saveStyleSettings(event)">
+                    <h3 style="font-family: var(--font-editorial); margin-bottom: 1rem; color: var(--accent);">Personalización Visual Estilo Adobe Portfolio</h3>
+                    
+                    <div class="form-group">
+                        <label>Familia Tipográfica de Encabezados</label>
+                        <select id="font-family-title" onchange="previewStyle()">
+                            <option value="'Cormorant Garamond', Georgia, serif">Cormorant Garamond (Editorial Clásico)</option>
+                            <option value="'Playfair Display', Georgia, serif">Playfair Display (Elegante & Sofisticado)</option>
+                            <option value="'Cinzel', serif">Cinzel (Vanguardia Escultórica)</option>
+                            <option value="'Space Mono', monospace">Space Mono (Analógico / Técnico 35mm)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Tamaño de Fuente Principal (Escala)</label>
+                        <select id="font-size-base" onchange="previewStyle()">
+                            <option value="15px">Compacto / Fino (15px)</option>
+                            <option value="16px" selected>Estándar Editorial (16px)</option>
+                            <option value="18px">Grande / Impacto (18px)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Foto de Presentación (Hero Background)</label>
+                        <select id="hero-cover-photo">
+                            <option value="Calle/DSC08306.jpg">Calle / DSC08306.jpg</option>
+                            <option value="Calle/DSC08251.jpg">Calle / DSC08251.jpg</option>
+                            <option value="Calle/DSC02663.jpg">Calle / DSC02663.jpg</option>
+                            <option value="Analógicas/000005570003.jpg">Analógicas / 000005570003.jpg</option>
+                            <option value="Analógicas/000026680004.jpg">Analógicas / 000026680004.jpg</option>
+                            <option value="Analógicas/000026680024.jpg">Analógicas / 000026680024.jpg</option>
+                            <option value="Analógicas/000041600005.jpg">Analógicas / 000041600005.jpg</option>
+                            <option value="Natura/DSC01567.jpg">Natura / DSC01567.jpg</option>
+                            <option value="Natura/paisaje bolson.jpg">Natura / Paisaje El Bolsón</option>
+                            <option value="Shows/DSC03913.jpeg">Shows / DSC03913.jpeg</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn-action">Guardar Estilo Visual ✦</button>
+                </form>
+            </div>
             <div id="tab-photos" class="tab-content active">
                 <p style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--accent); margin-bottom: 1.5rem;">Edita el título, rollo, celuloide y notas técnicas de cada foto individualmente:</p>
                 <div class="photo-admin-grid" id="photos-list">
@@ -112,7 +155,7 @@
                     
                     <div style="display: flex; flex-direction: column; gap: 0.8rem; margin-bottom: 1.5rem;">
                         <label style="display: flex; align-items: center; gap: 0.8rem; text-transform: none; font-size: 0.9rem;">
-                            <input type="checkbox" id="genre-analogicas" checked> <span>Analógicas (35mm / 120mm)</span>
+                            <input type="checkbox" id="genre-analogicas" checked> <span>Analógicas (35mm Celuloide)</span>
                         </label>
                         <label style="display: flex; align-items: center; gap: 0.8rem; text-transform: none; font-size: 0.9rem;">
                             <input type="checkbox" id="genre-retratos" checked> <span>Retratos</span>

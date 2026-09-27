@@ -240,6 +240,127 @@
             z-index: 2;
         }
 
+        /* 3D Interactive 35mm Film Canister Landing Styles */
+        #landing-3d-wrapper {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #050403;
+            perspective: 1000px;
+            overflow: hidden;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .canister-container {
+            position: relative;
+            width: 220px;
+            height: 320px;
+            cursor: pointer;
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .canister-container:hover {
+            transform: rotateY(15deg) rotateX(8deg) scale(1.05);
+        }
+
+        /* Chasis 3D Blender Style Cylinder */
+        .canister-body {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, #1f1d18 0%, #0a0907 40%, #2a251d 70%, #0d0c0a 100%);
+            border-radius: 40px / 15px;
+            border: 2px solid var(--border-accent);
+            box-shadow: inset 0 0 25px rgba(0,0,0,0.9), 0 30px 60px rgba(0,0,0,0.95), 0 0 30px var(--accent-glow);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+        }
+
+        .canister-label {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            letter-spacing: 0.25em;
+            color: var(--accent);
+            text-transform: uppercase;
+            text-align: center;
+            border-top: 1px solid var(--border-medium);
+            border-bottom: 1px solid var(--border-medium);
+            padding: 1rem 0.5rem;
+            width: 85%;
+            background: rgba(10, 9, 7, 0.85);
+        }
+
+        /* Película 35mm Desplegable en 3D */
+        .film-strip-pullout {
+            position: absolute;
+            top: 15%;
+            left: 50%;
+            width: 0px;
+            height: 70%;
+            background: #0d0b08;
+            border: 2px solid #222;
+            z-index: 1;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 10px;
+            transition: width 0.7s cubic-bezier(0.16, 1, 0.3, 1), left 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.9);
+            border-radius: 4px;
+        }
+
+        .canister-container:hover .film-strip-pullout {
+            width: 320px;
+            left: 90%;
+        }
+
+        .film-strip-pullout::before, .film-strip-pullout::after {
+            content: '••••••••••••••••••••••••••••••••••••';
+            position: absolute;
+            left: 0;
+            width: 100%;
+            font-family: var(--font-mono);
+            font-size: 0.6rem;
+            letter-spacing: 0.35em;
+            color: var(--accent);
+            text-align: center;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        .film-strip-pullout::before { top: 4px; }
+        .film-strip-pullout::after { bottom: 4px; }
+
+        .film-mini-thumb {
+            width: 90px;
+            height: 65px;
+            object-fit: cover;
+            border: 1px solid var(--border-medium);
+            filter: contrast(1.1) saturate(0.9);
+            flex-shrink: 0;
+        }
+
+        .enter-prompt {
+            margin-top: 3rem;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            letter-spacing: 0.2em;
+            color: var(--accent-light);
+            text-transform: uppercase;
+            animation: pulseGlow 2s infinite ease-in-out;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0.6; transform: translateY(0); }
+            50% { opacity: 1; transform: translateY(-4px); }
+        }
+
         .hero-grid {
             position: relative;
             z-index: 3;
@@ -698,6 +819,28 @@
         <div class="font-mono" style="font-size: 0.68rem; letter-spacing: 0.3em; color: var(--accent); margin-top: 0.5rem;">FOTOGRAFÍA & DIRECCIÓN VISUAL</div>
     </div>
 
+    <!-- Landing Bienvenido 3D Chasis 35mm Estilo Blender -->
+    <section id="landing-3d-wrapper">
+        <a href="#hero" class="canister-container" title="Haz clic para desplegar la película e ingresar a Proyectos">
+            <div class="canister-body">
+                <div style="font-family: var(--font-mono); font-size: 0.65rem; color: #888; margin-bottom: 0.5rem;">SAFETY FILM</div>
+                <div class="canister-label">
+                    <strong>LEÓN FELDMAN</strong><br>
+                    <span style="font-size: 0.6rem; color: #888;">35mm CELULOIDE</span>
+                </div>
+                <div style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--accent); margin-top: 0.8rem;">EXP 36</div>
+            </div>
+            
+            <div class="film-strip-pullout">
+                <img src="Analógicas/000005570003.jpg" class="film-mini-thumb" alt="Preview 35mm">
+                <img src="Calle/DSC08306.jpg" class="film-mini-thumb" alt="Preview 35mm">
+                <img src="Natura/DSC01567.jpg" class="film-mini-thumb" alt="Preview 35mm">
+            </div>
+        </a>
+
+        <a href="#hero" class="enter-prompt">✦ Desplegar Película — Entrar a Proyectos ✦</a>
+    </section>
+
     <!-- Header Navigation -->
     <header id="main-header">
         <div class="container nav-wrapper">
@@ -728,7 +871,7 @@
 
         <div class="container hero-grid">
             <div>
-                <div class="hero-meta-badge">AUTOR • BUENOS AIRES • 35mm / 120 / DIGITAL</div>
+                <div class="hero-meta-badge">AUTOR • BUENOS AIRES • CELULOIDE 35mm / DIGITAL</div>
                 <h1 class="hero-title" id="hero-title-display">LEÓN FELDMAN REINOSO</h1>
                 <p class="hero-tagline" id="hero-tagline-display">"La luz no solo revela la forma, construye la memoria y el misterio."</p>
                 <div style="display: flex; gap: 1.2rem;">
