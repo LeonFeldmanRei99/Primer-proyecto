@@ -18,7 +18,15 @@
     "fontFamilyTitle": "'Cormorant Garamond', Georgia, serif",
     "fontSizeBase": "16px",
     "coverPhoto": "Calle/DSC08306.jpg",
-    "activeGenres": ["analogicas", "retratos", "moda", "calle", "natura", "shows"]
+    "activeGenres": ["analogicas", "retratos", "moda", "calle", "natura", "shows"],
+    "customGenres": [
+      { "id": "analogicas", "name": "Analógicas (35mm)" },
+      { "id": "retratos", "name": "Retratos" },
+      { "id": "moda", "name": "Moda & Editorial" },
+      { "id": "calle", "name": "Calle / Urbana" },
+      { "id": "natura", "name": "Natura & Paisaje" },
+      { "id": "shows", "name": "Shows & Música" }
+    ]
   },
   "series": [
     {
@@ -35,7 +43,7 @@
           "frame": "03",
           "category": "Retratos",
           "year": "2024",
-          "url": "Analógicas/000005570003.jpg",
+          "url": "Anal%C3%B3gicas/000005570003.jpg",
           "aspectRatio": "4:3",
           "notes": "Notas del autor sobre toma y revelado."
         },

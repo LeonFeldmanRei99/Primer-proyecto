@@ -233,7 +233,7 @@ function renderGallery() {
                 <span class="contact-frame-num">${frameNum}</span>
                 <span class="contact-film-stock">${photo.category || '35MM'}</span>
                 <div class="contact-img-wrap">
-                    <img src="/${photo.url || photo.src}" alt="${displayTitle || 'Fotografía 35mm'}" loading="lazy">
+                    <img src="${encodeURI('/' + (photo.url || photo.src))}" alt="${displayTitle || 'Fotografía 35mm'}" loading="lazy">
                 </div>
                 <div class="contact-meta">
                     ${displayTitle ? `<span class="contact-title">${displayTitle}</span>` : ''}
@@ -244,7 +244,7 @@ function renderGallery() {
             card.className = `editorial-card ${photo.orientation === 'horizontal' ? 'horizontal' : ''}`;
             card.onclick = () => openLightbox(idx, filtered);
             card.innerHTML = `
-                <img src="/${photo.url || photo.src}" alt="${displayTitle || 'Fotografía'}" class="editorial-img" loading="lazy">
+                <img src="${encodeURI('/' + (photo.url || photo.src))}" alt="${displayTitle || 'Fotografía'}" class="editorial-img" loading="lazy">
                 <div class="editorial-overlay">
                     <div class="editorial-tag">${photo.category || '35MM'} • ${filmInfo}</div>
                     ${displayTitle ? `<h3 class="editorial-title">${displayTitle}</h3>` : ''}
@@ -348,7 +348,7 @@ function updateLightboxContent() {
     if (!photo) return;
 
     const img = document.getElementById('lightbox-img');
-    if (img) img.src = `/${photo.url || photo.src}`;
+    if (img) img.src = encodeURI(`/${photo.url || photo.src}`);
 
     const titleEl = document.getElementById('lightbox-title');
     if (titleEl) titleEl.textContent = photo.title || '';

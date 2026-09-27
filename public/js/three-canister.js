@@ -308,8 +308,8 @@
     });
 
     container.addEventListener('click', () => {
-        const heroSection = document.getElementById('hero');
-        if (heroSection) heroSection.scrollIntoView({ behavior: 'smooth' });
+        const portfolioSection = document.getElementById('portfolio');
+        if (portfolioSection) portfolioSection.scrollIntoView({ behavior: 'smooth' });
     });
 
     // Responsive Resize

@@ -102,31 +102,24 @@
                 </form>
             </div>
 
-            <!-- Tab 3: Gestión de Géneros Visibles en el Portfolio -->
+            <!-- Tab 3: Gestión de Géneros & Carpetas Personalizadas -->
             <div id="tab-genres" class="tab-content">
+                <div style="max-width: 650px; background: var(--bg-surface); padding: 2.5rem; border-radius: 6px; border: 1px solid var(--border-subtle); margin-bottom: 2rem;">
+                    <h3 style="font-family: var(--font-editorial); margin-bottom: 0.8rem; color: var(--accent);">Crear Nuevo Género / Carpeta</h3>
+                    <p style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); margin-bottom: 1.5rem;">Añade categorías personalizadas para organizar tus obras (ej: Moda, Editorial, Retratos, Experimentos):</p>
+                    
+                    <form id="create-genre-form" style="display: flex; gap: 1rem;">
+                        <input type="text" id="new-genre-name" placeholder="Ej: Publicidad & Moda" required style="flex: 1; padding: 0.8rem; background: var(--bg-card); border: 1px solid var(--border-medium); color: #fff; font-size: 0.9rem;">
+                        <button type="submit" class="btn-action" style="width: auto; padding: 0.8rem 1.4rem;">Crear Género ✦</button>
+                    </form>
+                </div>
+
                 <form id="genres-form" style="max-width: 650px; background: var(--bg-surface); padding: 2.5rem; border-radius: 6px; border: 1px solid var(--border-subtle);">
                     <h3 style="font-family: var(--font-editorial); margin-bottom: 0.8rem; color: var(--accent);">Filtros de Género en la Galería Pública</h3>
-                    <p style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); margin-bottom: 1.8rem;">Selecciona qué géneros estarán habilitados en la barra de navegación del sitio web:</p>
+                    <p style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); margin-bottom: 1.8rem;">Selecciona qué géneros estarán activos en la barra de navegación del sitio web:</p>
 
-                    <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2rem;">
-                        <label style="display: flex; align-items: center; gap: 0.8rem; text-transform: none; font-size: 0.95rem; cursor: pointer;">
-                            <input type="checkbox" class="genre-checkbox" value="analogicas"> <span>Analógicas (35mm Celuloide)</span>
-                        </label>
-                        <label style="display: flex; align-items: center; gap: 0.8rem; text-transform: none; font-size: 0.95rem; cursor: pointer;">
-                            <input type="checkbox" class="genre-checkbox" value="retratos"> <span>Retratos</span>
-                        </label>
-                        <label style="display: flex; align-items: center; gap: 0.8rem; text-transform: none; font-size: 0.95rem; cursor: pointer;">
-                            <input type="checkbox" class="genre-checkbox" value="moda"> <span>Moda & Editorial</span>
-                        </label>
-                        <label style="display: flex; align-items: center; gap: 0.8rem; text-transform: none; font-size: 0.95rem; cursor: pointer;">
-                            <input type="checkbox" class="genre-checkbox" value="calle"> <span>Calle / Urbana</span>
-                        </label>
-                        <label style="display: flex; align-items: center; gap: 0.8rem; text-transform: none; font-size: 0.95rem; cursor: pointer;">
-                            <input type="checkbox" class="genre-checkbox" value="natura"> <span>Natura & Paisaje</span>
-                        </label>
-                        <label style="display: flex; align-items: center; gap: 0.8rem; text-transform: none; font-size: 0.95rem; cursor: pointer;">
-                            <input type="checkbox" class="genre-checkbox" value="shows"> <span>Shows & Música en Vivo</span>
-                        </label>
+                    <div id="genres-checkboxes-container" style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2rem;">
+                        <!-- Se llena dinámicamente desde JS -->
                     </div>
 
                     <button type="submit" class="btn-action">Guardar Configuración de Géneros ✦</button>

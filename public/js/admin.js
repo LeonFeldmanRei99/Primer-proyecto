@@ -106,6 +106,15 @@ function renderPhotos() {
 
     const coverPhoto = portfolioData.settings?.coverPhoto || '';
 
+    const customGenres = portfolioData.settings?.customGenres || [
+        { id: "analogicas", name: "Analógicas" },
+        { id: "retratos", name: "Retratos" },
+        { id: "moda", name: "Moda & Editorial" },
+        { id: "calle", name: "Calle / Urbana" },
+        { id: "natura", name: "Natura & Paisaje" },
+        { id: "shows", name: "Shows & Música" }
+    ];
+
     currentPhotos.forEach((photo, idx) => {
         const card = document.createElement('div');
         const isCover = (photo.url || photo.src) === coverPhoto;
@@ -114,10 +123,13 @@ function renderPhotos() {
         card.dataset.index = idx;
         card.dataset.id = photo.id;
 
+        const currentCat = (photo.category || photo.seriesId || '').toLowerCase();
+        const categoryOptions = customGenres.map(g => `<option value="${g.id}" ${currentCat === g.id.toLowerCase() || photo.category === g.name ? 'selected' : ''}>${g.name}</option>`).join('');
+
         card.innerHTML = `
             ${isCover ? '<div class="cover-badge">★ Portada Actual</div>' : ''}
             <div class="drag-handle">⠿ Arrastrar para reordenar</div>
-            <img src="/${photo.url || photo.src}" alt="${photo.title || 'Foto'}">
+            <img src="${encodeURI('/' + (photo.url || photo.src))}" alt="${photo.title || 'Foto'}">
             
             <div class="form-group" style="margin-bottom: 0.6rem;">
                 <label>Título de la Obra</label>
@@ -127,12 +139,7 @@ function renderPhotos() {
             <div class="form-group" style="margin-bottom: 0.6rem;">
                 <label>Género / Categoría</label>
                 <select id="category-${photo.id}">
-                    <option value="analogicas" ${photo.category === 'analogicas' || photo.category === 'Analógicas' ? 'selected' : ''}>Analógicas</option>
-                    <option value="retratos" ${photo.category === 'retratos' || photo.category === 'Retratos' ? 'selected' : ''}>Retratos</option>
-                    <option value="moda" ${photo.category === 'moda' || photo.category === 'Moda' ? 'selected' : ''}>Moda & Editorial</option>
-                    <option value="calle" ${photo.category === 'calle' || photo.category === 'Calle' ? 'selected' : ''}>Calle / Urbana</option>
-                    <option value="natura" ${photo.category === 'natura' || photo.category === 'Natura' ? 'selected' : ''}>Natura & Paisaje</option>
-                    <option value="shows" ${photo.category === 'shows' || photo.category === 'Shows' ? 'selected' : ''}>Shows & Música</option>
+                    ${categoryOptions}
                 </select>
             </div>
 
@@ -338,12 +345,114 @@ document.getElementById('upload-form').addEventListener('submit', async (e) => {
     }
 });
 
+// Rellenar selectores de género en la subida y edición de fotos
+function updateGenreDropdowns() {
+    const customGenres = portfolioData.settings?.customGenres || [
+        { id: "analogicas", name: "Analógicas (35mm)" },
+        { id: "retratos", name: "Retratos" },
+        { id: "moda", name: "Moda & Editorial" },
+        { id: "calle", name: "Calle / Urbana" },
+        { id: "natura", name: "Natura & Paisaje" },
+        { id: "shows", name: "Shows & Música" }
+    ];
+
+    const uploadSelect = document.getElementById('upload-series');
+    if (uploadSelect) {
+        uploadSelect.innerHTML = customGenres.map(g => `<option value="${g.id}">${g.name}</option>`).join('');
+    }
+}
+
 // Gestión de géneros visibles
 function renderGenresForm() {
-    const activeGenres = portfolioData.settings?.activeGenres || ['analogicas', 'retratos', 'moda', 'calle', 'natura', 'shows'];
-    document.querySelectorAll('.genre-checkbox').forEach(cb => {
-        cb.checked = activeGenres.includes(cb.value);
-    });
+    updateGenreDropdowns();
+    const container = document.getElementById('genres-checkboxes-container');
+    if (!container) return;
+
+    const customGenres = portfolioData.settings?.customGenres || [
+        { id: "analogicas", name: "Analógicas (35mm)" },
+        { id: "retratos", name: "Retratos" },
+        { id: "moda", name: "Moda & Editorial" },
+        { id: "calle", name: "Calle / Urbana" },
+        { id: "natura", name: "Natura & Paisaje" },
+        { id: "shows", name: "Shows & Música" }
+    ];
+
+    const activeGenres = portfolioData.settings?.activeGenres || customGenres.map(g => g.id);
+
+    container.innerHTML = customGenres.map(g => `
+        <label style="display: flex; align-items: center; justify-content: space-between; text-transform: none; font-size: 0.95rem; cursor: pointer; background: var(--bg-card); padding: 0.8rem 1rem; border-radius: 4px; border: 1px solid var(--border-subtle);">
+            <div style="display: flex; align-items: center; gap: 0.8rem;">
+                <input type="checkbox" class="genre-checkbox" value="${g.id}" ${activeGenres.includes(g.id) ? 'checked' : ''}>
+                <span>${g.name}</span>
+            </div>
+            ${['analogicas', 'retratos', 'moda', 'calle', 'natura', 'shows'].includes(g.id) ? '' : `<button type="button" onclick="deleteCustomGenre('${g.id}')" style="color: var(--danger); font-size: 0.75rem;">Eliminar</button>`}
+        </label>
+    `).join('');
+}
+
+// Crear nuevo género
+document.getElementById('create-genre-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const nameInput = document.getElementById('new-genre-name');
+    const genreName = nameInput.value.trim();
+    if (!genreName) return;
+
+    const genreId = genreName.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-');
+
+    if (!portfolioData.settings) portfolioData.settings = {};
+    if (!portfolioData.settings.customGenres) {
+        portfolioData.settings.customGenres = [
+            { id: "analogicas", name: "Analógicas (35mm)" },
+            { id: "retratos", name: "Retratos" },
+            { id: "moda", name: "Moda & Editorial" },
+            { id: "calle", name: "Calle / Urbana" },
+            { id: "natura", name: "Natura & Paisaje" },
+            { id: "shows", name: "Shows & Música" }
+        ];
+    }
+
+    if (!portfolioData.settings.customGenres.some(g => g.id === genreId)) {
+        portfolioData.settings.customGenres.push({ id: genreId, name: genreName });
+        if (!portfolioData.settings.activeGenres) portfolioData.settings.activeGenres = [];
+        portfolioData.settings.activeGenres.push(genreId);
+    }
+
+    try {
+        await fetch('/api/admin/settings', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(portfolioData.settings)
+        });
+        showToast(`¡Género "${genreName}" creado con éxito! ✦`);
+        nameInput.value = '';
+        await loadData();
+    } catch (err) {
+        showToast("Error al crear género");
+    }
+});
+
+async function deleteCustomGenre(genreId) {
+    if (!confirm("¿Eliminar este género personalizado?")) return;
+    portfolioData.settings.customGenres = portfolioData.settings.customGenres.filter(g => g.id !== genreId);
+    portfolioData.settings.activeGenres = portfolioData.settings.activeGenres.filter(id => id !== genreId);
+
+    try {
+        await fetch('/api/admin/settings', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(portfolioData.settings)
+        });
+        showToast("Género eliminado ✦");
+        await loadData();
+    } catch (err) {
+        showToast("Error al eliminar género");
+    }
 }
 
 document.getElementById('genres-form').addEventListener('submit', async (e) => {

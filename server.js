@@ -31,10 +31,10 @@ app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
-// Static files routing
+// Static files routing con decodificación de URI
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(UPLOADS_DIR));
-app.use('/Analógicas', express.static(path.join(__dirname, 'Analógicas')));
+app.use(['/Analógicas', '/Anal%C3%B3gicas'], express.static(path.join(__dirname, 'Analógicas')));
 app.use('/Calle', express.static(path.join(__dirname, 'Calle')));
 app.use('/Estudio', express.static(path.join(__dirname, 'Estudio')));
 app.use('/Natura', express.static(path.join(__dirname, 'Natura')));
