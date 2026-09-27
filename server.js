@@ -12,29 +12,38 @@ const PORT = process.env.PORT || 3000;
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'leon1234';
 const JWT_SECRET = process.env.JWT_SECRET || 'secret_laboratorio_2026';
 
-const DATA_FILE = path.join(__dirname, 'data', 'portfolio.json');
-const UPLOADS_DIR = path.join(__dirname, 'uploads');
+const BASE_DATA_DIR = process.env.DATA_DIR || path.join(__dirname, 'data');
+const DATA_FILE = path.join(BASE_DATA_DIR, 'portfolio.json');
+const UPLOADS_DIR = process.env.UPLOADS_DIR || path.join(__dirname, 'uploads');
 
 // Ensure directories exist
-if (!fs.existsSync(path.join(__dirname, 'data'))) fs.mkdirSync(path.join(__dirname, 'data'));
-if (!fs.existsSync(UPLOADS_DIR)) fs.mkdirSync(UPLOADS_DIR);
+if (!fs.existsSync(BASE_DATA_DIR)) fs.mkdirSync(BASE_DATA_DIR, { recursive: true });
+if (!fs.existsSync(UPLOADS_DIR)) fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+
+// Copy initial seed data if running on new persistent disk
+const SEED_FILE = path.join(__dirname, 'data', 'portfolio.json');
+if (!fs.existsSync(DATA_FILE) && fs.existsSync(SEED_FILE)) {
+    fs.copyFileSync(SEED_FILE, DATA_FILE);
+}
 
 // Middleware
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
-// Serve static frontend files and photos
-app.use(express.static(__dirname));
-app.get('/admin', (req, res) => {
-    res.sendFile(path.join(__dirname, 'admin.html'));
-});
+// Static files routing
+app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(UPLOADS_DIR));
 app.use('/Analógicas', express.static(path.join(__dirname, 'Analógicas')));
 app.use('/Calle', express.static(path.join(__dirname, 'Calle')));
 app.use('/Estudio', express.static(path.join(__dirname, 'Estudio')));
 app.use('/Natura', express.static(path.join(__dirname, 'Natura')));
 app.use('/Shows', express.static(path.join(__dirname, 'Shows')));
+
+// Explicit route for admin panel
+app.get('/admin', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+});
 
 // Multer Storage Configuration
 const storage = multer.diskStorage({
@@ -47,7 +56,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// Helper to read JSON data
+// Helper to read JSON data safely
 function readData() {
     if (!fs.existsSync(DATA_FILE)) return {};
     try {
@@ -59,25 +68,25 @@ function readData() {
     }
 }
 
-// Helper to write JSON data
+// Helper to write JSON data atomically
 function writeData(data) {
-    fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2), 'utf8');
+    const tempFile = `${DATA_FILE}.tmp`;
+    fs.writeFileSync(tempFile, JSON.stringify(data, null, 2), 'utf8');
+    fs.renameSync(tempFile, DATA_FILE);
 }
 
-// Auth Middleware for Admin routes
+// Strict Auth Middleware for Admin routes
 function authenticateToken(req, res, next) {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
     
     if (!token) {
-        // Fallback for simple local admin sessions
-        return next();
+        return res.status(401).json({ error: 'Acceso no autorizado. Token de autenticación requerido.' });
     }
 
     jwt.verify(token, JWT_SECRET, (err, user) => {
         if (err) {
-            // Allow local fallback
-            return next();
+            return res.status(403).json({ error: 'Token inválido o expirado. Por favor inicia sesión nuevamente.' });
         }
         req.user = user;
         next();
@@ -97,6 +106,10 @@ app.get('/api/portfolio', (req, res) => {
 // POST Admin Login
 app.post('/api/admin/login', (req, res) => {
     const { password } = req.body;
+    if (!password) {
+        return res.status(400).json({ success: false, error: 'Se requiere contraseña.' });
+    }
+
     if (password === ADMIN_PASSWORD) {
         const token = jwt.sign({ role: 'admin' }, JWT_SECRET, { expiresIn: '7d' });
         return res.json({ success: true, token, message: 'Autenticación exitosa.' });
@@ -104,19 +117,14 @@ app.post('/api/admin/login', (req, res) => {
     return res.status(401).json({ success: false, error: 'Contraseña incorrecta.' });
 });
 
-// ==========================================
-// FULL CRUD ADMIN API (Hiper-Completo)
-// ==========================================
-
-// SAVE entire portfolio dataset (Global Full Editor Update)
-app.post('/api/admin/save-all', authenticateToken, (req, res) => {
-    const fullData = req.body;
-    if (!fullData || typeof fullData !== 'object') {
-        return res.status(400).json({ error: 'Datos no válidos.' });
-    }
-    writeData(fullData);
-    res.json({ success: true, message: 'Todo el contenido del portfolio se ha guardado correctamente.' });
+// Verify token status
+app.get('/api/admin/verify', authenticateToken, (req, res) => {
+    res.json({ success: true, valid: true });
 });
+
+// ==========================================
+// FULL CRUD ADMIN API
+// ==========================================
 
 // UPDATE Author Profile & Bio
 app.put('/api/admin/author', authenticateToken, (req, res) => {
@@ -124,6 +132,48 @@ app.put('/api/admin/author', authenticateToken, (req, res) => {
     data.author = { ...data.author, ...req.body };
     writeData(data);
     res.json({ success: true, author: data.author, message: 'Datos de autor actualizados.' });
+});
+
+// UPDATE Visual Style & Settings (Typography, Cover, Genres)
+app.put('/api/admin/settings', authenticateToken, (req, res) => {
+    const data = readData();
+    data.settings = { ...data.settings, ...req.body };
+    writeData(data);
+    res.json({ success: true, settings: data.settings, message: 'Configuración visual guardada.' });
+});
+
+// REORDER Photos
+app.put('/api/admin/photos/reorder', authenticateToken, (req, res) => {
+    const { orderedIds } = req.body;
+    if (!Array.isArray(orderedIds)) {
+        return res.status(400).json({ error: 'orderedIds debe ser un array.' });
+    }
+
+    const data = readData();
+    let allPhotos = [];
+    (data.series || []).forEach(s => {
+        if (s.photos) allPhotos.push(...s.photos);
+    });
+
+    const photoMap = new Map(allPhotos.map(p => [p.id, p]));
+    const reordered = [];
+    orderedIds.forEach(id => {
+        if (photoMap.has(id)) {
+            reordered.push(photoMap.get(id));
+            photoMap.delete(id);
+        }
+    });
+    // Add any leftovers
+    photoMap.forEach(p => reordered.push(p));
+
+    if (!data.series || data.series.length === 0) {
+        data.series = [{ id: 'analogicas', name: 'Analógicas', photos: reordered }];
+    } else {
+        data.series[0].photos = reordered;
+    }
+
+    writeData(data);
+    res.json({ success: true, message: 'Orden de fotografías actualizado.' });
 });
 
 // ADD or EDIT Photo

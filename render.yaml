@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: portfolio-leon-feldman
+    env: node
+    plan: free # Puedes cambiar a starter si usas persistent disk pago
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: ADMIN_PASSWORD
+        generateValue: false # Configurar en el Dashboard de Render
+      - key: JWT_SECRET
+        generateValue: true  # Render genera una clave criptográfica aleatoria segura
+    # Para planes con Persistent Disk (Starter):
+    # disk:
+    #   name: portfolio-disk
+    #   mountPath: /var/data
+    #   sizeGB: 1

@@ -1,0 +1,256 @@
+/* ========================================================
+   STUDIO CMS — PANEL DE ADMINISTRACIÓN ESTILO ADOBE PORTFOLIO
+   Diseño de Control & Gestión Visual
+   ======================================================== */
+
+:root {
+    --bg-base: #0B0A08;
+    --bg-surface: #14120E;
+    --bg-card: #1C1914;
+    --border-subtle: #28231B;
+    --border-medium: #3A3326;
+    --border-accent: #C49A5A;
+    --text-main: #F5F0E6;
+    --text-muted: #807565;
+    --accent: #C49A5A;
+    --accent-glow: rgba(196, 154, 90, 0.2);
+    --danger: #E05252;
+    --success: #4CAF50;
+    --font-editorial: 'Cormorant Garamond', Georgia, serif;
+    --font-mono: 'Space Mono', monospace;
+    --font-ui: 'Inter', -apple-system, sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+    background: var(--bg-base);
+    color: var(--text-main);
+    font-family: var(--font-ui);
+    padding: 2rem;
+    min-height: 100vh;
+}
+
+.admin-container {
+    max-width: 1300px;
+    margin: 0 auto;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-subtle);
+    padding-bottom: 1.5rem;
+    margin-bottom: 2rem;
+}
+.logo {
+    font-family: var(--font-editorial);
+    font-size: 1.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+.badge {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--accent);
+    border: 1px solid var(--border-accent);
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+}
+
+/* Login Modal / Form */
+#login-section {
+    max-width: 420px;
+    margin: 6rem auto;
+    background: var(--bg-surface);
+    padding: 2.5rem;
+    border: 1px solid var(--border-subtle);
+    border-radius: 6px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+    text-align: center;
+}
+.form-group { margin-bottom: 1.2rem; text-align: left; }
+label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+}
+input[type="text"], input[type="password"], textarea, select {
+    width: 100%;
+    padding: 0.8rem;
+    background: var(--bg-base);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-main);
+    font-family: inherit;
+    font-size: 0.9rem;
+    border-radius: 4px;
+}
+input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.btn-action {
+    display: inline-block;
+    width: 100%;
+    padding: 0.85rem;
+    background: var(--accent);
+    color: #0B0A08;
+    font-family: var(--font-mono);
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border-radius: 4px;
+    transition: 0.3s;
+}
+.btn-action:hover {
+    background: #E2B978;
+    box-shadow: 0 0 15px var(--accent-glow);
+}
+.btn-danger { background: var(--danger); color: #FFF; }
+.btn-danger:hover { background: #FF6666; }
+.btn-secondary { background: var(--border-medium); color: var(--text-main); }
+.btn-secondary:hover { background: var(--border-accent); color: #000; }
+
+/* Tabs Dashboard */
+#dashboard { display: none; }
+.tabs {
+    display: flex;
+    gap: 0.8rem;
+    border-bottom: 1px solid var(--border-subtle);
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+.tab-btn {
+    padding: 0.85rem 1.4rem;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: 0.3s;
+}
+.tab-btn.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+}
+
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* Grid de fotos administrables (Estilo Adobe Portfolio) */
+.photo-admin-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+    gap: 1.8rem;
+}
+.photo-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    padding: 1.2rem;
+    border-radius: 6px;
+    position: relative;
+    transition: 0.3s;
+}
+.photo-card:hover {
+    border-color: var(--border-medium);
+}
+.photo-card.is-cover {
+    border-color: var(--accent);
+    box-shadow: 0 0 20px var(--accent-glow);
+}
+.photo-card img {
+    width: 100%;
+    height: 190px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+    background: #000;
+}
+.cover-badge {
+    position: absolute;
+    top: 1.6rem;
+    right: 1.6rem;
+    background: var(--accent);
+    color: #000;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    font-weight: bold;
+    padding: 0.2rem 0.5rem;
+    border-radius: 3px;
+    text-transform: uppercase;
+}
+
+.photo-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.6rem;
+    margin-top: 1rem;
+}
+
+.drag-handle {
+    cursor: grab;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Dropzone de subida */
+.dropzone {
+    border: 2px dashed var(--border-accent);
+    padding: 3rem 2rem;
+    text-align: center;
+    background: rgba(196, 154, 90, 0.03);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.dropzone:hover {
+    background: rgba(196, 154, 90, 0.08);
+}
+.preview-container {
+    display: none;
+    margin-top: 1.5rem;
+    text-align: center;
+}
+.preview-container img {
+    max-height: 220px;
+    margin: 0 auto;
+    border-radius: 4px;
+    border: 1px solid var(--border-medium);
+}
+
+.toast {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: var(--accent);
+    color: #000;
+    padding: 0.9rem 1.8rem;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    border-radius: 4px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+    z-index: 10000;
+}
+.toast.show {
+    opacity: 1;
+    transform: translateY(0);
+}

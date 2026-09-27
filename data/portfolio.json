@@ -1,10 +1,12 @@
 {
   "author": {
     "name": "León Feldman Reinoso",
-    "title": "Fotógrafo, Director Visual & Investigador de Medios",
+    "title": "Fotógrafo, Director Visual & Realizador Cinematográfico",
     "location": "Buenos Aires & Conurbano Bonaerense, Argentina",
-    "bio": "Laboratorio visual y archivo experimental. Espacio para la catalogación de obra fotográfica analógica (35mm / 120mm), dirección audiovisual y experimentación con inteligencia artificial.",
-    "statement": "La imagen es memoria, grano y territorio. Desde el triacetato químico hasta la simulación digital, este espacio centraliza obras, notas de laboratorio y proyectos.",
+    "tagline_es": "La luz no solo revela la forma, construye la memoria y el misterio.",
+    "tagline_en": "Light does not merely reveal form, it constructs memory and mystery.",
+    "bio": "Laboratorio visual y archivo fotográfico. Espacio de investigación sobre el soporte fotoquímico de 35mm, el grano de película y el montaje cinematográfico como territorios de memoria y experimentación estética.",
+    "statement": "La imagen es memoria, grano y territorio. Desde el triacetato químico hasta la composición visual, este espacio centraliza obras, series y notas de autor.",
     "contact": {
       "email": "leonfeldman.foto@gmail.com",
       "instagram": "@leonfeldman.ph",
@@ -12,11 +14,17 @@
       "location": "Buenos Aires, Argentina"
     }
   },
+  "settings": {
+    "fontFamilyTitle": "'Cormorant Garamond', Georgia, serif",
+    "fontSizeBase": "16px",
+    "coverPhoto": "Calle/DSC08306.jpg",
+    "activeGenres": ["analogicas", "retratos", "moda", "calle", "natura", "shows"]
+  },
   "series": [
     {
       "id": "analogicas",
       "name": "Analógicas",
-      "badge": "CELULOIDE 35MM / 120MM",
+      "badge": "CELULOIDE 35MM",
       "description": "Película química, grano tangible y revelado de laboratorio.",
       "photos": [
         {

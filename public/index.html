@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>León Feldman Reinoso | Fotografía & Dirección Visual (35mm)</title>
+    <meta name="description" content="Portfolio y archivo analógico de León Feldman Reinoso. Fotografía 35mm, dirección editorial y laboratorio visual en Buenos Aires.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400;1,600&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&family=Cinzel:wght@400;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+    <!-- CSS del Sistema de Diseño -->
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+    <!-- Toast de Notificaciones -->
+    <div id="toast">
+        <span class="accent-text">✦</span> <span id="toast-msg">Notificación</span>
+    </div>
+
+    <!-- Preloader de Bienvenida -->
+    <div id="preloader">
+        <div class="font-serif" style="font-size: 2.2rem; letter-spacing: 0.2em; text-transform: uppercase;">LEÓN FELDMAN REINOSO</div>
+        <div class="font-mono" style="font-size: 0.68rem; letter-spacing: 0.3em; color: var(--accent); margin-top: 0.5rem;">FOTOGRAFÍA & DIRECCIÓN VISUAL</div>
+    </div>
+
+    <!-- PIEZA 3D THREE.JS — CHASIS 35MM FOTORREALISTA INTERACTIVO -->
+    <section id="landing-3d-wrapper">
+        <div id="canvas-3d-container" title="Pasa el cursor o arrastra para rotar el chasis e interactuar con la película 35mm"></div>
+        <div class="landing-overlay-ui">
+            <a href="#hero" class="landing-cta-btn">
+                <span>✦</span> Desplegar Película 35mm — Entrar a Proyectos <span>✦</span>
+            </a>
+            <div class="landing-hint">Interacción 3D • Arrastra el cursor para rotar el chasis</div>
+        </div>
+    </section>
+
+    <!-- Header Navigation -->
+    <header id="main-header">
+        <div class="container nav-wrapper">
+            <a href="#hero" class="brand-logo">
+                <span class="brand-name" id="nav-brand-name">LEÓN FELDMAN REINOSO</span>
+                <span class="brand-sub">LABORATORIO & DIRECCIÓN VISUAL</span>
+            </a>
+
+            <div class="nav-actions">
+                <button type="button" class="darkroom-toggle-btn" onclick="toggleDarkroomMode()" title="Cambiar a modo Cuarto Oscuro">
+                    <span>🔴</span> <span id="darkroom-btn-text">Cuarto Oscuro</span>
+                </button>
+
+                <div style="display: flex; gap: 3px; background: var(--bg-card); padding: 2px; border: 1px solid var(--border-medium); border-radius: 20px;">
+                    <button type="button" class="btn-toggle active" id="btn-lang-es" onclick="setLanguage('es')">ES</button>
+                    <button type="button" class="btn-toggle" id="btn-lang-en" onclick="setLanguage('en')">EN</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="hero">
+        <div class="hero-bg">
+            <img src="Calle/DSC08306.jpg" alt="León Feldman Reinoso" id="hero-bg-img">
+        </div>
+        <div class="hero-overlay"></div>
+
+        <div class="container hero-grid">
+            <div>
+                <div class="hero-meta-badge">AUTOR • BUENOS AIRES • CELULOIDE 35mm / DIGITAL</div>
+                <h1 class="hero-title" id="hero-title-display">LEÓN FELDMAN REINOSO</h1>
+                <p class="hero-tagline" id="hero-tagline-display">"La luz no solo revela la forma, construye la memoria y el misterio."</p>
+                <div style="display: flex; gap: 1.2rem; flex-wrap: wrap;">
+                    <a href="#portfolio" class="btn-exp">Explorar Obras ✦</a>
+                    <a href="#contacto" class="btn-exp" style="border-color: var(--border-medium);">Contacto Directo</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Galería de Obras & Hoja de Contactos 35mm -->
+    <section id="portfolio">
+        <div class="container">
+            <div class="view-controls">
+                <div class="filter-group" id="filter-container">
+                    <!-- Botones de filtros generados dinámicamente -->
+                </div>
+
+                <div class="view-mode-group">
+                    <span class="font-mono" style="font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase;">Vista:</span>
+                    <button type="button" class="btn-toggle active" id="btn-view-contact" onclick="setLayoutMode('contact-sheet')">🎞️ Hoja de Contactos 35mm</button>
+                    <button type="button" class="btn-toggle" id="btn-view-editorial" onclick="setLayoutMode('editorial')">🖼️ Editorial</button>
+                </div>
+            </div>
+
+            <div class="gallery-grid mode-contact-sheet" id="portfolio-grid">
+                <!-- Fotografías renderizadas en tiempo real desde la API -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección Sobre Mí -->
+    <section id="sobre-mi">
+        <div class="container">
+            <div style="max-width: 850px; margin: 0 auto; text-align: center;">
+                <div class="font-mono" style="font-size: 0.68rem; letter-spacing: 0.25em; color: var(--accent); margin-bottom: 0.8rem;">AUTOR & DECLARACIÓN</div>
+                <h2 class="font-serif" style="font-size: 2.8rem; margin-bottom: 1.5rem;" id="about-title-display">León Feldman Reinoso</h2>
+                <p class="about-text" id="about-bio-display" style="font-size: 1.15rem; line-height: 1.9; color: var(--text-secondary);"></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección Contacto -->
+    <section id="contacto">
+        <div class="container">
+            <div class="contact-grid">
+                <div>
+                    <div class="font-mono" style="font-size: 0.68rem; letter-spacing: 0.25em; color: var(--accent); margin-bottom: 0.8rem;">CONTACTO DIRECTO</div>
+                    <h2 class="font-serif" style="font-size: 2.8rem; margin-bottom: 2rem;">Conversemos sobre tu visión</h2>
+                    
+                    <div class="contact-item">
+                        <div class="contact-item-label">Email de Consulta</div>
+                        <div class="contact-item-val" id="contact-email-display">leonfeldman.foto@gmail.com</div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-item-label">Instagram Oficial</div>
+                        <div class="contact-item-val" id="contact-insta-display">@leonfeldman.ph</div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-item-label">Estudio / Base</div>
+                        <div class="contact-item-val" id="contact-loc-display">Buenos Aires, Argentina</div>
+                    </div>
+                </div>
+
+                <div>
+                    <form id="contact-form" onsubmit="handleContactSubmit(event)">
+                        <div class="form-group">
+                            <label class="form-label">Nombre Completo *</label>
+                            <input type="text" class="form-input" id="form-name" required placeholder="Tu nombre">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Correo Electrónico *</label>
+                            <input type="email" class="form-input" id="form-email" required placeholder="ejemplo@correo.com">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Detalles de la Consulta *</label>
+                            <textarea class="form-textarea" id="form-msg" required placeholder="Cuéntame sobre tu proyecto o visión fotográfica..."></textarea>
+                        </div>
+                        <button type="submit" class="btn-exp" style="width: 100%;">Enviar Mensaje ✦</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container footer-flex">
+            <div>
+                <span class="font-serif" style="font-size: 1.2rem; letter-spacing: 0.15em;">LEÓN FELDMAN REINOSO</span>
+                <span class="font-mono" style="display: block; font-size: 0.65rem; color: var(--text-muted); margin-top: 0.3rem;">&copy; <span id="current-year">2026</span> Todos los derechos reservados.</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Fullscreen Lightbox Modal (Proyector Analógico) -->
+    <div id="lightbox" role="dialog" aria-modal="true">
+        <button type="button" class="lightbox-close" onclick="closeLightbox()">&times;</button>
+        <button type="button" class="lightbox-nav lightbox-prev" onclick="prevLightbox()">&#8592;</button>
+        <button type="button" class="lightbox-nav lightbox-next" onclick="nextLightbox()">&#8594;</button>
+
+        <div class="lightbox-box">
+            <img class="lightbox-img" id="lightbox-img" src="" alt="Fotografía">
+            <div class="lightbox-caption">
+                <div class="lightbox-title" id="lightbox-title">Título</div>
+                <div class="lightbox-film" id="lightbox-film">35mm CELULOIDE</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Spotlight de linterna roja para cuarto oscuro -->
+    <div id="darkroom-spotlight"></div>
+
+    <!-- Scripts: Three.js Core + Componentes Modulares -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="js/three-canister.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
