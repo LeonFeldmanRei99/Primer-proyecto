@@ -15,9 +15,10 @@
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
     renderer.setSize(container.clientWidth, container.clientHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.shadowMap.autoUpdate = false;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.15;
     container.appendChild(renderer.domElement);
@@ -35,8 +36,8 @@
     const keyLight = new THREE.DirectionalLight(0xfff4e6, 2.6);
     keyLight.position.set(5, 6, 7);
     keyLight.castShadow = true;
-    keyLight.shadow.mapSize.width = 1024;
-    keyLight.shadow.mapSize.height = 1024;
+    keyLight.shadow.mapSize.width = 512;
+    keyLight.shadow.mapSize.height = 512;
     keyLight.shadow.bias = -0.001;
     scene.add(keyLight);
 
@@ -294,8 +295,16 @@
         renderer.setSize(container.clientWidth, container.clientHeight);
     });
 
-    // --- ANIMATION LOOP (60 FPS PBR) ---
+    // --- ANIMATION LOOP (OPTIMIZADO) ---
+    let lastFilmProgress = filmProgress;
+    let isTabVisible = true;
+    let shadowNeedsUpdate = true;
+
     function animate() {
+        if (!isTabVisible) {
+            requestAnimationFrame(animate);
+            return;
+        }
         requestAnimationFrame(animate);
 
         canisterGroup.rotation.y += (targetRotationY - canisterGroup.rotation.y) * 0.06;
@@ -305,15 +314,30 @@
         filmMesh.scale.x = filmProgress;
         filmMesh.position.x = 1.3 + (filmWidth * filmProgress) / 2;
 
-        const positions = filmGeo.attributes.position;
-        for (let i = 0; i < positions.count; i++) {
-            const u = positions.getX(i);
-            const zCurve = Math.sin((u / filmWidth) * Math.PI) * 0.45 * filmProgress;
-            positions.setZ(i, zCurve);
+        // Solo actualizar geometría de la película si el progreso cambió significativamente
+        if (Math.abs(filmProgress - lastFilmProgress) > 0.001) {
+            const positions = filmGeo.attributes.position;
+            for (let i = 0; i < positions.count; i++) {
+                const u = positions.getX(i);
+                const zCurve = Math.sin((u / filmWidth) * Math.PI) * 0.45 * filmProgress;
+                positions.setZ(i, zCurve);
+            }
+            filmGeo.attributes.position.needsUpdate = true;
+            lastFilmProgress = filmProgress;
         }
-        filmGeo.attributes.position.needsUpdate = true;
+
+        if (shadowNeedsUpdate) {
+            renderer.shadowMap.needsUpdate = true;
+            shadowNeedsUpdate = false;
+        }
 
         renderer.render(scene, camera);
     }
+
+    document.addEventListener('visibilitychange', () => {
+        isTabVisible = !document.hidden;
+        if (isTabVisible) shadowNeedsUpdate = true;
+    });
+
     animate();
 })();

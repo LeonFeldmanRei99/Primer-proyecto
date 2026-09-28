@@ -5,14 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>León Feldman Reinoso | Laboratorio Visual & Archivo 35mm</title>
     <meta name="description" content="Portfolio y archivo analógico de León Feldman Reinoso. Fotografía 35mm, dirección editorial y laboratorio visual en Buenos Aires.">
-    
-    <!-- Google Fonts -->
+
+    <!-- Preload crítico: Three.js + fuentes -->
+    <link rel="preload" as="script" href="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" crossorigin>
+    <link rel="modulepreload" href="js/three-canister.js">
+    <link rel="modulepreload" href="js/main.js">
+
+    <!-- Google Fonts con font-display: swap -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400;1,600&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&family=Cinzel:wght@400;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400;1,600&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&family=Cinzel:wght@400;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 
     <!-- CSS del Sistema de Diseño -->
-    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/main.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="css/main.css"></noscript>
 </head>
 <body class="app-mode">
 
@@ -202,9 +208,9 @@
     <!-- Spotlight de linterna roja para cuarto oscuro -->
     <div id="darkroom-spotlight"></div>
 
-    <!-- Scripts: Three.js Core + Componentes Modulares -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="js/three-canister.js"></script>
-    <script src="js/main.js"></script>
+    <!-- Scripts: Three.js Core + Componentes Modulares (carga diferida) -->
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" crossorigin></script>
+    <script defer src="js/three-canister.js"></script>
+    <script defer src="js/main.js"></script>
 </body>
 </html>

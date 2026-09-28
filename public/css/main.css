@@ -41,6 +41,7 @@ body.darkroom-mode {
     --accent-glow: rgba(255, 26, 26, 0.45);
 }
 
+/* Spotlight optimizado - solo se renderiza en modo oscuro y usa will-change */
 #darkroom-spotlight {
     position: fixed;
     inset: 0;
@@ -48,6 +49,7 @@ body.darkroom-mode {
     z-index: 9999;
     opacity: 0;
     transition: opacity 0.5s ease;
+    will-change: opacity;
     background: radial-gradient(circle 220px at var(--mouse-x, 50%) var(--mouse-y, 50%), transparent 0%, rgba(4, 0, 1, 0.94) 100%);
 }
 body.darkroom-mode #darkroom-spotlight {
@@ -150,10 +152,11 @@ header {
     height: 72px;
     z-index: 1000;
     background: rgba(7, 9, 8, 0.94);
-    backdrop-filter: blur(15px);
+    backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--border-subtle);
     display: flex;
     align-items: center;
+    contain: layout style paint;
 }
 .nav-wrapper {
     width: 100%;
@@ -237,6 +240,7 @@ header {
     width: 100vw;
     height: calc(100vh - 72px);
     overflow: hidden;
+    contain: layout style;
 }
 
 .app-view {
@@ -249,12 +253,14 @@ header {
     pointer-events: none;
     transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s ease;
     transform: scale(0.98);
+    content-visibility: hidden;
 }
 .app-view.active {
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
     transform: scale(1);
+    content-visibility: auto;
 }
 
 /* VISTA 0: CHASIS 3D */
@@ -381,6 +387,8 @@ header {
     position: relative;
     transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     box-shadow: 0 10px 25px rgba(0,0,0,0.7);
+    contain: layout style paint;
+    content-visibility: auto;
 }
 .negative-strip-card::before, .negative-strip-card::after {
     content: '••••••••••••••••••••';
@@ -464,6 +472,8 @@ header {
     box-shadow: 0 10px 30px rgba(0,0,0,0.8);
     transition: var(--transition-smooth);
     cursor: pointer;
+    contain: layout style paint;
+    content-visibility: auto;
 }
 .contact-sheet-card::before, .contact-sheet-card::after {
     content: '••••••••••••••••••••••••••••••';

@@ -233,7 +233,8 @@ function renderLightTable() {
 
     const allPhotos = getAllPhotos();
     const samplePhotos = allPhotos.slice(0, 8);
-    container.innerHTML = '';
+
+    const fragment = document.createDocumentFragment();
 
     samplePhotos.forEach((photo, idx) => {
         const card = document.createElement('div');
@@ -244,15 +245,18 @@ function renderLightTable() {
         card.onclick = () => openLightbox(idx, samplePhotos);
         card.innerHTML = `
             <div class="negative-img-wrap">
-                <img src="${encodeURI('/' + (photo.url || photo.src))}" alt="Negativo 35mm" loading="lazy">
+                <img src="${encodeURI('/' + (photo.url || photo.src))}" alt="Negativo 35mm" loading="lazy" decoding="async">
             </div>
             <div class="negative-meta">
                 <span>${frameNum} • ${filmInfo}</span>
                 <span>${photo.category || '35MM'}</span>
             </div>
         `;
-        container.appendChild(card);
+        fragment.appendChild(card);
     });
+
+    container.innerHTML = '';
+    container.appendChild(fragment);
 }
 
 // Renderizar Galería (Formato Único Hoja de Contactos 35mm)
@@ -265,10 +269,16 @@ function renderGallery() {
         ? allPhotos
         : allPhotos.filter(p => (p.category || p.seriesId || '').toLowerCase() === STATE.activeFilter.toLowerCase());
 
-    grid.innerHTML = '';
+    const fragment = document.createDocumentFragment();
 
     if (filtered.length === 0) {
-        grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 4rem 1rem; color: var(--text-muted);" class="font-mono">No hay obras registradas en este género.</div>`;
+        const empty = document.createElement('div');
+        empty.style.cssText = 'grid-column:1/-1;text-align:center;padding:4rem 1rem;color:var(--text-muted)';
+        empty.className = 'font-mono';
+        empty.textContent = 'No hay obras registradas en este género.';
+        fragment.appendChild(empty);
+        grid.innerHTML = '';
+        grid.appendChild(fragment);
         return;
     }
 
@@ -284,15 +294,18 @@ function renderGallery() {
             <span class="contact-frame-num">${frameNum}</span>
             <span class="contact-film-stock">${photo.category || '35MM'}</span>
             <div class="contact-img-wrap">
-                <img src="${encodeURI('/' + (photo.url || photo.src))}" alt="${displayTitle || 'Fotografía 35mm'}" loading="lazy">
+                <img src="${encodeURI('/' + (photo.url || photo.src))}" alt="${displayTitle || 'Fotografía 35mm'}" loading="lazy" decoding="async">
             </div>
             <div class="contact-meta">
                 ${displayTitle ? `<span class="contact-title">${displayTitle}</span>` : ''}
                 <span style="color: var(--accent); font-size: 0.65rem;">${filmInfo}</span>
             </div>
         `;
-        grid.appendChild(card);
+        fragment.appendChild(card);
     });
+
+    grid.innerHTML = '';
+    grid.appendChild(fragment);
 }
 
 function setFilter(cat) {
@@ -383,10 +396,15 @@ function updateLightboxContent() {
     if (filmEl) filmEl.textContent = `${film} • FOTOGRAMA ${num} / ${total}`;
 }
 
-// Listener de mouse para el spotlight del cuarto oscuro
+// Listener de mouse para el spotlight del cuarto oscuro (throttled)
+let mouseMoveRAF = null;
 document.addEventListener('mousemove', (e) => {
-    document.documentElement.style.setProperty('--mouse-x', e.clientX + 'px');
-    document.documentElement.style.setProperty('--mouse-y', e.clientY + 'px');
+    if (mouseMoveRAF) return;
+    mouseMoveRAF = requestAnimationFrame(() => {
+        document.documentElement.style.setProperty('--mouse-x', e.clientX + 'px');
+        document.documentElement.style.setProperty('--mouse-y', e.clientY + 'px');
+        mouseMoveRAF = null;
+    });
 });
 
 // Teclado
