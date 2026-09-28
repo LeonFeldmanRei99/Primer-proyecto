@@ -1,7 +1,7 @@
 /**
- * THREE.JS 35MM FILM CANISTER — CHASIS NEUTRO FOTORREALISTA ESTÉTICA ANALÓGICA
- * Chasis de celuloide verde oscuro mate + detalles metálicos plata (estilo rollo fotoquímico clásico)
- * Sin textos impresos invasivos / Solo textura de material PBR
+ * THREE.JS 35MM FILM CANISTER — CHASIS NEUTRO FOTORREALISTA 360°
+ * Chasis de celuloide verde oscuro mate + detalles metálicos plata
+ * Control total de rotación (drag + auto-rotate) / Sin tira de película
  */
 
 (function () {
@@ -51,36 +51,32 @@
     rimLight.position.set(2, 4, -4);
     scene.add(rimLight);
 
-    // --- MATERIALES PBR REALISTAS (CHASIS NEUTRO VERDE OSCURO MATE + PLATA) ---
-    // Cuerpo verde oscuro esmaltado mate (evoca películas fotoquímicas de alta sensibilidad)
+    // --- MATERIALES PBR REALISTAS ---
     const canisterBodyMaterial = new THREE.MeshStandardMaterial({
         color: 0x15281e,
         roughness: 0.38,
         metalness: 0.65
     });
 
-    // Franja decorativa plata satinada
     const silverStripeMaterial = new THREE.MeshStandardMaterial({
         color: 0xd8ded9,
         roughness: 0.22,
         metalness: 0.9
     });
 
-    // Tapas y bordes metálicos pulidos
     const capMetalMaterial = new THREE.MeshStandardMaterial({
         color: 0x222624,
         roughness: 0.28,
         metalness: 0.92
     });
 
-    // Felpa negra estanca del labio de salida
     const velvetMaterial = new THREE.MeshStandardMaterial({
         color: 0x050505,
         roughness: 0.98,
         metalness: 0.05
     });
 
-    // --- GEOMETRÍA DEL CHASIS 35MM (PROPORCIONES REALES) ---
+    // --- GEOMETRÍA DEL CHASIS 35MM (SIN TIR DE PELÍCULA) ---
     // 1. Cuerpo Cilíndrico Principal
     const bodyGeometry = new THREE.CylinderGeometry(1.2, 1.2, 3.2, 64);
     const bodyMesh = new THREE.Mesh(bodyGeometry, canisterBodyMaterial);
@@ -88,7 +84,7 @@
     bodyMesh.receiveShadow = true;
     canisterGroup.add(bodyMesh);
 
-    // Franjas de color y metal plata en el cilindro (procedural limpio, sin texto)
+    // Franjas decorativas plata
     const stripeGeoTop = new THREE.CylinderGeometry(1.206, 1.206, 0.25, 64);
     const stripeMeshTop = new THREE.Mesh(stripeGeoTop, silverStripeMaterial);
     stripeMeshTop.position.y = 1.0;
@@ -103,12 +99,16 @@
     const bottomCapGeo = new THREE.CylinderGeometry(1.23, 1.23, 0.18, 64);
     const bottomCap = new THREE.Mesh(bottomCapGeo, capMetalMaterial);
     bottomCap.position.y = -1.65;
+    bottomCap.castShadow = true;
+    bottomCap.receiveShadow = true;
     canisterGroup.add(bottomCap);
 
     // 3. Tapa Superior Estriada (Dientes de Carrete 35mm)
     const topCapGeo = new THREE.CylinderGeometry(1.24, 1.24, 0.25, 64);
     const topCap = new THREE.Mesh(topCapGeo, capMetalMaterial);
     topCap.position.y = 1.68;
+    topCap.castShadow = true;
+    topCap.receiveShadow = true;
     canisterGroup.add(topCap);
 
     // Dientes radiales de la tapa
@@ -119,6 +119,7 @@
         const tooth = new THREE.Mesh(toothGeo, capMetalMaterial);
         tooth.position.set(Math.cos(angle) * 1.23, 1.68, Math.sin(angle) * 1.23);
         tooth.rotation.y = -angle;
+        tooth.castShadow = true;
         gearRingGroup.add(tooth);
     }
     canisterGroup.add(gearRingGroup);
@@ -127,6 +128,7 @@
     const pinGeo = new THREE.CylinderGeometry(0.38, 0.38, 0.45, 32);
     const pinMesh = new THREE.Mesh(pinGeo, capMetalMaterial);
     pinMesh.position.y = 1.95;
+    pinMesh.castShadow = true;
     canisterGroup.add(pinMesh);
 
     const pinHoleGeo = new THREE.CylinderGeometry(0.22, 0.22, 0.2, 32);
@@ -139,152 +141,72 @@
     const lipMesh = new THREE.Mesh(lipGeo, velvetMaterial);
     lipMesh.position.set(1.18, 0, 0.15);
     lipMesh.rotation.y = -0.15;
+    lipMesh.castShadow = true;
+    lipMesh.receiveShadow = true;
     canisterGroup.add(lipMesh);
 
-    // --- CINTA PROCEDURAL DE CELULOIDE 35MM DESPLEGABLE ---
-    const filmWidth = 6.2;
-    const filmHeight = 2.4;
-    const filmGeo = new THREE.PlaneGeometry(filmWidth, filmHeight, 32, 1);
-    
-    // Generar textura de película analógica limpia con perforaciones y fotogramas
-    const filmCanvas = document.createElement('canvas');
-    filmCanvas.width = 2048;
-    filmCanvas.height = 768;
-    const fCtx = filmCanvas.getContext('2d');
-
-    function drawFilmTexture(images) {
-        fCtx.fillStyle = '#080706';
-        fCtx.fillRect(0, 0, filmCanvas.width, filmCanvas.height);
-
-        // Perforaciones 35mm arriba y abajo
-        fCtx.fillStyle = '#000000';
-        const numHoles = 32;
-        const holeWidth = 26;
-        const holeHeight = 44;
-        const holeRadius = 6;
-
-        for (let i = 0; i < numHoles; i++) {
-            const x = 30 + i * 62;
-            // Perforación superior
-            drawRoundedRect(fCtx, x, 25, holeWidth, holeHeight, holeRadius);
-            // Perforación inferior
-            drawRoundedRect(fCtx, x, filmCanvas.height - 69, holeWidth, holeHeight, holeRadius);
-
-            // Numeración sutil de fotogramas analógicos (01A, 02A...)
-            fCtx.fillStyle = '#c49a5a';
-            fCtx.font = 'bold 18px "Space Mono", monospace';
-            if (i % 4 === 0) {
-                const frameNum = String(Math.floor(i / 4) + 1).padStart(2, '0') + 'A';
-                fCtx.fillText(frameNum, x - 5, filmCanvas.height - 18);
-                fCtx.fillText('35mm FILM', x - 12, 20);
-            }
-            fCtx.fillStyle = '#000000';
-        }
-
-        // Dibujar fotogramas reales de León Feldman
-        const frameW = 420;
-        const frameH = 310;
-        const frameY = 110;
-
-        for (let j = 0; j < 4; j++) {
-            const frameX = 80 + j * 480;
-            fCtx.fillStyle = '#141310';
-            fCtx.fillRect(frameX, frameY, frameW, frameH);
-
-            if (images && images[j]) {
-                try {
-                    fCtx.drawImage(images[j], frameX + 8, frameY + 8, frameW - 16, frameH - 16);
-                } catch (e) {
-                    // Fallback silencioso
-                }
-            } else {
-                fCtx.fillStyle = '#1c1a17';
-                fCtx.fillRect(frameX + 8, frameY + 8, frameW - 16, frameH - 16);
-            }
-        }
-        filmTexture.needsUpdate = true;
-    }
-
-    function drawRoundedRect(c, x, y, w, h, r) {
-        c.beginPath();
-        c.moveTo(x + r, y);
-        c.lineTo(x + w - r, y);
-        c.quadraticCurveTo(x + w, y, x + w, y + r);
-        c.lineTo(x + w, y + h - r);
-        c.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-        c.lineTo(x + r, y + h);
-        c.quadraticCurveTo(x, y + h, x, y + h - r);
-        c.lineTo(x, y + r);
-        c.quadraticCurveTo(x, y, x + r, y);
-        c.closePath();
-        c.fill();
-    }
-
-    const filmTexture = new THREE.CanvasTexture(filmCanvas);
-    const filmMaterial = new THREE.MeshStandardMaterial({
-        map: filmTexture,
-        roughness: 0.32,
-        metalness: 0.15,
-        side: THREE.DoubleSide
-    });
-
-    const filmMesh = new THREE.Mesh(filmGeo, filmMaterial);
-    filmMesh.position.set(1.3 + filmWidth / 2, 0, 0.15);
-    canisterGroup.add(filmMesh);
-
-    // Escalar la tira de película inicialmente replegada
-    let filmProgress = 0.08;
-    let targetProgress = 0.08;
-
-    filmMesh.scale.set(filmProgress, 1, 1);
-    filmMesh.position.x = 1.3 + (filmWidth * filmProgress) / 2;
-
-    // Cargar fotos reales locales
-    const samplePhotos = [
-        'Anal%C3%B3gicas/000005570003.jpg',
-        'Calle/DSC08306.jpg',
-        'Natura/DSC01567.jpg',
-        'Analógicas/000041600005.jpg'
-    ];
-    const loadedImages = [];
-    let loadCount = 0;
-    samplePhotos.forEach((src, idx) => {
-        const img = new Image();
-        img.crossOrigin = 'anonymous';
-        img.onload = () => {
-            loadedImages[idx] = img;
-            loadCount++;
-            if (loadCount >= 2) drawFilmTexture(loadedImages);
-        };
-        img.onerror = () => loadCount++;
-        img.src = src;
-    });
-    drawFilmTexture(null);
-
-    // --- INTERACTIVIDAD & DESPLIEGUE SUAVE ---
-    let mouseX = 0;
-    let mouseY = 0;
-    let targetRotationY = 0.3;
+    // --- CONTROLES DE ROTACIÓN 360° ---
+    let isUserInteracting = false;
+    let isAutoRotating = true;
+    let autoRotateSpeed = 0.0015;
+    let targetRotationY = 0;
     let targetRotationX = 0.15;
+    let velocityX = 0;
+    let velocityY = 0;
+    let lastMouseX = 0;
+    let lastMouseY = 0;
 
-    window.addEventListener('mousemove', (e) => {
-        mouseX = (e.clientX / window.innerWidth) * 2 - 1;
-        mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
-        targetRotationY = 0.3 + mouseX * 0.45;
-        targetRotationX = 0.15 - mouseY * 0.3;
-    });
+    // Drag to rotate
+    function onPointerDown(e) {
+        isUserInteracting = true;
+        isAutoRotating = false;
+        lastMouseX = e.clientX;
+        lastMouseY = e.clientY;
+        container.style.cursor = 'grabbing';
+    }
 
-    container.addEventListener('mouseenter', () => {
-        targetProgress = 0.95; // Desplegar película al 95%
-    });
+    function onPointerMove(e) {
+        if (!isUserInteracting) return;
+        
+        const deltaX = e.clientX - lastMouseX;
+        const deltaY = e.clientY - lastMouseY;
+        
+        velocityX = deltaX * 0.004;
+        velocityY = deltaY * 0.004;
+        
+        targetRotationY += velocityX;
+        targetRotationX = THREE.MathUtils.clamp(targetRotationX + velocityY, -Math.PI / 2.5, Math.PI / 2.5);
+        
+        lastMouseX = e.clientX;
+        lastMouseY = e.clientY;
+    }
 
-    container.addEventListener('mouseleave', () => {
-        targetProgress = 0.08; // Regresar a reposo
-    });
+    function onPointerUp() {
+        isUserInteracting = false;
+        container.style.cursor = 'grab';
+        
+        // Resume auto-rotate after 3 seconds of inactivity
+        setTimeout(() => {
+            if (!isUserInteracting) isAutoRotating = true;
+        }, 3000);
+    }
 
-    container.addEventListener('click', () => {
-        const lightTableSection = document.getElementById('mesa-de-luz') || document.getElementById('portfolio');
-        if (lightTableSection) lightTableSection.scrollIntoView({ behavior: 'smooth' });
+    container.addEventListener('pointerdown', onPointerDown);
+    window.addEventListener('pointermove', onPointerMove);
+    window.addEventListener('pointerup', onPointerUp);
+    window.addEventListener('pointerleave', onPointerUp);
+
+    // Touch support
+    container.addEventListener('touchstart', (e) => onPointerDown(e.touches[0]), { passive: true });
+    window.addEventListener('touchmove', (e) => onPointerMove(e.touches[0]), { passive: true });
+    window.addEventListener('touchend', onPointerUp);
+
+    // Click to navigate to portfolio
+    container.addEventListener('click', (e) => {
+        if (Math.abs(velocityX) < 0.001 && Math.abs(velocityY) < 0.001) {
+            const lightTableSection = document.getElementById('mesa-de-luz') || document.getElementById('portfolio');
+            if (lightTableSection) lightTableSection.scrollIntoView({ behavior: 'smooth' });
+        }
     });
 
     // Responsive Resize
@@ -295,8 +217,7 @@
         renderer.setSize(container.clientWidth, container.clientHeight);
     });
 
-    // --- ANIMATION LOOP (OPTIMIZADO) ---
-    let lastFilmProgress = filmProgress;
+    // --- ANIMATION LOOP ---
     let isTabVisible = true;
     let shadowNeedsUpdate = true;
 
@@ -307,23 +228,21 @@
         }
         requestAnimationFrame(animate);
 
-        canisterGroup.rotation.y += (targetRotationY - canisterGroup.rotation.y) * 0.06;
-        canisterGroup.rotation.x += (targetRotationX - canisterGroup.rotation.x) * 0.06;
+        // Auto-rotate when not interacting
+        if (isAutoRotating) {
+            targetRotationY += autoRotateSpeed;
+        }
 
-        filmProgress += (targetProgress - filmProgress) * 0.08;
-        filmMesh.scale.x = filmProgress;
-        filmMesh.position.x = 1.3 + (filmWidth * filmProgress) / 2;
+        // Smooth rotation with inertia
+        canisterGroup.rotation.y += (targetRotationY - canisterGroup.rotation.y) * 0.05;
+        canisterGroup.rotation.x += (targetRotationX - canisterGroup.rotation.x) * 0.05;
 
-        // Solo actualizar geometría de la película si el progreso cambió significativamente
-        if (Math.abs(filmProgress - lastFilmProgress) > 0.001) {
-            const positions = filmGeo.attributes.position;
-            for (let i = 0; i < positions.count; i++) {
-                const u = positions.getX(i);
-                const zCurve = Math.sin((u / filmWidth) * Math.PI) * 0.45 * filmProgress;
-                positions.setZ(i, zCurve);
-            }
-            filmGeo.attributes.position.needsUpdate = true;
-            lastFilmProgress = filmProgress;
+        // Apply velocity decay when not interacting
+        if (!isUserInteracting) {
+            velocityX *= 0.95;
+            velocityY *= 0.95;
+            targetRotationY += velocityX;
+            targetRotationX = THREE.MathUtils.clamp(targetRotationX + velocityY, -Math.PI / 2.5, Math.PI / 2.5);
         }
 
         if (shadowNeedsUpdate) {
@@ -339,5 +258,7 @@
         if (isTabVisible) shadowNeedsUpdate = true;
     });
 
+    // Initial cursor
+    container.style.cursor = 'grab';
     animate();
 })();
