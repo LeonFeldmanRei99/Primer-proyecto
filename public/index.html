@@ -18,7 +18,9 @@
 
     <!-- CSS del Sistema de Diseño -->
     <link rel="stylesheet" href="css/main.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="css/studio.css" media="print" onload="this.media='all'">
     <noscript><link rel="stylesheet" href="css/main.css"></noscript>
+    <noscript><link rel="stylesheet" href="css/studio.css"></noscript>
 </head>
 <body class="app-mode">
 
@@ -59,6 +61,10 @@
                     <span class="film-nav-frame">04A</span>
                     <span class="film-nav-label">Contacto</span>
                 </button>
+                <button type="button" class="film-nav-item" onclick="switchAppView('estudio')" id="nav-btn-estudio">
+                    <span class="film-nav-frame">05A</span>
+                    <span class="film-nav-label">Estudio</span>
+                </button>
                 <button type="button" class="film-nav-item" onclick="switchAppView('landing-3d')" id="nav-btn-3d" title="Ver chasis 3D">
                     <span class="film-nav-frame">00</span>
                     <span class="film-nav-label">Chasis 3D</span>
@@ -80,6 +86,30 @@
 
     <!-- CONTENEDOR PRINCIPAL DE LA APP DE LABORATORIO (VISTAS ACTIVAS) -->
     <main id="app-viewport">
+
+        <!-- VISTA ESTUDIO FOTOGRÁFICO -->
+        <section id="view-estudio" class="app-view">
+            <div id="studio-container">
+                <canvas id="studio-canvas"></canvas>
+                <div id="studio-ui" class="studio-panel">
+                    <div class="studio-header">
+                        <h3 class="font-mono" style="font-size: 0.7rem; letter-spacing: 0.15em;">💡 ESTUDIO DE LUZ</h3>
+                        <button class="studio-close" onclick="switchAppView('mesa-de-luz')" title="Cerrar">×</button>
+                    </div>
+                    <div class="studio-controls" id="studio-controls">
+                        <!-- Generado dinámicamente -->
+                    </div>
+                    <div class="studio-presets">
+                        <span class="font-mono" style="font-size: 0.6rem; color: var(--text-muted);">PRESETS:</span>
+                        <div class="preset-buttons" id="preset-buttons"></div>
+                    </div>
+                    <div class="studio-actions">
+                        <button class="btn-exp" id="btn-save-studio" onclick="saveStudioConfig()">Guardar Config ✦</button>
+                        <button class="btn-exp" id="btn-reset-studio" onclick="resetStudioConfig()">Reset ✦</button>
+                    </div>
+                </div>
+            </div>
+        </section>
 
         <!-- VISTA 0: CHASIS 3D THREE.JS -->
         <section id="view-landing-3d" class="app-view">
@@ -211,6 +241,7 @@
     <!-- Scripts: Three.js Core + Componentes Modulares (carga diferida) -->
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" crossorigin></script>
     <script defer src="js/three-canister.js"></script>
+    <script defer src="js/studio.js"></script>
     <script defer src="js/main.js"></script>
 </body>
 </html>

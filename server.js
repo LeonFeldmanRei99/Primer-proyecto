@@ -348,6 +348,48 @@ app.get('/api/admin/export/zip', authenticateToken, (req, res) => {
     archive.finalize();
 });
 
+// ==========================================
+// STUDIO LIGHTING API
+// ==========================================
+
+// GET Studio Config (público - para cargar en vista estudio)
+app.get('/api/studio', (req, res) => {
+    const data = readData();
+    res.json({ success: true, studio: data.studio || getDefaultStudioConfig() });
+});
+
+// UPDATE Studio Config (admin - auto-guardado desde UI)
+app.put('/api/admin/studio', authenticateToken, (req, res) => {
+    const data = readData();
+    data.studio = { ...getDefaultStudioConfig(), ...data.studio, ...req.body };
+    writeData(data);
+    res.json({ success: true, studio: data.studio, message: 'Configuración de estudio guardada.' });
+});
+
+// RESET Studio to defaults
+app.post('/api/admin/studio/reset', authenticateToken, (req, res) => {
+    const data = readData();
+    data.studio = getDefaultStudioConfig();
+    writeData(data);
+    res.json({ success: true, studio: data.studio, message: 'Estudio restaurado a valores por defecto.' });
+});
+
+function getDefaultStudioConfig() {
+    return {
+        version: 1,
+        object: { type: 'canister', position: [0, 0, 0], rotation: [0, 0, 0], scale: [1, 1, 1] },
+        camera: { position: [0, 0, 8.5], fov: 40, target: [0, 0, 0] },
+        lights: [
+            { id: 'key', type: 'DirectionalLight', name: 'Key Light', enabled: true, position: [5, 6, 7], target: [0, 0, 0], intensity: 2.6, color: '#fff4e6', castShadow: true, shadow: { mapSize: 512, bias: -0.001 } },
+            { id: 'fill', type: 'DirectionalLight', name: 'Fill Light', enabled: true, position: [-6, -2, 4], target: [0, 0, 0], intensity: 0.9, color: '#90b8d0' },
+            { id: 'rim', type: 'PointLight', name: 'Rim Light', enabled: true, position: [2, 4, -4], target: [0, 0, 0], intensity: 3.2, color: '#c49a5a', distance: 20, decay: 2 },
+            { id: 'ambient', type: 'AmbientLight', name: 'Ambient', enabled: true, intensity: 0.6, color: '#fff8ee' }
+        ],
+        background: { type: 'solid', color: '#040605' },
+        renderer: { toneMapping: 'ACESFilmic', exposure: 1.15, pixelRatio: 1.5 }
+    };
+}
+
 // Start Server if run directly
 if (require.main === module) {
     app.listen(PORT, () => {
